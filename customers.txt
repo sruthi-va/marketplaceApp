@@ -1,0 +1,7 @@
+customer1@gmail.com,thisismypassword
+poop,pee,Antihero-Midnights,Hellevator-Hellevator,So far away-D2,Betty-Folklore
+yourmom,1212
+testUser,testPassword
+buyer,ibuythings
+testbuy,lol,backdoor-in life,backdoor-in life,backdoor-in life
+jenny,catsarecool

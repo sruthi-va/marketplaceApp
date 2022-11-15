@@ -1,0 +1,2 @@
+Seller1;walmart-apple,descrip,quantity,price,walmart-banana,descrip,quantity,price,walmart;aldi-celery,descrip,quantity,price,aldi-carrot,descrip,quantity,price,aldi
+Seller2;target-grape,descrip,quantity,price,target-orange,descrip,quantity,price

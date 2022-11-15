@@ -1,0 +1,3 @@
+username,pass,apple-walmart,grape-target,orange-target
+username2,pass,orange-target,celery-aldi
+username3,pass,banana-walmart

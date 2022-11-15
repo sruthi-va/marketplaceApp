@@ -1,0 +1,6 @@
+username,apple,walmart,2,grape,target,3
+username2,orange,target,2,celery,aldi,1
+username3,banana,walmart,1
+username4,apple,walmart,1,carrot,aldi,2,pepper,target,5,celery,aldi,3,grape,target,2
+username5,apple,walmart,2
+username6,celery,aldi,2,orange,target,1
