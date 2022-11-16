@@ -14,6 +14,7 @@ import java.util.*;
  */
 public class MarketPlace {
     private static ArrayList<Seller> sellers = new ArrayList<>();
+    //private static ArrayList<Store> stores = new ArrayList<>();
 
     public static void main(String[] args) throws IOException {
         MarketPlace marketPlace = new MarketPlace();
@@ -78,7 +79,8 @@ public class MarketPlace {
                             try {
                                 System.out.println("Which store? (Type a number)");
                                 line = scanner.nextLine();
-                                store = stores.get(Integer.parseInt(line) - 1);
+
+                                store = getStoreIndex(Integer.parseInt(line));
                                 if (store == null) {
                                     System.out.println("Please enter a valid store you dummy");
                                 }
@@ -128,8 +130,8 @@ public class MarketPlace {
                         break;
                     case "3":
                         Product[] list = customer.getCustomerCart().getProducts(user);
+                        list = marketPlace.updateProductQuantities(list);
                         if (list.length > 0) {
-                            //Product[] modList = marketPlace.updateProductQuantities(list);
                             customer.purchaseCart(list);
                             marketPlace.decrementQuantity(list);
                             System.out.println("Cart has been bought!");
@@ -278,6 +280,7 @@ public class MarketPlace {
                 } // here
             } while (true);
         } else if (id == 2) {
+            int sellerID = -1;
             ArrayList<String> usernames = readFile("sellers.txt");
             boolean usernameFound = false;
             for (int i = 0; i < usernames.size(); i++) {
@@ -302,11 +305,18 @@ public class MarketPlace {
             if (!usernameFound) {
                 addUserPass("sellers.txt", user, pass);
                 System.out.println("New account created!");
+                sellers.add(seller);
+                sellerID = sellers.indexOf(seller);
             } else {
                 for (Seller s : sellers) {
                     if (user.equals(s.getSellerName())) {
-                        seller = sellers.get(sellers.indexOf(s));
+                        seller = s;
+                        sellerID = sellers.indexOf(s);
                     }
+                }
+                if (sellerID == -1) {
+                    sellers.add(seller);
+                    sellerID = sellers.indexOf(seller);
                 }
             }
             do {
@@ -334,12 +344,12 @@ public class MarketPlace {
                         break;
                     case "2":
                         boolean continuing = false;
-                        if (seller.getStores().size() == 0) {  
+                        if (sellers.get(sellerID).getStores().size() == 0) {  
                             System.out.println("you have no stores!");
                         } else {
                             do {
                                 int poop = 1;
-                                for (Store s : seller.getStores()) {
+                                for (Store s : sellers.get(sellerID).getStores()) {
                                     ArrayList<Product> currProducts = s.getProductList();
                                     System.out.println(poop + ": " + s.toString());
                                     for (int i = 0; i < currProducts.size(); i++) {
@@ -349,10 +359,12 @@ public class MarketPlace {
                                 }
                                 System.out.println("Which store do you want to edit? (Enter number)");
                                 Store currentStore = null;
+                                int currentStoreID = -1;
                                 while (currentStore == null) {
                                     try {
                                         int storeID = Integer.parseInt(scanner.nextLine());
-                                        currentStore = seller.getStores().get(storeID - 1);
+                                        currentStore = sellers.get(sellerID).getStores().get(storeID - 1);
+                                        currentStoreID = storeID - 1;
                                     } catch (Exception e) {
                                         System.out.println("Not a valid store name");
                                         System.out.println("Which store do you want to edit? (Enter number)");
@@ -380,18 +392,19 @@ public class MarketPlace {
                                         int quantity = Integer.valueOf(scanner.nextLine());
                                         System.out.println("How much will this product be sold for?");
                                         double price = Double.valueOf(scanner.nextLine());
-                                        marketPlace.products.add(new Product(productName, description, quantity, price, currentStore.getStoreName()));
                                         currentStore.createProduct(productName, description, quantity, price);
+                                        seller.setStore(currentStoreID, currentStore);
+                                        sellers.set(sellerID, seller);
                                     } else if (todo.equalsIgnoreCase("edit")) {
                                         valid = true;
                                         System.out.println("Which item would you like to edit?");
                                         line = scanner.nextLine();
                                         int currProductIndex = -1;
                                         Product currProduct = null;
-                                        for (Product p : marketPlace.products) {
+                                        for (Product p : currentStore.getProductList()) {
                                             if (p.getProductName().equals(line)) {
                                                 currProduct = p;
-                                                currProductIndex = marketPlace.products.indexOf(p);
+                                                currProductIndex = currentStore.getProductList().indexOf(p);
                                             }
                                         }
                                         System.out.println("What would you like to edit? Enter a number.");
@@ -401,49 +414,45 @@ public class MarketPlace {
                                             System.out.println("What is the new product name?");
                                             line = scanner.nextLine();
                                             currProduct.setProductName(line);
-                                            marketPlace.products.remove(currProductIndex);
-                                            marketPlace.products.add(currProduct);
                                         } else if (change == 2) {
                                             System.out.println("What is the new product description?");
                                             line = scanner.nextLine();
                                             currProduct.setDescription(line);
-                                            marketPlace.products.remove(currProductIndex);
-                                            marketPlace.products.add(currProduct);
                                         } else if (change == 3) {
                                             System.out.println("What is the new product quantity?");
                                             line = scanner.nextLine();
                                             currProduct.setQuantity(Integer.valueOf(line));
-                                            marketPlace.products.remove(currProductIndex);
-                                            marketPlace.products.add(currProduct);
                                         } else if (change == 4) {
                                             System.out.println("What is the new product price?");
                                             line = scanner.nextLine();
                                             currProduct.setPrice(Double.valueOf(line));
-                                            marketPlace.products.remove(currProductIndex);
-                                            marketPlace.products.add(currProduct);
                                         }
-                                        marketPlace.updateProducts(currProduct);
+                                        ArrayList<Product> productList = currentStore.getProductList();
+                                        productList.remove(currProductIndex);
+                                        productList.add(currProduct);
+                                        currentStore.setProductList(productList);
+                                        seller.setStore(currentStoreID, currentStore);
+                                        sellers.set(sellerID, seller);
                                     } else if (todo.equalsIgnoreCase("delete")) {
                                         valid = true;
                                         System.out.println("What is the name of the product you want to delete?");
                                         line = scanner.nextLine();
                                         boolean found = false;
-                                        for (int i = 0; i < seller.getStores().size(); i++) {
-                                            for (int j = 0; j < seller.getStores().get(i).getProductList().size(); j++) {
-                                                if (seller.getStores().get(i).getProductList().get(j).getProductName().equalsIgnoreCase(line)) {
-                                                    seller.getStores().get(i).getProductList().remove(j);
-                                                    found = true;
-                                                }
+                                        for (int j = 0; j < currentStore.getProductList().size(); j++) {
+                                            if (currentStore.getProductList().get(j).getProductName().equalsIgnoreCase(line)) {
+                                                currentStore.getProductList().remove(j);
+                                                found = true;
                                             }
                                         }
                                         if (!found) {
                                             System.out.println("Cannot find item!x");
+                                        } else {
+                                            seller.setStore(currentStoreID, currentStore);
+                                            sellers.set(sellerID, seller);
                                         }
                                     } else {
                                         System.out.println("Please type 'create', 'edit', or 'delete'.");
                                     }
-                                    marketPlace.updateSeller(seller);
-                                    
                                 }
                                 System.out.println("Would you like to do something else?");
                                 if (scanner.nextLine().toLowerCase().startsWith("y")) {
@@ -478,10 +487,9 @@ public class MarketPlace {
                                 System.out.println("Please enter a valid name!");
                             } else {
                                 repeat = false;
-                                Store tempStore = seller.createStore(seller.getSellerName(), storeName);
-                                stores.add(tempStore);
+                                seller.createStore(seller.getSellerName(), storeName);
                                 System.out.println("Store created!");
-                                marketPlace.updateSeller(seller);
+                                sellers.set(sellerID, seller);
                             }
                         }
                         break;
@@ -612,33 +620,30 @@ public class MarketPlace {
                         System.out.println("Sorry to hear that, which store?");
                         String deleteStore = scanner.nextLine();
                         Store storeInQuestion = null;
-                        for (Store s : stores) {
-                            if (s.getStoreName().equals(deleteStore)) {
-                                storeInQuestion = s;
+                        ArrayList<Store> currStores = sellers.get(sellerID).getStores();
+                        for (int i = 0; i < currStores.size(); i++) {
+                            if (currStores.get(i).getStoreName().equals(deleteStore)) {
+                                storeInQuestion = currStores.get(i);
                                 break;
                             }
                         }
-                        stores.remove(storeInQuestion);
-                        for (Seller s : sellers) {
-                            if (s.getSellerName().equals(seller.getSellerName())) {
-                                ArrayList<Store> temp = seller.getStores();
-                                temp.remove(storeInQuestion);
-                                System.out.println("Store deleted from marketplace");
-                                s.setStores(temp);
-                                break;
-                            }
+                        if (storeInQuestion == null) {
+                            System.out.println("not a store dumbass");
+                            break;
                         }
-                        marketPlace.updateSeller(seller);
+                        currStores.remove(storeInQuestion);
+                        seller.setStores(currStores);
+                        sellers.set(sellerID, seller);
+                        System.out.println("Store deleted from marketplace");
                         break;
                     case "7":
                         System.out.println("Enter the name of the file you want to import.");
                         String fileImport = scanner.nextLine();
                         ArrayList<Store> importedStores = seller.importCSV(fileImport);
                         for (int i = 0; i < importedStores.size(); i++) {
-                            stores.add(importedStores.get(i));
                             seller.addStore(importedStores.get(i));
                         }
-                        marketPlace.updateSeller(seller);
+                        sellers.set(sellerID, seller);
                         System.out.println("Imported!");
                         break;
                     case "8":
@@ -648,18 +653,13 @@ public class MarketPlace {
                         } else {
                             System.out.println("there was a problem!");
                         }
-                        
                         break;
                     case "9":
-                        for (int i = 0; i < sellers.size(); i++) {
-                            if (sellers.get(i).getSellerName().equals(user)) {
-                                sellers.remove(sellers.get(i));
-                            }
-                        }
+                        sellers.remove(sellerID); // TODO does this delete all their stores from the file? it should right
                         System.out.println("Account deleted, stores ejected, rejected and taken care of. Goodbye.");
                         return;
                     case "10":
-                        marketPlace.updateSeller(seller);
+                        sellers.set(sellerID, seller);
                         System.out.println("Goodbye!");
                         MarketPlace.writeFile();
                         return;
@@ -690,13 +690,33 @@ public class MarketPlace {
      */
     public static void homescreen() {
         int i = 1;
-        for (Store s : stores) {
-            System.out.println(i + ": " + s.toString());
-            i++;
+        for (Seller s : sellers) {
+            for (Store st : s.getStores()) {
+                System.out.println(i + ": " + st.toString());
+                i++;
+            }
         }
-        if (stores.isEmpty()) {
+        
+        if (i == 1) {
             System.out.println("The Market is quiet for once. No life breathes");
         }
+    }
+
+    public static Store getStoreIndex(int index) {
+        int i = 1;
+        for (Seller s : sellers) {
+            for (Store st : s.getStores()) {
+                if (index == i) {
+                    return st;
+                }
+                i++;
+            }
+        }
+        
+        if (i == 1) {
+            System.out.println("The Market is quiet for once. No life breathes");
+        }
+        return null;
     }
 
     /**
@@ -894,15 +914,6 @@ public class MarketPlace {
 
     public void decrementQuantity(Product[] products) {
         for (int j = 0; j < products.length; j++) {
-            for (int i = 0; i < this.products.size(); i++) {
-                if (this.products.get(i).equals(products[j])) {
-                    this.products.remove(i);
-                    Product productM = new Product(products[j].getProductName(), products[j].getDescription(),
-                            products[j].getQuantity() - 1, products[j].getPrice(), products[j].getStoreName());
-                    this.products.add(i, productM);
-                }
-            }
-            
             int x = 0;
             int y = 0; 
             int z = 0;
@@ -930,6 +941,7 @@ public class MarketPlace {
         }
     }
 
+    /*
     public void updateProducts(Product updatedProduct) {
         for (int j = 0; j < 1; j++) {
             for (int i = 0; i < this.products.size(); i++) {
@@ -963,22 +975,39 @@ public class MarketPlace {
                 
             }
         }
-    }
+    }*/
 
     public Product[] updateProductQuantities(Product[] products) {
-        Product[] output = new Product[products.length];
-        //ArrayList<Product> output = new ArrayList<>();
+        Product[] outputArray = new Product[products.length];
+        ArrayList<Product> output = new ArrayList<>();
         for (int j = 0; j < products.length; j++) {
-            for (int i = 0; i < this.products.size(); i++) {
-                if (this.products.get(i).equals(products[j])) {
-                    output[j] = this.products.get(i);
-                    break;
+            int x = 0;
+            int y = 0; 
+            int z = 0;
+            Seller currSeller;
+            Store currStore;
+            for (x = 0; x < sellers.size(); x++) {
+                currSeller = sellers.get(x);
+                for (y = 0; y < currSeller.getStores().size(); y++) {
+                    currStore = currSeller.getStores().get(y);
+                    for (z = 0; z < currStore.getProductList().size(); z++) {
+                        ArrayList<Product> currProductList = currStore.getProductList();
+                        if (currProductList.get(z).equals(products[j])) {
+                            output.add(currProductList.get(z));
+                        }
+                    }
                 }
             }
         }
-        return output;
+
+        for (int i = 0; i < output.size(); i++) {
+            outputArray[i] = output.get(i);
+        }
+
+        return outputArray;
     }
 
+    /*
     public void updateSeller(Seller seller) {
         Seller slay = null;
         for (Seller s : sellers) {
@@ -993,5 +1022,5 @@ public class MarketPlace {
             sellers.remove(slay);
             sellers.add(seller);
         }
-    }
+    }*/
 }
