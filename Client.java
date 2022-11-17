@@ -1,10 +1,13 @@
 import javax.swing.*;
 import java.io.*;
 import java.net.*;
+
 public class Client {
     public static void main(String[] args) throws IOException {
         boolean run = true;
-        //Socket socket = new Socket("localhost", 4242);
+        boolean runCustomer = false;
+        boolean runSeller = false;
+        Socket socket = new Socket("localhost", 4242);
         String userName = "";
         String password = "";
         String userChoice[] = {"Customer", "Seller"};
@@ -34,7 +37,8 @@ public class Client {
                 if (password == null) {
                     run = false;
                 }
-
+                PrintWriter writer = new PrintWriter(socket.getOutputStream());
+                BufferedReader reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
                 choose = (String) JOptionPane.showInputDialog(null, "Are you a customer or seller?",
                         "Choice?", JOptionPane.QUESTION_MESSAGE,
                         null, userChoice, userChoice[0]);
@@ -42,10 +46,30 @@ public class Client {
                     run = false;
                 }
                 if (choose.equals("Customer")) {
+                    runCustomer = true;
+                    while (runCustomer) {
+                        writer.write(choose);
+                        writer.println();
+                        writer.flush();
 
+                        String results = reader.readLine(); //server return a string of the drop down options (1. view store,2. search,3. purchase...) etc
+                        //separate by commas
+
+                        String[] dropdown = results.split(",", 0);
+                        String reply = (String) JOptionPane.showInputDialog(null, "What is your choice?",
+                                "Choice?", JOptionPane.QUESTION_MESSAGE,
+                                null, dropdown, dropdown[0]);
+                        writer.write(reply); //on server side, read in the line, and have ifs for the corresponding drop down choice
+                        writer.println();
+                        writer.flush();
+
+                    }
                 }
                 if (choose.equals("Seller")) {
+                    runSeller = true;
+                    while (runSeller) {
 
+                    }
                 }
 
 
