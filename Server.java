@@ -28,7 +28,7 @@ public class Server {
                         "Enter Search", JOptionPane.QUESTION_MESSAGE).toLowerCase();
                 if (!(search.equals(null))) {
                     ArrayList<String> found = new ArrayList<>();
-                    BufferedReader br = new BufferedReader(new FileReader(new File ("C:\\Users\\sruth\\IdeaProjects\\Homework11\\src\\searchDatabase.txt")));
+                    BufferedReader br = new BufferedReader(new FileReader(new File ("searchDatabase.txt")));
                     String line;
                     String lowerLine;
                     String title;
@@ -50,7 +50,7 @@ public class Server {
                         String userChoice = (String) JOptionPane.showInputDialog(null,
                                 "What is your choice?", "Choice?", JOptionPane.QUESTION_MESSAGE, null,
                                 foundList, foundList[0]);
-                        BufferedReader newReader = new BufferedReader(new FileReader(new File ("C:\\Users\\sruth\\IdeaProjects\\Homework11\\src\\searchDatabase.txt")));
+                        BufferedReader newReader = new BufferedReader(new FileReader(new File ("searchDatabase.txt")));
                         String lineFinder;
                         String desc = "";
                         while ((lineFinder = newReader.readLine()) != null) {

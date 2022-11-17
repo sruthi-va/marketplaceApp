@@ -63,6 +63,11 @@ public class Client {
                         writer.println();
                         writer.flush();
 
+                        if (reply.equals("1. view store")) {
+                            String storeList = reader.readLine();
+                        
+                        }
+
                     }
                 }
                 if (choose.equals("Seller")) {
