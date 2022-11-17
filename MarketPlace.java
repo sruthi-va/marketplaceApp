@@ -766,27 +766,16 @@ public class MarketPlace {
      */
     public HashSet<Object> search(String keyword) {
         HashSet<Object> searchResult = new HashSet<Object>();
-        /*
-        for (Product p : products) {
-            if (p.getProductName().toLowerCase().contains(keyword.toLowerCase())
-                    || p.getDescription().toLowerCase().equalsIgnoreCase(keyword.toLowerCase())) {
-                searchResult.add(p);
+        for (Seller seller : sellers) {
+            for (Store store : seller.getStores()) {
+                for (Product product : store.getProductList()) {
+                    if (product.getProductName().toLowerCase().contains(keyword.toLowerCase())
+                    || product.getDescription().toLowerCase().equalsIgnoreCase(keyword.toLowerCase())) {
+                        searchResult.add(product);
+                    }
+                }
             }
         }
-        // for (Store s : stores) {
-        //     if (s.getStoreName().toLowerCase().contains(keyword.toLowerCase())) {
-        //         searchResult.add(s);
-        //     }
-        // }
-        // for (Seller s : sellers) {
-        //     if (s.getSellerName().toLowerCase().contains(keyword.toLowerCase())) {
-        //         searchResult.add(s);
-        //     }
-        // }
-        if (searchResult.isEmpty()) {
-            System.out.println("There's nothing on this bro :((");
-        }
-        */
         return searchResult;
     }
 
