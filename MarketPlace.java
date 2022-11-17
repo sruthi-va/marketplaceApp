@@ -13,13 +13,13 @@ import java.util.*;
  * @author Catherine Park, Zander Carpenter, Jennifer Wang, Sruthi Vadakuppa, Vanshika Balaji
  * @version Nov 4, 2022
  */
-public class MarketPlace extends Thread {
+public class MarketPlace extends Thread{
     private static ArrayList<Seller> sellers = new ArrayList<>();
     private Socket socket;
     //private static ArrayList<Store> stores = new ArrayList<>();
 
     public void run() {
-        //MarketPlace marketPlace = new MarketPlace();
+        MarketPlace marketPlace = new MarketPlace();
         Scanner scanner = new Scanner(System.in);
         System.out.println("Welcome to the Marketplace! Please login.");
         Customer customer = null;
@@ -123,19 +123,19 @@ public class MarketPlace extends Thread {
                         HashSet<Object> searchResult;
                         do {
                             System.out.println("Enter the product name you'd like to search:");
-                            searchResult = this.search(scanner.nextLine());
+                            searchResult = marketPlace.search(scanner.nextLine());
                         } while (searchResult == null);
                         for (Object o : searchResult) {
                             System.out.println(o.toString());
                         }
-                        this.runSearch(scanner, customer, user);
+                        marketPlace.runSearch(scanner, customer, user);
                         break;
                     case "3":
                         Product[] list = customer.getCustomerCart().getProducts(user);
-                        list = this.updateProductQuantities(list);
+                        list = marketPlace.updateProductQuantities(list);
                         if (list.length > 0) {
                             customer.purchaseCart(list);
-                            this.decrementQuantity(list);
+                            marketPlace.decrementQuantity(list);
                             System.out.println("Cart has been bought!");
                         } else {
                             System.out.println("Your cart is empty! Go buy some stuff");
@@ -789,30 +789,7 @@ public class MarketPlace extends Thread {
                 }
             }
         }
-        do {
-            String searchWord = JOptionPane.showInputDialog(null,
-                    "Enter Search", "Search Bar", JOptionPane.QUESTION_MESSAGE); // enter search
-            writer.write(searchWord); // sends message
-            writer.newLine();
-            writer.flush(); // ensure data is sent to the server
-//                    System.out.println("flushed keyword");
-            ArrayList<String> results = (ArrayList<String>) ois.readObject();
-            if (results.isEmpty()) {
-                JOptionPane.showMessageDialog(null,
-                        "Error: There's nothing on this bro :((", "Search Bar", JOptionPane.ERROR_MESSAGE);
-            } else {
-                chosenPage = (String) JOptionPane.showInputDialog(null, "Select Desired Page", "Search Bar",
-                        JOptionPane.PLAIN_MESSAGE, null, results.toArray(new String[0]), null);
-                writer.write(chosenPage);
-                writer.newLine();
-                writer.flush();
-                BufferedReader reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-                JOptionPane.showMessageDialog(null, reader.readLine(), "Search Bar",
-                        JOptionPane.INFORMATION_MESSAGE);
-            }
-            continueQues = JOptionPane.showConfirmDialog(null, "Do you wanna search again?",
-                    "Search Bar", JOptionPane.YES_NO_OPTION);
-        } while (continueQues == 0);
+        return searchResult;
     }
 
     /**
