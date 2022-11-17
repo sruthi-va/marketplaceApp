@@ -13,13 +13,13 @@ import java.util.*;
  * @author Catherine Park, Zander Carpenter, Jennifer Wang, Sruthi Vadakuppa, Vanshika Balaji
  * @version Nov 4, 2022
  */
-public class MarketPlace extends Thread{
+public class MarketPlace extends Thread {
     private static ArrayList<Seller> sellers = new ArrayList<>();
     private Socket socket;
     //private static ArrayList<Store> stores = new ArrayList<>();
 
     public void run() {
-        MarketPlace marketPlace = new MarketPlace();
+        //MarketPlace marketPlace = new MarketPlace();
         Scanner scanner = new Scanner(System.in);
         System.out.println("Welcome to the Marketplace! Please login.");
         Customer customer = null;
@@ -123,19 +123,19 @@ public class MarketPlace extends Thread{
                         HashSet<Object> searchResult;
                         do {
                             System.out.println("Enter the product name you'd like to search:");
-                            searchResult = marketPlace.search(scanner.nextLine());
+                            searchResult = this.search(scanner.nextLine());
                         } while (searchResult == null);
                         for (Object o : searchResult) {
                             System.out.println(o.toString());
                         }
-                        marketPlace.runSearch(scanner, customer, user);
+                        this.runSearch(scanner, customer, user);
                         break;
                     case "3":
                         Product[] list = customer.getCustomerCart().getProducts(user);
-                        list = marketPlace.updateProductQuantities(list);
+                        list = this.updateProductQuantities(list);
                         if (list.length > 0) {
                             customer.purchaseCart(list);
-                            marketPlace.decrementQuantity(list);
+                            this.decrementQuantity(list);
                             System.out.println("Cart has been bought!");
                         } else {
                             System.out.println("Your cart is empty! Go buy some stuff");
