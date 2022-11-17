@@ -789,7 +789,30 @@ public class MarketPlace extends Thread{
                 }
             }
         }
-        return searchResult;
+        do {
+            String searchWord = JOptionPane.showInputDialog(null,
+                    "Enter Search", "Search Bar", JOptionPane.QUESTION_MESSAGE); // enter search
+            writer.write(searchWord); // sends message
+            writer.newLine();
+            writer.flush(); // ensure data is sent to the server
+//                    System.out.println("flushed keyword");
+            ArrayList<String> results = (ArrayList<String>) ois.readObject();
+            if (results.isEmpty()) {
+                JOptionPane.showMessageDialog(null,
+                        "Error: There's nothing on this bro :((", "Search Bar", JOptionPane.ERROR_MESSAGE);
+            } else {
+                chosenPage = (String) JOptionPane.showInputDialog(null, "Select Desired Page", "Search Bar",
+                        JOptionPane.PLAIN_MESSAGE, null, results.toArray(new String[0]), null);
+                writer.write(chosenPage);
+                writer.newLine();
+                writer.flush();
+                BufferedReader reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+                JOptionPane.showMessageDialog(null, reader.readLine(), "Search Bar",
+                        JOptionPane.INFORMATION_MESSAGE);
+            }
+            continueQues = JOptionPane.showConfirmDialog(null, "Do you wanna search again?",
+                    "Search Bar", JOptionPane.YES_NO_OPTION);
+        } while (continueQues == 0);
     }
 
     /**
