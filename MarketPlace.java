@@ -1,5 +1,6 @@
 import java.io.*;
 import java.lang.reflect.Array;
+import java.net.*;
 import java.util.*;
 
 /**
@@ -12,11 +13,12 @@ import java.util.*;
  * @author Catherine Park, Zander Carpenter, Jennifer Wang, Sruthi Vadakuppa, Vanshika Balaji
  * @version Nov 4, 2022
  */
-public class MarketPlace {
+public class MarketPlace extends Thread{
     private static ArrayList<Seller> sellers = new ArrayList<>();
+    private Socket socket;
     //private static ArrayList<Store> stores = new ArrayList<>();
 
-    public static void main(String[] args) throws IOException {
+    public void run() {
         MarketPlace marketPlace = new MarketPlace();
         Scanner scanner = new Scanner(System.in);
         System.out.println("Welcome to the Marketplace! Please login.");
@@ -672,13 +674,24 @@ public class MarketPlace {
         }
     }
 
+    public static void main(String[] args) throws IOException {
+        ServerSocket serverSocket = new ServerSocket(6969);
+        System.out.println("waiting for users to connect");
+        while (true) {
+            Socket socket = serverSocket.accept();
+            MarketPlace server = new MarketPlace(socket);
+            new Thread(server).start();
+        }
+    }
+
     /**
      * Constructor; runs parseFile to parse the file
      *
      * @return none
      * @param, none
      */
-    public MarketPlace() {
+    public MarketPlace(Socket socket) {
+        this.socket = socket;
         parseFile();
     }
 
