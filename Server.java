@@ -1,4 +1,4 @@
-// "localhost" is the host name, and '375' is the port number.
+// "localhost" is the host name, and '6969' is the port number.
 import javax.swing.*;
 import java.io.*;
 import java.net.*;
@@ -8,7 +8,7 @@ import java.util.Arrays;
 public class Server {
 
     public static void main(String[] args) throws IOException {
-        ServerSocket serverSocket = new ServerSocket(375);
+        ServerSocket serverSocket = new ServerSocket(6969);
         Socket socket;
         try {
             socket = serverSocket.accept();

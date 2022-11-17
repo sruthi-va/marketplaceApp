@@ -8,7 +8,7 @@ import java.util.*;
  * where sellers and customers can interact with stores and do certain actions according to their respective roles and
  * permissions.
  * <p>
- * Purdue University -- CS18000 -- Fall 2022 -- Proj 4
+ * Purdue University -- CS18000 -- Fall 2022 -- Proj 5
  *
  * @author Catherine Park, Zander Carpenter, Jennifer Wang, Sruthi Vadakuppa, Vanshika Balaji
  * @version Nov 4, 2022
@@ -16,10 +16,19 @@ import java.util.*;
 public class MarketPlace extends Thread{
     private static ArrayList<Seller> sellers = new ArrayList<>();
     private Socket socket;
-    //private static ArrayList<Store> stores = new ArrayList<>();
+    public static Object obj = new Object();
 
     public void run() {
-        MarketPlace marketPlace = new MarketPlace();
+        BufferedReader reader;
+        PrintWriter writer;
+        try {
+            reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+            writer = new PrintWriter(socket.getOutputStream());
+        } catch (IOException e1) {
+            e1.printStackTrace();
+            return;
+        } 
+
         Scanner scanner = new Scanner(System.in);
         System.out.println("Welcome to the Marketplace! Please login.");
         Customer customer = null;
@@ -65,7 +74,9 @@ public class MarketPlace extends Thread{
                 }
             }
             if (!usernameFound) {
-                addUserPass("customers.txt", user, pass);
+                synchronized(obj) {
+                    addUserPass("customers.txt", user, pass);
+                }
                 System.out.println("New account created!");
             }
             customer = new Customer(user, pass);
@@ -123,19 +134,19 @@ public class MarketPlace extends Thread{
                         HashSet<Object> searchResult;
                         do {
                             System.out.println("Enter the product name you'd like to search:");
-                            searchResult = marketPlace.search(scanner.nextLine());
+                            searchResult = this.search(scanner.nextLine());
                         } while (searchResult == null);
                         for (Object o : searchResult) {
                             System.out.println(o.toString());
                         }
-                        marketPlace.runSearch(scanner, customer, user);
+                        this.runSearch(scanner, customer, user);
                         break;
                     case "3":
                         Product[] list = customer.getCustomerCart().getProducts(user);
-                        list = marketPlace.updateProductQuantities(list);
+                        list = this.updateProductQuantities(list);
                         if (list.length > 0) {
                             customer.purchaseCart(list);
-                            marketPlace.decrementQuantity(list);
+                            this.decrementQuantity(list);
                             System.out.println("Cart has been bought!");
                         } else {
                             System.out.println("Your cart is empty! Go buy some stuff");
@@ -305,10 +316,12 @@ public class MarketPlace extends Thread{
             }
             seller = new Seller(new ArrayList<>(), user);
             if (!usernameFound) {
-                addUserPass("sellers.txt", user, pass);
+                synchronized(obj) {
+                    addUserPass("sellers.txt", user, pass);
+                    sellers.add(seller);
+                    sellerID = sellers.indexOf(seller);
+                }
                 System.out.println("New account created!");
-                sellers.add(seller);
-                sellerID = sellers.indexOf(seller);
             } else {
                 for (Seller s : sellers) {
                     if (user.equals(s.getSellerName())) {
@@ -317,7 +330,9 @@ public class MarketPlace extends Thread{
                     }
                 }
                 if (sellerID == -1) {
-                    sellers.add(seller);
+                    synchronized(obj) {
+                        sellers.add(seller);
+                    }
                     sellerID = sellers.indexOf(seller);
                 }
             }
@@ -396,7 +411,9 @@ public class MarketPlace extends Thread{
                                         double price = Double.valueOf(scanner.nextLine());
                                         currentStore.createProduct(productName, description, quantity, price);
                                         seller.setStore(currentStoreID, currentStore);
-                                        sellers.set(sellerID, seller);
+                                        synchronized(obj) {
+                                            sellers.set(sellerID, seller);
+                                        }
                                     } else if (todo.equalsIgnoreCase("edit")) {
                                         valid = true;
                                         System.out.println("Which item would you like to edit?");
@@ -434,7 +451,9 @@ public class MarketPlace extends Thread{
                                         productList.add(currProduct);
                                         currentStore.setProductList(productList);
                                         seller.setStore(currentStoreID, currentStore);
-                                        sellers.set(sellerID, seller);
+                                        synchronized(obj) {
+                                            sellers.set(sellerID, seller);
+                                        }
                                     } else if (todo.equalsIgnoreCase("delete")) {
                                         valid = true;
                                         System.out.println("What is the name of the product you want to delete?");
@@ -450,7 +469,9 @@ public class MarketPlace extends Thread{
                                             System.out.println("Cannot find item!x");
                                         } else {
                                             seller.setStore(currentStoreID, currentStore);
-                                            sellers.set(sellerID, seller);
+                                            synchronized(obj) {
+                                                sellers.set(sellerID, seller);
+                                            }
                                         }
                                     } else {
                                         System.out.println("Please type 'create', 'edit', or 'delete'.");
@@ -491,7 +512,9 @@ public class MarketPlace extends Thread{
                                 repeat = false;
                                 seller.createStore(seller.getSellerName(), storeName);
                                 System.out.println("Store created!");
-                                sellers.set(sellerID, seller);
+                                synchronized(obj) {
+                                    sellers.set(sellerID, seller);
+                                }
                             }
                         }
                         break;
@@ -635,7 +658,9 @@ public class MarketPlace extends Thread{
                         }
                         currStores.remove(storeInQuestion);
                         seller.setStores(currStores);
-                        sellers.set(sellerID, seller);
+                        synchronized(obj) {
+                            sellers.set(sellerID, seller);
+                        }
                         System.out.println("Store deleted from marketplace");
                         break;
                     case "7":
@@ -645,7 +670,9 @@ public class MarketPlace extends Thread{
                         for (int i = 0; i < importedStores.size(); i++) {
                             seller.addStore(importedStores.get(i));
                         }
-                        sellers.set(sellerID, seller);
+                        synchronized(obj) {
+                            sellers.set(sellerID, seller);
+                        }
                         System.out.println("Imported!");
                         break;
                     case "8":
@@ -657,7 +684,10 @@ public class MarketPlace extends Thread{
                         }
                         break;
                     case "9":
-                        sellers.remove(sellerID); // TODO does this delete all their stores from the file? it should right
+                        synchronized(obj) {
+                            sellers.remove(sellerID); // TODO does this delete all their stores from the file? it should right
+                        }
+                        
                         System.out.println("Account deleted, stores ejected, rejected and taken care of. Goodbye.");
                         return;
                     case "10":
@@ -777,7 +807,8 @@ public class MarketPlace extends Thread{
      * @param keyword A String word that the customer inputs to search for
      * @return An HashSet type Object
      */
-    public HashSet<Object> search(String keyword) {
+    public HashSet<Object> search(BufferedReader reader) {
+        String keyword = reader.readLine();
         HashSet<Object> searchResult = new HashSet<Object>();
         for (Seller seller : sellers) {
             for (Store store : seller.getStores()) {

@@ -1,16 +1,17 @@
 import javax.swing.*;
 import java.io.*;
 import java.net.*;
+import java.util.*;
 
 public class Client {
     public static void main(String[] args) throws IOException {
         boolean run = true;
         boolean runCustomer = false;
         boolean runSeller = false;
-        Socket socket = new Socket("localhost", 4242);
+        Socket socket = new Socket("localhost", 6969);
         String userName = "";
         String password = "";
-        String userChoice[] = {"Customer", "Seller"};
+        String userChoice[] = { "Customer", "Seller" };
         String choose = "";
         while (run) {
             try {
@@ -37,7 +38,7 @@ public class Client {
                 if (password == null) {
                     run = false;
                 }
-                PrintWriter writer = new PrintWriter(socket.getOutputStream());
+                BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
                 BufferedReader reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
                 choose = (String) JOptionPane.showInputDialog(null, "Are you a customer or seller?",
                         "Choice?", JOptionPane.QUESTION_MESSAGE,
@@ -47,25 +48,54 @@ public class Client {
                 }
                 if (choose.equals("Customer")) {
                     runCustomer = true;
+                    writer.write(choose);
+                    writer.newLine();
+                    writer.flush();
+
+                    String results = reader.readLine(); // server return a string of the drop down options (1. view
+                                                        // store,2. search,3. purchase...) etc
+                    // separate by commas
                     while (runCustomer) {
-                        writer.write(choose);
-                        writer.println();
-                        writer.flush();
-
-                        String results = reader.readLine(); //server return a string of the drop down options (1. view store,2. search,3. purchase...) etc
-                        //separate by commas
-
                         String[] dropdown = results.split(",", 0);
                         String reply = (String) JOptionPane.showInputDialog(null, "What is your choice?",
                                 "Choice?", JOptionPane.QUESTION_MESSAGE,
                                 null, dropdown, dropdown[0]);
-                        writer.write(reply); //on server side, read in the line, and have ifs for the corresponding drop down choice
-                        writer.println();
+                        writer.write(reply); // on server side, read in the line, and have ifs for the corresponding
+                                             // drop down choice
+                        writer.newLine();
                         writer.flush();
 
                         if (reply.equals("1. view store")) {
-                            String storeList = reader.readLine();
+                            String storeList = reader.readLine(); // server return a string of all the store nanes
+                                                                  // separated by commas
+
+                            String[] chooseStore = storeList.split(",", 0);
+                            // continue view store GUI here
+                            //display all store using a dropdown, ask user which one they want to view
+                            //once user chooses a store, display another dropdown with all the items in the store
+                            //ask user if they want to purchase anything.. click on the one they want to purchase to add to cart
+                            //hit cancel to go back
+
+                        }
+
+                        if (reply.equals("2. search")) {
+                            // rin's code go here
+
+                        }
+
+                        if (reply.equals("3. purchase")) {
+                            int display = JOptionPane.showOptionDialog(null, "Your items have been bought!",
+                                    "Shopping Cart",
+                                    JOptionPane.DEFAULT_OPTION,
+                                    JOptionPane.INFORMATION_MESSAGE, null, null, null);
+                            if (display == JOptionPane.CLOSED_OPTION) {
+                                return;
+                            }
+
+                        }
                         
+                        if (reply.equals("4. edit cart")) {
+                            //display cart, ask user which item they want to delete using a textfield
                         }
 
                     }
@@ -77,7 +107,6 @@ public class Client {
                     }
                 }
 
-
             } catch (Exception e) {
                 JOptionPane.showMessageDialog(null, "Thanks for visiting bEtsy!", "Goodbye",
                         JOptionPane.ERROR_MESSAGE);
@@ -85,30 +114,32 @@ public class Client {
             }
         }
     }
-    public Product searchGUI() {
-        do {
+
+    public Product searchGUI(Socket socket, BufferedWriter writer, BufferedReader reader) {
+        try {
+            ObjectInputStream ois = new ObjectInputStream(new DataInputStream(socket.getInputStream()));
+            String chosenProduct;
+            int continueQues = 0;
             String searchWord = JOptionPane.showInputDialog(null,
                     "Enter Search", "Search Bar", JOptionPane.QUESTION_MESSAGE); // enter search
             writer.write(searchWord); // sends message
             writer.newLine();
             writer.flush(); // ensure data is sent to the server
-//                    System.out.println("flushed keyword");
             ArrayList<String> results = (ArrayList<String>) ois.readObject();
             if (results.isEmpty()) {
                 JOptionPane.showMessageDialog(null,
                         "Error: There's nothing on this bro :((", "Search Bar", JOptionPane.ERROR_MESSAGE);
             } else {
-                chosenPage = (String) JOptionPane.showInputDialog(null, "Select Desired Page", "Search Bar",
+                chosenProduct = (String) JOptionPane.showInputDialog(null, "Select Desired Product", "MarketPlace",
                         JOptionPane.PLAIN_MESSAGE, null, results.toArray(new String[0]), null);
-                writer.write(chosenPage);
+                writer.write(chosenProduct);
                 writer.newLine();
                 writer.flush();
-                BufferedReader reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-                JOptionPane.showMessageDialog(null, reader.readLine(), "Search Bar",
-                        JOptionPane.INFORMATION_MESSAGE);
+                return (Product) ois.readObject();
             }
-            continueQues = JOptionPane.showConfirmDialog(null, "Do you wanna search again?",
-                    "Search Bar", JOptionPane.YES_NO_OPTION);
-        } while (continueQues == 0);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 }
