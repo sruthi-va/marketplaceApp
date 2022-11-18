@@ -807,58 +807,34 @@ public class MarketPlace extends Thread{
      * @param keyword A String word that the customer inputs to search for
      * @return An HashSet type Object
      */
-    public HashSet<Object> search(BufferedReader reader) {
-        String keyword = reader.readLine();
-        HashSet<Object> searchResult = new HashSet<Object>();
-        for (Seller seller : sellers) {
-            for (Store store : seller.getStores()) {
-                for (Product product : store.getProductList()) {
-                    if (product.getProductName().toLowerCase().contains(keyword.toLowerCase())
-                    || product.getDescription().toLowerCase().equalsIgnoreCase(keyword.toLowerCase())) {
-                        searchResult.add(product);
+    public void search(BufferedReader reader, BufferedWriter writer) {
+        try {
+            ObjectOutputStream oos = new ObjectOutputStream(new DataOutputStream(socket.getOutputStream()));
+            String keyword = reader.readLine();
+            HashSet<Object> searchResult = new HashSet<Object>();
+            for (Seller seller : sellers) {
+                for (Store store : seller.getStores()) {
+                    for (Product product : store.getProductList()) {
+                        if (product.getProductName().toLowerCase().contains(keyword.toLowerCase())
+                        || product.getDescription().toLowerCase().equalsIgnoreCase(keyword.toLowerCase())) {
+                            searchResult.add(product);
+                        }
                     }
                 }
             }
-        }
-        return searchResult;
-    }
-
-    /**
-     * Runs a search on repeat in case the customer wishes to add multiple things into their cart
-     *
-     * @param scanner A scanner so that the method can acess the user interface
-     * @return none
-     */
-    public void runSearch(Scanner scanner, Customer customer, String user) {
-        while (true) {
-            System.out.println("Select an item or go back? (either \"select an item\" or \"go back\")");
-            String line = scanner.nextLine();
-            switch (line) {
-                case "select an item":
-                    System.out.println("Which item? Enter the product name");
-                    line = scanner.nextLine();
-                    for (Object o : search(line)) {
-                        if (o instanceof Product) {
-                            Product p = (Product) o;
-                            System.out.printf("Add %s to cart? yes or no?\n", p.getProductName());
-                            line = scanner.nextLine();
-                            switch (line) {
-                                case "yes":
-                                    customer.addToCart(user, p);
-                                    //System.out.println("Added to cart");
-                                    break;
-                                case "no":
-                                    break;
-                                default:
-                                    System.out.println("Enter valid answer please, either \"select an item\" or \"go back\"");
-                                    break;
-                            }
+            oos.writeObject(searchResult);
+            oos.flush();
+            keyword = reader.readLine(); // get index
+                    for (Object p : searchResult) {
+                        Product curr = (Product) p;
+                        if (curr.getProductName().equals(keyword)) {
+                            oos.writeObject(curr);
+                            writer.flush();
+                            break;
                         }
                     }
-                case "go back":
-                    //homescreen();
-                    return;
-            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 

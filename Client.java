@@ -107,6 +107,7 @@ public class Client {
                     }
                 }
 
+
             } catch (Exception e) {
                 JOptionPane.showMessageDialog(null, "Thanks for visiting bEtsy!", "Goodbye",
                         JOptionPane.ERROR_MESSAGE);
@@ -125,13 +126,18 @@ public class Client {
             writer.write(searchWord); // sends message
             writer.newLine();
             writer.flush(); // ensure data is sent to the server
-            ArrayList<String> results = (ArrayList<String>) ois.readObject();
+            ArrayList<Object> results = (ArrayList<Object>) ois.readObject();
+            ArrayList<String> resultString = new ArrayList<>();
+            for (Object p : results) {
+                Product curr = (Product) p;
+                resultString.add(curr.getProductName());
+            }
             if (results.isEmpty()) {
                 JOptionPane.showMessageDialog(null,
                         "Error: There's nothing on this bro :((", "Search Bar", JOptionPane.ERROR_MESSAGE);
             } else {
                 chosenProduct = (String) JOptionPane.showInputDialog(null, "Select Desired Product", "MarketPlace",
-                        JOptionPane.PLAIN_MESSAGE, null, results.toArray(new String[0]), null);
+                        JOptionPane.PLAIN_MESSAGE, null, resultString.toArray(new String[0]), null);
                 writer.write(chosenProduct);
                 writer.newLine();
                 writer.flush();
@@ -139,7 +145,45 @@ public class Client {
             }
         } catch (Exception e) {
             e.printStackTrace();
-        }
+    }
         return null;
+    }
+    /**
+     * Runs a search on repeat in case the customer wishes to add multiple things into their cart
+     *
+     * @param scanner A scanner so that the method can acess the user interface
+     * @return none
+     */
+    public void runSearch(Scanner scanner, Customer customer, String user) {
+        while (true) {
+            System.out.println("Select an item or go back? (either \"select an item\" or \"go back\")");
+            String line = scanner.nextLine();
+            switch (line) {
+                case "select an item":
+                    System.out.println("Which item? Enter the product name");
+                    line = scanner.nextLine();
+                    for (Object o : search(line)) {
+                        if (o instanceof Product) {
+                            Product p = (Product) o;
+                            System.out.printf("Add %s to cart? yes or no?\n", p.getProductName());
+                            line = scanner.nextLine();
+                            switch (line) {
+                                case "yes":
+                                    customer.addToCart(user, p);
+                                    //System.out.println("Added to cart");
+                                    break;
+                                case "no":
+                                    break;
+                                default:
+                                    System.out.println("Enter valid answer please, either \"select an item\" or \"go back\"");
+                                    break;
+                            }
+                        }
+                    }
+                case "go back":
+                    //homescreen();
+                    return;
+            }
+        }
     }
 }
