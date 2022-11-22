@@ -47,6 +47,7 @@ public class Client {
                     run = false;
                 }
                 if (choose.equals("Customer")) {
+                    Customer customer = new Customer(userName, password); //HELP PLEASE
                     runCustomer = true;
                     writer.write(choose);
                     writer.newLine();
@@ -79,8 +80,7 @@ public class Client {
                         }
 
                         if (reply.equals("2. search")) {
-                            // rin's code go here
-
+                            searchGUI(socket, writer, reader, customer);
                         }
 
                         if (reply.equals("3. purchase")) {
@@ -116,7 +116,7 @@ public class Client {
         }
     }
 
-    public Product searchGUI(Socket socket, BufferedWriter writer, BufferedReader reader) {
+    public void searchGUI(Socket socket, BufferedWriter writer, BufferedReader reader, Customer customer) {
         try {
             ObjectInputStream ois = new ObjectInputStream(new DataInputStream(socket.getInputStream()));
             String chosenProduct;
@@ -141,49 +141,28 @@ public class Client {
                 writer.write(chosenProduct);
                 writer.newLine();
                 writer.flush();
-                return (Product) ois.readObject();
+                Product product = (Product) ois.readObject();
+                whatToDoWithProduct(customer, product);
             }
         } catch (Exception e) {
             e.printStackTrace();
-    }
-        return null;
+        }
     }
     /**
-     * Runs a search on repeat in case the customer wishes to add multiple things into their cart
+     * What to do with selected product
      *
      * @param scanner A scanner so that the method can acess the user interface
      * @return none
      */
-    public void runSearch(Scanner scanner, Customer customer, String user) {
-        while (true) {
-            System.out.println("Select an item or go back? (either \"select an item\" or \"go back\")");
-            String line = scanner.nextLine();
-            switch (line) {
-                case "select an item":
-                    System.out.println("Which item? Enter the product name");
-                    line = scanner.nextLine();
-                    for (Object o : search(line)) {
-                        if (o instanceof Product) {
-                            Product p = (Product) o;
-                            System.out.printf("Add %s to cart? yes or no?\n", p.getProductName());
-                            line = scanner.nextLine();
-                            switch (line) {
-                                case "yes":
-                                    customer.addToCart(user, p);
-                                    //System.out.println("Added to cart");
-                                    break;
-                                case "no":
-                                    break;
-                                default:
-                                    System.out.println("Enter valid answer please, either \"select an item\" or \"go back\"");
-                                    break;
-                            }
-                        }
-                    }
-                case "go back":
-                    //homescreen();
-                    return;
-            }
+    public void whatToDoWithProduct(Customer customer, Product product) {
+        int choice = JOptionPane.showConfirmDialog(null, 
+            "Add " + product.getProductName + " to cart? yes or no?", 
+            "MarketPlace", JOptionPane.YES_NO_OPTION);
+        if (choice == 0) {
+            customer.addToCart(product);
+            JOptionPane.showMessageDialog(null, "Item added to cart", "MarketPlace", JOptionPane.INFORMATION_MESSAGE);
+        } else{
+            JOptionPane.showMessageDialog(null, "Sad", "MarketPlace", JOptionPane.INFORMATION_MESSAGE);
         }
     }
 }
