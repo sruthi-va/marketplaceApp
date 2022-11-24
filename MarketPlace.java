@@ -827,14 +827,14 @@ public class MarketPlace extends Thread{
             oos.writeObject(searchResult);
             oos.flush();
             keyword = reader.readLine(); // get index
-                    for (Object p : searchResult) {
-                        Product curr = (Product) p;
-                        if (curr.getProductName().equals(keyword)) {
-                            oos.writeObject(curr);
-                            writer.flush();
-                            break;
-                        }
-                    }
+            for (Object p : searchResult) {
+                Product curr = (Product) p;
+                if (curr.getProductName().equals(keyword)) {
+                    oos.writeObject(curr); // send product
+                    writer.flush();
+                    break;
+                }
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
