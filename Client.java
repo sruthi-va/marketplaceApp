@@ -1,4 +1,6 @@
 import javax.swing.*;
+import javax.swing.text.DefaultEditorKit.InsertBreakAction;
+
 import java.io.*;
 import java.net.*;
 import java.util.*;
@@ -22,22 +24,6 @@ public class Client {
                     return;
                 }
 
-                do {
-                    userName = JOptionPane.showInputDialog(null, "Please enter username.",
-                            "Welcome", JOptionPane.QUESTION_MESSAGE);
-                } while (userName.isEmpty());
-                if (userName == null) {
-                    run = false;
-                } else {
-                    do {
-                        password = (JOptionPane.showInputDialog(null, "Please enter password.",
-                                "Welcome", JOptionPane.QUESTION_MESSAGE));
-
-                    } while (password.isEmpty());
-                }
-                if (password == null) {
-                    run = false;
-                }
                 BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
                 BufferedReader reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
                 choose = (String) JOptionPane.showInputDialog(null, "Are you a customer or seller?",
@@ -46,12 +32,86 @@ public class Client {
                 if (choose == null) {
                     run = false;
                 }
-                if (choose.equals("Customer")) {
-                    Customer customer = new Customer(userName, password); //HELP PLEASE
-                    runCustomer = true;
-                    writer.write(choose);
+                writer.write(choose);
+                writer.newLine();
+                writer.flush();
+                while (true) {
+                    do {
+                        JTextField userField = new JTextField(15);
+                        JTextField passField = new JTextField(15);
+
+                        JPanel myPanel = new JPanel();
+                        myPanel.add(new JLabel("Username:"));
+                        myPanel.add(userField);
+                        myPanel.add(Box.createHorizontalStrut(15)); // a spacer
+                        myPanel.add(new JLabel("Password:"));
+                        myPanel.add(passField);
+
+                        int result = JOptionPane.showConfirmDialog(null, myPanel, 
+                                "Please Enter X and Y Values", JOptionPane.OK_CANCEL_OPTION);
+                        if (result == JOptionPane.OK_OPTION) {
+                            userName = userField.getText();
+                            password = passField.getText();
+                            System.out.println("username " + userField.getText());
+                            System.out.println("password " + passField.getText());
+                        }
+                    } while (userName.isEmpty() || password.isEmpty());
+                    
+                    if (userName == null || password == null) {
+                        run = false;
+                    } 
+
+                    writer.write(String.format("%s;;%s", userName, password));
                     writer.newLine();
                     writer.flush();
+
+                    String isValid = reader.readLine();
+                    if (isValid.equals("true")) {
+                        cancel = JOptionPane.showOptionDialog(null, "Successfully logged in!", "Success",
+                        JOptionPane.DEFAULT_OPTION,
+                        JOptionPane.INFORMATION_MESSAGE, null, null, null);
+                        if (cancel == JOptionPane.CLOSED_OPTION) {
+                            return;
+                        }
+                        break;
+                    } else {
+                        Object[] options1 = {"Create New Account", "Try Again"};
+                        cancel = JOptionPane.showOptionDialog(null, 
+                            "Not a valid username or password! Create a new account or try again?", 
+                            "Error", JOptionPane.YES_NO_OPTION, JOptionPane.INFORMATION_MESSAGE, null, 
+                            options1, null);
+                        if (cancel == JOptionPane.CLOSED_OPTION) {
+                            writer.write("quit");
+                            writer.newLine();
+                            writer.flush();
+                            return;
+                        } else if (cancel == JOptionPane.YES_OPTION) {
+                            writer.write("newAccount");
+                            writer.newLine();
+                            writer.flush();
+                            String validUsername = reader.readLine();
+                            if (validUsername.equals("false")) {
+                                cancel = JOptionPane.showOptionDialog(null, 
+                                    "Username already exists! Try logging in again.", "Error",
+                                    JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE, null, 
+                                    null, null);
+                                if (cancel == JOptionPane.CLOSED_OPTION) {
+                                    return;
+                                }
+                            }
+                        } else if (cancel == JOptionPane.NO_OPTION) {
+                            writer.write("tryAgain");
+                            writer.newLine();
+                            writer.flush();
+                        } else {
+                            break;
+                        }
+                    }
+                }
+
+                if (choose.equals("Customer")) {
+                    //Customer customer = new Customer(userName, password); //HELP PLEASE
+                    runCustomer = true;
 
                     String results = reader.readLine(); // server return a string of the drop down options (1. view
                                                         // store,2. search,3. purchase...) etc
@@ -80,7 +140,7 @@ public class Client {
                         }
 
                         if (reply.equals("2. search")) {
-                            searchGUI(socket, writer, reader, customer);
+                            //searchGUI(socket, writer, reader, customer, userName);
                         }
 
                         if (reply.equals("3. purchase")) {
@@ -99,6 +159,7 @@ public class Client {
                         }
 
                     }
+                    //*/
                 }
                 if (choose.equals("Seller")) {
                     runSeller = true;
@@ -116,7 +177,7 @@ public class Client {
         }
     }
 
-    public void searchGUI(Socket socket, BufferedWriter writer, BufferedReader reader, Customer customer) {
+    public static void searchGUI(Socket socket, BufferedWriter writer, BufferedReader reader, Customer customer, String userName) {
         try {
             ObjectInputStream ois = new ObjectInputStream(new DataInputStream(socket.getInputStream()));
             String chosenProduct;
@@ -142,7 +203,7 @@ public class Client {
                 writer.newLine();
                 writer.flush();
                 Product product = (Product) ois.readObject();
-                whatToDoWithProduct(customer, product);
+                whatToDoWithProduct(customer, product, userName);
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -154,12 +215,12 @@ public class Client {
      * @param scanner A scanner so that the method can acess the user interface
      * @return none
      */
-    public void whatToDoWithProduct(Customer customer, Product product) {
+    public static void whatToDoWithProduct(Customer customer, Product product, String userName) {
         int choice = JOptionPane.showConfirmDialog(null, 
-            "Add " + product.getProductName + " to cart? yes or no?", 
+            "Add " + product.getProductName() + " to cart? yes or no?", 
             "MarketPlace", JOptionPane.YES_NO_OPTION);
         if (choice == 0) {
-            customer.addToCart(product);
+            customer.addToCart(userName, product);
             JOptionPane.showMessageDialog(null, "Item added to cart", "MarketPlace", JOptionPane.INFORMATION_MESSAGE);
         } else{
             JOptionPane.showMessageDialog(null, "Sad", "MarketPlace", JOptionPane.INFORMATION_MESSAGE);

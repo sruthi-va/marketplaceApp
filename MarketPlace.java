@@ -29,57 +29,63 @@ public class MarketPlace extends Thread{
             return;
         } 
 
-        Scanner scanner = new Scanner(System.in);
-        System.out.println("Welcome to the Marketplace! Please login.");
         Customer customer = null;
         Seller seller = null;
         int id = 0;
         String line;
-        while (true) {
-            System.out.println("1. Customer or 2. Seller? (Type 1-2)");
-            line = scanner.nextLine();
-            try {
-                id = Integer.parseInt(line);
-                if (id != 1 && id != 2) {
-                    throw new Exception();
-                }
-                break;
-            } catch (Exception e) {
-                System.out.println("wtf man enter 1 or 2");
-            }
+        String cOrS = reader.readLine();
+
+        if (cOrS.equals("Customer")) {
+            id = 1;
         }
-        System.out.println("Username: ");
-        String user = scanner.nextLine();
-        System.out.println("Password: ");
-        String pass = scanner.nextLine();
+        
+        String[] userpass = reader.readLine().split(";;");
+
         if (id == 1) {
-            ArrayList<String> usernames = readFile("customers.txt");
-            boolean usernameFound = false;
-            for (int i = 0; i < usernames.size(); i++) {
-                String[] splitLine = usernames.get(i).split(",");
-                if (user.equals(splitLine[0])) {
-                    usernameFound = true;
-                    if (pass.equals(splitLine[1])) {
-                        System.out.println("Logged in!");
-                    } else {
-                        String password = "";
-                        while (!password.equals(splitLine[1])) { // this logic might be wonky but i'll have to redo a lot of stuff to get it to work properly and i will do that later
-                            System.out.println("Wrong password L. try again");
-                            System.out.println("Password: ");
-                            password = scanner.nextLine();
+            while (true) {
+                ArrayList<String> usernames = readFile("customers.txt");
+                boolean usernameFound = false;
+                boolean loggedIn = false;
+                for (int i = 0; i < usernames.size(); i++) {
+                    String[] splitLine = usernames.get(i).split(",");
+                    if (userpass[0].equals(splitLine[0])) {
+                        usernameFound = true;
+                        if (userpass[1].equals(splitLine[1])) {
+                            writer.write("true"); // isValid
+                            loggedIn = true;
+                        } else {
+                            writer.write("false");
                         }
-                        System.out.println("Logged in!");
+                        writer.println();
+                        writer.flush();
+                        break;
                     }
+                }
+
+                if (!loggedIn) {
+                    if (reader.readLine().equals("newAccount")) {
+                        if (!usernameFound) {
+                            synchronized(obj) {
+                                addUserPass("customers.txt", userpass[0], userpass[1]);
+                            }
+                            System.out.println("New account created!");
+                            writer.write("true");
+                            break;
+                        } else {
+                            writer.write("false");
+                        }
+                        writer.println();
+                        writer.flush();
+                    } else {
+                        customer = new Customer(userpass[0], userpass[1]);
+                        break;
+                    }
+                } else {
+                    customer = new Customer(userpass[0], userpass[1]);
                     break;
                 }
             }
-            if (!usernameFound) {
-                synchronized(obj) {
-                    addUserPass("customers.txt", user, pass);
-                }
-                System.out.println("New account created!");
-            }
-            customer = new Customer(user, pass);
+            
             do {
                 homescreen();
                 System.out.println("Do you want to: 1. view store, 2. search, 3. purchase, 4. edit cart, 5. view cart, 6. view statistics, 7. delete account, or 8. logout?");
@@ -134,7 +140,7 @@ public class MarketPlace extends Thread{
                         HashSet<Object> searchResult;
                         do {
                             System.out.println("Enter the product name you'd like to search:");
-                            searchResult = this.search(scanner.nextLine());
+                            searchResult = this.search(reader, writer); // this.search(scanner.nextLine());
                         } while (searchResult == null);
                         for (Object o : searchResult) {
                             System.out.println(o.toString());
@@ -809,7 +815,7 @@ public class MarketPlace extends Thread{
      * @param keyword A String word that the customer inputs to search for
      * @return An HashSet type Object
      */
-    public void search(BufferedReader reader, BufferedWriter writer) {
+    public HashSet<Object> search(BufferedReader reader, PrintWriter writer) {
         try {
             ObjectOutputStream oos = new ObjectOutputStream(new DataOutputStream(socket.getOutputStream()));
             String keyword = reader.readLine();
@@ -835,8 +841,10 @@ public class MarketPlace extends Thread{
                     break;
                 }
             }
+            return searchResult;
         } catch (Exception e) {
             e.printStackTrace();
+            return null;
         }
     }
 
