@@ -68,6 +68,7 @@ public class MarketPlace extends Thread{
                             synchronized(obj) {
                                 addUserPass("customers.txt", userpass[0], userpass[1]);
                             }
+                            customer = new Customer(userpass[0], userpass[1]);
                             System.out.println("New account created!");
                             writer.write("true");
                             break;
@@ -300,48 +301,64 @@ public class MarketPlace extends Thread{
             } while (true);
         } else if (id == 2) {
             int sellerID = -1;
-            ArrayList<String> usernames = readFile("sellers.txt");
-            boolean usernameFound = false;
-            for (int i = 0; i < usernames.size(); i++) {
-                String[] splitLine = usernames.get(i).split(",");
-                if (user.equals(splitLine[0])) {
-                    usernameFound = true;
-                    if (pass.equals(splitLine[1])) {
-                        System.out.println("Logged in!");
-                    } else {
-                        String password = "";
-                        while (!password.equals(splitLine[1])) { // this logic might be wonky but i'll have to redo a lot of stuff to get it to work properly and i will do that later
-                            System.out.println("Wrong password L. try again");
-                            System.out.println("Password: ");
-                            password = scanner.nextLine();
+
+
+            while (true) {
+                ArrayList<String> usernames = readFile("sellers.txt");
+                boolean usernameFound = false;
+                boolean loggedIn = false;
+                for (int i = 0; i < usernames.size(); i++) {
+                    String[] splitLine = usernames.get(i).split(",");
+                    if (userpass[0].equals(splitLine[0])) {
+                        usernameFound = true;
+                        if (userpass[1].equals(splitLine[1])) {
+                            writer.write("true"); // isValid
+                            loggedIn = true;
+                        } else {
+                            writer.write("false");
                         }
-                        System.out.println("Logged in!");
+                        writer.println();
+                        writer.flush();
+                        break;
                     }
-                    break;
+                }
+
+                if (!loggedIn) {
+                    if (reader.readLine().equals("newAccount")) {
+                        if (!usernameFound) {
+                            synchronized(obj) {
+                                addUserPass("sellers.txt", userpass[0], userpass[1]);
+                                sellers.add(seller);
+                                sellerID = sellers.indexOf(seller);
+                            }
+                            System.out.println("New account created!");
+                            writer.write("true");
+                            break;
+                        } else {
+                            writer.write("false");
+                        }
+                        writer.println();
+                        writer.flush();
+                    } else {
+                        seller = new Seller(new ArrayList<>(), userpass[0]);
+                        break;
+                    }
+                } else {
+                    for (Seller s : sellers) {
+                        if (userpass[0].equals(s.getSellerName())) {
+                            seller = s;
+                            sellerID = sellers.indexOf(s);
+                        }
+                    }
+                    if (sellerID == -1) {
+                        synchronized(obj) {
+                            sellers.add(seller);
+                        }
+                        sellerID = sellers.indexOf(seller);
+                    }
                 }
             }
-            seller = new Seller(new ArrayList<>(), user);
-            if (!usernameFound) {
-                synchronized(obj) {
-                    addUserPass("sellers.txt", user, pass);
-                    sellers.add(seller);
-                    sellerID = sellers.indexOf(seller);
-                }
-                System.out.println("New account created!");
-            } else {
-                for (Seller s : sellers) {
-                    if (user.equals(s.getSellerName())) {
-                        seller = s;
-                        sellerID = sellers.indexOf(s);
-                    }
-                }
-                if (sellerID == -1) {
-                    synchronized(obj) {
-                        sellers.add(seller);
-                    }
-                    sellerID = sellers.indexOf(seller);
-                }
-            }
+
             do {
                 System.out.println("Do you want to 1. list your stores, 2. edit stores, 3. view sales, 4. create store,");
                 System.out.println("5. view statistics, 6. delete a store, 7. import stores from a CSV,");
