@@ -691,7 +691,9 @@ public class MarketPlace extends Thread{
                         System.out.println("Account deleted, stores ejected, rejected and taken care of. Goodbye.");
                         return;
                     case "10":
-                        sellers.set(sellerID, seller);
+                        synchronized(obj) {
+                            sellers.set(sellerID, seller);
+                        }
                         System.out.println("Goodbye!");
                         MarketPlace.writeFile();
                         return;
