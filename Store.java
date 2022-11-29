@@ -84,6 +84,10 @@ public class Store {
         productList.add(newProduct);
     }
 
+    public void addProduct(Product prod) {
+        productList.add(prod);
+    }
+
     // deletes a product given the store in the main method, and the product's name
     public void deleteProduct(String productName) {
         boolean found = false;

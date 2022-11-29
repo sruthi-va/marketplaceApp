@@ -398,104 +398,44 @@ public class MarketPlace extends Thread{
                                 oos.writeObject(sellers.get(sellerID).getStores());
                                 oos.flush();
                                 
-                                System.out.println("Which store do you want to edit? (Enter number)");
-                                Store currentStore = null;
-                                int currentStoreID = -1;
-                                while (currentStore == null) {
-                                    try {
-                                        int storeID = Integer.parseInt(scanner.nextLine());
-                                        currentStore = sellers.get(sellerID).getStores().get(storeID - 1);
-                                        currentStoreID = storeID - 1;
-                                    } catch (Exception e) {
-                                        System.out.println("Not a valid store name");
-                                        System.out.println("Which store do you want to edit? (Enter number)");
-                                    }
-
-                                    /*
-                                    for (int i = 0; i < seller.getStores().size(); i++) {
-                                        if (seller.getStores().get(i).getStoreName().equalsIgnoreCase(storeName)) {
-                                            currentStore = seller.getStores().get(i);
-                                        }
-                                    }*/
-                                }
+                                Store currentStore = (Store) ois.readObject();
+                                int currentStoreID = seller.getStores().indexOf(currentStore);
 
                                 boolean valid = false;
                                 while (!valid) {
-                                    System.out.println("Do you want to create, edit, or delete products?");
-                                    String todo = scanner.nextLine();
+                                    String todo = reader.readLine();
                                     if (todo.equalsIgnoreCase("create")) {
-                                        valid = true;
-                                        System.out.println("What will this product be named?");
-                                        String productName = scanner.nextLine();
-                                        System.out.println("What is this product's description?");
-                                        String description = scanner.nextLine();
-                                        System.out.println("How many of this product are you selling?");
-                                        int quantity = Integer.valueOf(scanner.nextLine());
-                                        System.out.println("How much will this product be sold for?");
-                                        double price = Double.valueOf(scanner.nextLine());
-                                        currentStore.createProduct(productName, description, quantity, price);
+                                        Product toAdd = (Product) ois.readObject();
+                                        currentStore.addProduct(toAdd);
                                         seller.setStore(currentStoreID, currentStore);
                                         synchronized(obj) {
                                             sellers.set(sellerID, seller);
                                         }
                                     } else if (todo.equalsIgnoreCase("edit")) {
                                         valid = true;
-                                        System.out.println("Which item would you like to edit?");
-                                        line = scanner.nextLine();
-                                        int currProductIndex = -1;
-                                        Product currProduct = null;
-                                        for (Product p : currentStore.getProductList()) {
-                                            if (p.getProductName().equals(line)) {
-                                                currProduct = p;
-                                                currProductIndex = currentStore.getProductList().indexOf(p);
-                                            }
-                                        }
-                                        System.out.println("What would you like to edit? Enter a number.");
-                                        System.out.println("1. Product Name\n2. Product Description\n3. Quantity\n4. Price");
-                                        int change = Integer.valueOf(scanner.nextLine());
-                                        if (change == 1) {
-                                            System.out.println("What is the new product name?");
-                                            line = scanner.nextLine();
-                                            currProduct.setProductName(line);
-                                        } else if (change == 2) {
-                                            System.out.println("What is the new product description?");
-                                            line = scanner.nextLine();
-                                            currProduct.setDescription(line);
-                                        } else if (change == 3) {
-                                            System.out.println("What is the new product quantity?");
-                                            line = scanner.nextLine();
-                                            currProduct.setQuantity(Integer.valueOf(line));
-                                        } else if (change == 4) {
-                                            System.out.println("What is the new product price?");
-                                            line = scanner.nextLine();
-                                            currProduct.setPrice(Double.valueOf(line));
-                                        }
-                                        ArrayList<Product> productList = currentStore.getProductList();
-                                        productList.remove(currProductIndex);
-                                        productList.add(currProduct);
-                                        currentStore.setProductList(productList);
+                                        oos.writeObject(currentStore.getProductList());
+                                        Product toEdit = (Product) ois.readObject();
+                                        int currProductIndex = Integer.parseInt(reader.readLine());
+
+                                        ArrayList<Product> products = currentStore.getProductList();
+                                        products.set(currProductIndex, toEdit);
+                                        currentStore.setProductList(products);
                                         seller.setStore(currentStoreID, currentStore);
                                         synchronized(obj) {
                                             sellers.set(sellerID, seller);
                                         }
+
                                     } else if (todo.equalsIgnoreCase("delete")) {
                                         valid = true;
-                                        System.out.println("What is the name of the product you want to delete?");
-                                        line = scanner.nextLine();
-                                        boolean found = false;
-                                        for (int j = 0; j < currentStore.getProductList().size(); j++) {
-                                            if (currentStore.getProductList().get(j).getProductName().equalsIgnoreCase(line)) {
-                                                currentStore.getProductList().remove(j);
-                                                found = true;
-                                            }
-                                        }
-                                        if (!found) {
-                                            System.out.println("Cannot find item!");
-                                        } else {
-                                            seller.setStore(currentStoreID, currentStore);
-                                            synchronized(obj) {
-                                                sellers.set(sellerID, seller);
-                                            }
+                                        oos.writeObject(currentStore.getProductList());
+                                        int currProductIndex = Integer.parseInt(reader.readLine());
+
+                                        ArrayList<Product> products = currentStore.getProductList();
+                                        products.remove(currProductIndex);
+                                        currentStore.setProductList(products);
+                                        seller.setStore(currentStoreID, currentStore);
+                                        synchronized(obj) {
+                                            sellers.set(sellerID, seller);
                                         }
                                     } else {
                                         System.out.println("Please type 'create', 'edit', or 'delete'.");

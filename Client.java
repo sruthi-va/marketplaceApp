@@ -1,9 +1,12 @@
 import javax.swing.*;
+import javax.swing.colorchooser.ColorChooserComponentFactory;
 import javax.swing.text.DefaultEditorKit.InsertBreakAction;
 
 import java.io.*;
 import java.net.*;
 import java.util.*;
+import java.awt.*;
+import java.awt.event.*;
 
 public class Client {
     public static void main(String[] args) throws IOException {
@@ -60,7 +63,7 @@ public class Client {
                         myPanel.add(passField);
 
                         int result = JOptionPane.showConfirmDialog(null, myPanel, 
-                                "Please Enter X and Y Values", JOptionPane.OK_CANCEL_OPTION);
+                                "Please Enter Username and Password", JOptionPane.OK_CANCEL_OPTION);
                         if (result == JOptionPane.OK_OPTION) {
                             userName = userField.getText();
                             password = passField.getText();
@@ -244,7 +247,7 @@ public class Client {
                             } else {
                                 Store[] stores = (Store[]) ois.readObject();
                                 int k = 1;
-                                /*
+
                                 for (Store s : stores) {
                                     ArrayList<Product> currProducts = s.getProductList();
                                     System.out.println(k + ": " + s.toString());
@@ -254,7 +257,6 @@ public class Client {
                                     }
                                     k++;
                                 }
-                                */ 
                                 // TODO make this a gui
                             }
                         }
@@ -275,10 +277,145 @@ public class Client {
                                     }
                                     poop++;
                                 }
-                                // TODO make this a gui
+                                // TODO display stores in a gui
 
                                 Store chosenStore = null; // TODO this should be set to what the user chooses
                                 
+                                oos.writeObject(chosenStore);
+                                oos.flush();
+
+
+                                boolean valid = false;
+                                while (!valid) {
+                                    // TODO gui
+                                    //System.out.println("Do you want to create, edit, or delete products?");
+                                    String todo = null;
+                                    writer.write(todo);
+                                    writer.newLine();
+                                    writer.flush(); 
+                                    
+                                    if (todo.equalsIgnoreCase("create")) {
+                                        valid = true;
+
+                                        JTextField prodName = new JTextField(15);
+                                        JTextField prodDesc = new JTextField(15);
+                                        JTextField prodQuant = new JTextField(15);
+                                        JTextField prodPrice = new JTextField(15);
+                
+                                        JPanel myPanel = new JPanel();
+                                        myPanel.setLayout(new GridLayout(4, 2));
+                                        myPanel.add(new JLabel("Product Name:"));
+                                        myPanel.add(prodName);
+                                        myPanel.add(new JLabel("Product Description:"));
+                                        myPanel.add(prodDesc);
+                                        myPanel.add(new JLabel("Product Quantity:"));
+                                        myPanel.add(prodQuant);
+                                        myPanel.add(new JLabel("Product Price:"));
+                                        myPanel.add(prodPrice);
+                
+                                        int result = JOptionPane.showConfirmDialog(null, myPanel, 
+                                                "Enter Product Details", JOptionPane.OK_CANCEL_OPTION);
+                                                
+                                        String name = prodName.getText();
+                                        String desc = prodDesc.getText();
+                                        String quant = prodQuant.getText();
+                                        String price = prodPrice.getText();
+                                            
+                                        System.out.printf("%s, %s, %s, %s\n", name, desc, quant, price);
+
+                                        Product product = new Product(name, desc, Integer.parseInt(quant), 
+                                            Double.parseDouble(price), chosenStore.getStoreName());
+
+                                        oos.writeObject(product);
+                                        oos.flush();
+                                    } else if (todo.equalsIgnoreCase("edit")) {
+                                        valid = true;
+                                        Product[] products = (Product[]) ois.readObject();
+                                        String[] names = new String[products.length];
+                                        Product currProduct;
+                                        int currProductIndex = -1;
+                                        int i = 0;
+                                        for (Product p : products) {
+                                            names[i] = p.getProductName();
+                                            i++;
+                                        }
+
+                                        // TODO PRODUCT CHOOSE GUI HERE
+                                        String chosenName = null;
+
+                                        i = 0;
+                                        for (Product p : products) {
+                                            if (p.getProductName().equals(chosenName)) { // TODO chosen name gui
+                                                currProduct = p;
+                                                currProductIndex = i;
+                                            }
+                                            i++;
+                                        }
+
+                                        JTextField prodName = new JTextField(15);
+                                        JTextField prodDesc = new JTextField(15);
+                                        JTextField prodQuant = new JTextField(15);
+                                        JTextField prodPrice = new JTextField(15);
+                
+                                        JPanel myPanel = new JPanel();
+                                        myPanel.setLayout(new GridLayout(4, 2));
+                                        myPanel.add(new JLabel("Product Name:"));
+                                        myPanel.add(prodName);
+                                        myPanel.add(new JLabel("Product Description:"));
+                                        myPanel.add(prodDesc);
+                                        myPanel.add(new JLabel("Product Quantity:"));
+                                        myPanel.add(prodQuant);
+                                        myPanel.add(new JLabel("Product Price:"));
+                                        myPanel.add(prodPrice);
+                
+                                        int result = JOptionPane.showConfirmDialog(null, myPanel, 
+                                                "Enter Product Details", JOptionPane.OK_CANCEL_OPTION);
+                                                
+                                        String name = prodName.getText();
+                                        String desc = prodDesc.getText();
+                                        String quant = prodQuant.getText();
+                                        String price = prodPrice.getText();
+                                            
+                                        System.out.printf("%s, %s, %s, %s\n", name, desc, quant, price);
+
+                                        Product product = new Product(name, desc, Integer.parseInt(quant), 
+                                            Double.parseDouble(price), chosenStore.getStoreName());
+
+                                        oos.writeObject(product);
+                                        oos.flush();
+                                        writer.write(currProductIndex);
+                                        writer.flush();
+                                    } else if (todo.equalsIgnoreCase("delete")) {
+                                        Product[] products = (Product[]) ois.readObject();
+                                        String[] names = new String[products.length];
+                                        int currProductIndex = -1;
+                                        int i = 0;
+                                        for (Product p : products) {
+                                            names[i] = p.getProductName();
+                                            i++;
+                                        }
+
+                                        // TODO PRODUCT CHOOSE GUI HERE
+                                        String chosenName = null;
+
+                                        i = 0;
+                                        for (Product p : products) {
+                                            if (p.getProductName().equals(chosenName)) { // TODO chosen name gui
+                                                currProductIndex = i;
+                                            }
+                                            i++;
+                                        }
+
+                                        writer.write(currProductIndex);
+                                        writer.flush();
+                                    } else {
+                                        System.out.println("Please type 'create', 'edit', or 'delete'.");
+                                    }
+                                }
+
+
+
+
                             }
                         }
 
