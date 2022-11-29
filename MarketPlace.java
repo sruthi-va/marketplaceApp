@@ -1,4 +1,3 @@
-import javax.swing.*;
 import java.io.*;
 import java.lang.reflect.Array;
 import java.net.*;
@@ -28,29 +27,19 @@ public class MarketPlace extends Thread{
         } catch (IOException e1) {
             e1.printStackTrace();
             return;
-        } 
+        }
 
         Customer customer = null;
         Seller seller = null;
         int id = 0;
         String line;
-        String cOrS = null;
-        try {
-            cOrS = reader.readLine();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+        String cOrS = reader.readLine();
 
         if (cOrS.equals("Customer")) {
             id = 1;
         }
 
-        String[] userpass = new String[0];
-        try {
-            userpass = reader.readLine().split(";;");
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+        String[] userpass = reader.readLine().split(";;");
 
         if (id == 1) {
             while (true) {
@@ -74,81 +63,67 @@ public class MarketPlace extends Thread{
                 }
 
                 if (!loggedIn) {
-                    try {
-                        if (reader.readLine().equals("newAccount")) {
-                            if (!usernameFound) {
-                                synchronized(obj) {
-                                    addUserPass("customers.txt", userpass[0], userpass[1]);
-                                }
-                                customer = new Customer(userpass[0], userpass[1]);
-                                JOptionPane.showMessageDialog(null, "New account created!",
-                                        "Account Creation", JOptionPane.INFORMATION_MESSAGE);
-                                writer.write("true");
-                                break;
-                            } else {
-                                writer.write("false");
+                    if (reader.readLine().equals("newAccount")) {
+                        if (!usernameFound) {
+                            synchronized(obj) {
+                                addUserPass("customers.txt", userpass[0], userpass[1]);
                             }
-                            writer.println();
-                            writer.flush();
-                        } else {
                             customer = new Customer(userpass[0], userpass[1]);
+                            System.out.println("New account created!");
+                            writer.write("true");
                             break;
+                        } else {
+                            writer.write("false");
                         }
-                    } catch (IOException e) {
-                        throw new RuntimeException(e);
+                        writer.println();
+                        writer.flush();
+                    } else {
+                        customer = new Customer(userpass[0], userpass[1]);
+                        break;
                     }
                 } else {
                     customer = new Customer(userpass[0], userpass[1]);
                     break;
                 }
             }
-            
+
             do {
                 homescreen();
-                String options[] = {"1. view store", "2. search", "3. purchase", "4. edit cart", "5. view cart",
-                        "6. view statistics", "7. delete account", "8. logout"};
-                //TODO writer.write
-                String userChoice = (String) JOptionPane.showInputDialog(null,
-                        "What do you want to do?", "Menu", JOptionPane.QUESTION_MESSAGE, null,
-                        options, options[0]);
-                int choice = Integer.parseInt(userChoice.charAt(0) + "");
-                switch (choice) {
-                    case 1:
+                System.out.println("Do you want to: 1. view store, 2. search, 3. purchase, 4. edit cart, 5. view cart, 6. view statistics, 7. delete account, or 8. logout?");
+                System.out.println("(Type 1-8)");
+                line = scanner.nextLine();
+                switch (line) {
+                    case "1":
                         Store store = null;
                         do {
                             try {
-                                //TODO fix logic, should write to client the list of stores
-                                int storeNum = -1;
-                                storeNum = Integer.parseInt(JOptionPane.showInputDialog(null, "Enter your search text!",
-                                        "Enter Search", JOptionPane.QUESTION_MESSAGE).toLowerCase());
-                                store = getStoreIndex(storeNum);
+                                System.out.println("Which store? (Type a number)");
+                                line = scanner.nextLine();
+
+                                store = getStoreIndex(Integer.parseInt(line));
                                 if (store == null) {
-                                    JOptionPane.showMessageDialog(null, "Please enter a valid store you dummy", "Store Not Valid!",
-                                            JOptionPane.INFORMATION_MESSAGE);
+                                    System.out.println("Please enter a valid store you dummy");
                                 }
                             } catch (Exception e) {
-                                JOptionPane.showMessageDialog(null, "Please enter a valid store you dummy", "Store Not Valid!",
-                                        JOptionPane.INFORMATION_MESSAGE);
+                                System.out.println("Please enter a valid store you dummy");
                             }
                         } while (store == null);
                         boolean valid = false;
                         do {
                             store.listAllProducts();
-                            line = JOptionPane.showInputDialog(null, "Would you like to add a " +
-                                            "product into the shopping cart, or go back? (Type 'add' or 'go back')",
-                                    "List All Products", JOptionPane.QUESTION_MESSAGE).toLowerCase();
+                            System.out.println("Would you like to add a product into the " +
+                                    "shopping cart, or go back? (Type 'add' or 'go back')");
+                            line = scanner.nextLine();
                             switch (line) {
                                 case "add":
                                     while (true) {
                                         try {
-                                            line = JOptionPane.showInputDialog(null,
-                                                    "Which product? (Type product number please)",
-                                                    "Add Product", JOptionPane.QUESTION_MESSAGE).toLowerCase();
+                                            System.out.println("Which product? (Type product number please)");
+                                            line = scanner.nextLine();
                                             customer.addToCart(user, store.getProductList().get(Integer.parseInt(line) - 1));
                                             break;
                                         } catch (Exception e) {
-                                            JOptionPane.showMessageDialog(null, "bruh",
-                                                    "bruh", JOptionPane.INFORMATION_MESSAGE);
+                                            System.out.println("bruh");
                                         }
                                     }
                                     break;
@@ -157,17 +132,15 @@ public class MarketPlace extends Thread{
                                     valid = true;
                                     break;
                                 default:
-                                    JOptionPane.showMessageDialog(null,
-                                            "Enter valid option! (add / go back)", "Not Valid!",
-                                            JOptionPane.INFORMATION_MESSAGE);
+                                    System.out.println("Enter valid option! (add / go back)");
                                     break;
                             }
                         } while (!valid);
                         break;
-                    case 2:
+                    case "2":
                         HashSet<Object> searchResult;
                         do {
-                            System.out.println("Enter the product name you'd like to search:"); //need to add gui here
+                            System.out.println("Enter the product name you'd like to search:");
                             searchResult = this.search(reader, writer); // this.search(scanner.nextLine());
                         } while (searchResult == null);
                         for (Object o : searchResult) {
@@ -175,19 +148,18 @@ public class MarketPlace extends Thread{
                         }
                         this.runSearch(scanner, customer, user);
                         break;
-                    case 3:
+                    case "3":
                         Product[] list = customer.getCustomerCart().getProducts(user);
                         list = this.updateProductQuantities(list);
                         if (list.length > 0) {
                             customer.purchaseCart(list);
                             this.decrementQuantity(list);
-                            JOptionPane.showMessageDialog(null, "Cart has been bought!",
-                                    "Card Bought!", JOptionPane.INFORMATION_MESSAGE);
+                            System.out.println("Cart has been bought!");
                         } else {
                             System.out.println("Your cart is empty! Go buy some stuff");
                         }
                         break;
-                    case 4:
+                    case "4":
                         Product[] cart = customer.getCustomerCart().getProducts(user);
                         System.out.println(Arrays.toString(cart));
                         Product item = null;
@@ -220,7 +192,7 @@ public class MarketPlace extends Thread{
                             }
                         } while (true);
                         break;
-                    case 5:
+                    case "5":
                         Product[] toPrint = customer.getCustomerCart().getProducts(user);
                         if (toPrint.length == 0) {
                             System.out.println("your cart is empty!");
@@ -231,7 +203,7 @@ public class MarketPlace extends Thread{
                             }
                         }
                         break;
-                    case 6:
+                    case "6":
                         int input = 0;
                         ArrayList<String> dashboard = new ArrayList<>();
                         while (input != 3) {
@@ -309,7 +281,7 @@ public class MarketPlace extends Thread{
                             }
                         }
                         break;
-                    case 7:
+                    case "7":
                         System.out.println("Are you sure? (yes or no)");
                         if (scanner.nextLine().contains("yes")) {
                             customer.deleteAccount(user);
@@ -318,7 +290,7 @@ public class MarketPlace extends Thread{
                             break;
                         }
                         return;
-                    case 8:
+                    case "8":
                         customer.getCustomerCart().writeFile();
                         System.out.println("Goodbye!");
                         writeFile();
@@ -403,8 +375,8 @@ public class MarketPlace extends Thread{
                                 ArrayList<Product> currProducts = s.getProductList();
                                 System.out.println(k + ": " + s.toString());
                                 for (int i = 0; i < currProducts.size(); i++) {
-                                    System.out.println("   - " + currProducts.get(i).toString() + 
-                                        ", " + currProducts.get(i).getQuantity() + " left in stock.");
+                                    System.out.println("   - " + currProducts.get(i).toString() +
+                                            ", " + currProducts.get(i).getQuantity() + " left in stock.");
                                 }
                                 k++;
                             }
@@ -412,7 +384,7 @@ public class MarketPlace extends Thread{
                         break;
                     case "2":
                         boolean continuing = false;
-                        if (sellers.get(sellerID).getStores().size() == 0) {  
+                        if (sellers.get(sellerID).getStores().size() == 0) {
                             System.out.println("you have no stores!");
                         } else {
                             do {
@@ -437,7 +409,7 @@ public class MarketPlace extends Thread{
                                         System.out.println("Not a valid store name");
                                         System.out.println("Which store do you want to edit? (Enter number)");
                                     }
-                                    
+
                                     /*
                                     for (int i = 0; i < seller.getStores().size(); i++) {
                                         if (seller.getStores().get(i).getStoreName().equalsIgnoreCase(storeName)) {
@@ -445,7 +417,7 @@ public class MarketPlace extends Thread{
                                         }
                                     }*/
                                 }
-                                
+
                                 boolean valid = false;
                                 while (!valid) {
                                     System.out.println("Do you want to create, edit, or delete products?");
@@ -538,7 +510,7 @@ public class MarketPlace extends Thread{
                         }
                         break;
                     case "3":
-                        if (seller.getStores().size() == 0) {  
+                        if (seller.getStores().size() == 0) {
                             System.out.println("you have no stores!");
                             break;
                         }
@@ -570,7 +542,7 @@ public class MarketPlace extends Thread{
                         }
                         break;
                     case "5":
-                        if (seller.getStores().size() == 0) {  
+                        if (seller.getStores().size() == 0) {
                             System.out.println("you have no stores!");
                             break;
                         }
@@ -689,7 +661,7 @@ public class MarketPlace extends Thread{
                         }
                         break;
                     case "6":
-                        if (seller.getStores().size() == 0) {  
+                        if (seller.getStores().size() == 0) {
                             System.out.println("you have no stores!");
                             break;
                         }
@@ -738,7 +710,7 @@ public class MarketPlace extends Thread{
                         synchronized(obj) {
                             sellers.remove(sellerID); // TODO does this delete all their stores from the file? it should right
                         }
-                        
+
                         System.out.println("Account deleted, stores ejected, rejected and taken care of. Goodbye.");
                         return;
                     case "10":
@@ -760,17 +732,8 @@ public class MarketPlace extends Thread{
     public static void main(String[] args) throws IOException {
         ServerSocket serverSocket = new ServerSocket(6969);
         System.out.println("waiting for users to connect");
-        Socket socket = null;
         while (true) {
-            try {
-                socket = serverSocket.accept();
-            } catch (ConnectException ce) {
-                JOptionPane.showMessageDialog(null, "Connection Not Established!",
-                        "Not Connected!", JOptionPane.ERROR_MESSAGE);
-            }
-            JOptionPane.showMessageDialog(null, "Connection Established!", "Connected!",
-                    JOptionPane.INFORMATION_MESSAGE);
-
+            Socket socket = serverSocket.accept();
             MarketPlace server = new MarketPlace(socket);
             new Thread(server).start();
         }
@@ -801,7 +764,7 @@ public class MarketPlace extends Thread{
                 i++;
             }
         }
-        
+
         if (i == 1) {
             System.out.println("The Market is quiet for once. No life breathes");
         }
@@ -817,7 +780,7 @@ public class MarketPlace extends Thread{
                 i++;
             }
         }
-        
+
         if (i == 1) {
             System.out.println("The Market is quiet for once. No life breathes");
         }
@@ -878,7 +841,7 @@ public class MarketPlace extends Thread{
                 for (Store store : seller.getStores()) {
                     for (Product product : store.getProductList()) {
                         if (product.getProductName().toLowerCase().contains(keyword.toLowerCase())
-                        || product.getDescription().toLowerCase().equalsIgnoreCase(keyword.toLowerCase())) {
+                                || product.getDescription().toLowerCase().equalsIgnoreCase(keyword.toLowerCase())) {
                             searchResult.add(product);
                         }
                     }
@@ -970,11 +933,11 @@ public class MarketPlace extends Thread{
                 for (Store store : seller.getStores()) {
                     lineString += ";" + store.getStoreName();
                     for (Product product : store.getProductList()) {
-                        lineString += "-" + product.getProductName() + 
-                        "," + product.getDescription() + 
-                        "," + product.getQuantity() + 
-                        "," + product.getPrice() +
-                        "," + store.getStoreName();
+                        lineString += "-" + product.getProductName() +
+                                "," + product.getDescription() +
+                                "," + product.getQuantity() +
+                                "," + product.getPrice() +
+                                "," + store.getStoreName();
                     }
                 }
                 bw.write(lineString);
@@ -988,7 +951,7 @@ public class MarketPlace extends Thread{
     public void decrementQuantity(Product[] products) {
         for (int j = 0; j < products.length; j++) {
             int x = 0;
-            int y = 0; 
+            int y = 0;
             int z = 0;
             Seller currSeller;
             Store currStore;
@@ -1001,7 +964,7 @@ public class MarketPlace extends Thread{
                         if (currProductList.get(z).equals(products[j])) {
                             currProductList.remove(currStore.getProductList().get(z));
                             currProductList.add(z, new Product(products[j].getProductName(), products[j].getDescription(),
-                                products[j].getQuantity() - 1, products[j].getPrice(), products[j].getStoreName()));
+                                    products[j].getQuantity() - 1, products[j].getPrice(), products[j].getStoreName()));
                             currStore.setProductList(currProductList);
                         }
                     }
@@ -1009,7 +972,7 @@ public class MarketPlace extends Thread{
                 }
                 sellers.remove(x);
                 sellers.add(x, currSeller);
-                
+
             }
         }
     }
@@ -1023,9 +986,9 @@ public class MarketPlace extends Thread{
                     this.products.add(i, updatedProduct);
                 }
             }
-            
+
             int x = 0;
-            int y = 0; 
+            int y = 0;
             int z = 0;
             Seller currSeller;
             Store currStore;
@@ -1045,7 +1008,7 @@ public class MarketPlace extends Thread{
                 }
                 sellers.remove(x);
                 sellers.add(x, currSeller);
-                
+
             }
         }
     }*/
@@ -1055,7 +1018,7 @@ public class MarketPlace extends Thread{
         ArrayList<Product> output = new ArrayList<>();
         for (int j = 0; j < products.length; j++) {
             int x = 0;
-            int y = 0; 
+            int y = 0;
             int z = 0;
             Seller currSeller;
             Store currStore;
