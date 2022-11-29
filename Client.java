@@ -131,11 +131,28 @@ public class Client {
                                                                   // separated by commas
 
                             String[] chooseStore = storeList.split(",", 0);
-                            // continue view store GUI here
-                            //display all store using a dropdown, ask user which one they want to view
-                            //once user chooses a store, display another dropdown with all the items in the store
-                            //ask user if they want to purchase anything.. click on the one they want to purchase to add to cart
-                            //hit cancel to go back
+                            String viewStore = (String) JOptionPane.showInputDialog(null, "Which store do you " +
+                                            "want to view?",
+                                    "View Stores?", JOptionPane.QUESTION_MESSAGE,
+                                    null, chooseStore, chooseStore[0]);
+                            writer.write(viewStore);
+                            writer.newLine();
+                            writer.flush();
+
+                            String productList = reader.readLine();
+                            String[] storeProducts = productList.split(",", 0);
+                            String chooseProduct = (String) JOptionPane.showInputDialog(null, "Click on " +
+                                            "the product you want to buy.",
+                                    "Store's Product List", JOptionPane.QUESTION_MESSAGE,
+                                    null, storeProducts, storeProducts[0]);
+
+                            if (chooseProduct == null) {
+                                runCustomer = true;
+                            } else {
+                                writer.write(chooseProduct);
+                                writer.newLine();
+                                writer.flush();
+                            }
 
                         }
 

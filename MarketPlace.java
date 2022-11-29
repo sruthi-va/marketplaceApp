@@ -107,6 +107,7 @@ public class MarketPlace extends Thread{
                 homescreen();
                 String options[] = {"1. view store", "2. search", "3. purchase", "4. edit cart", "5. view cart",
                         "6. view statistics", "7. delete account", "8. logout"};
+                //TODO writer.write
                 String userChoice = (String) JOptionPane.showInputDialog(null,
                         "What do you want to do?", "Menu", JOptionPane.QUESTION_MESSAGE, null,
                         options, options[0]);
@@ -116,6 +117,7 @@ public class MarketPlace extends Thread{
                         Store store = null;
                         do {
                             try {
+                                //TODO fix logic, should write to client the list of stores
                                 int storeNum = -1;
                                 storeNum = Integer.parseInt(JOptionPane.showInputDialog(null, "Enter your search text!",
                                         "Enter Search", JOptionPane.QUESTION_MESSAGE).toLowerCase());
