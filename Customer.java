@@ -1,6 +1,5 @@
 import java.io.*;
 import java.util.ArrayList;
-import java.util.Arrays;
 /**
  * This class contains all the methods for customers.
  * It includes a method to add products into their shopping cart,
