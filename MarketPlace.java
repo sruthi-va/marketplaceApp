@@ -1,3 +1,4 @@
+import javax.swing.*;
 import java.io.*;
 import java.lang.reflect.Array;
 import java.net.*;
@@ -33,13 +34,23 @@ public class MarketPlace extends Thread{
         Seller seller = null;
         int id = 0;
         String line;
-        String cOrS = reader.readLine();
+        String cOrS = null;
+        try {
+            cOrS = reader.readLine();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
 
         if (cOrS.equals("Customer")) {
             id = 1;
         }
-        
-        String[] userpass = reader.readLine().split(";;");
+
+        String[] userpass = new String[0];
+        try {
+            userpass = reader.readLine().split(";;");
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
 
         if (id == 1) {
             while (true) {
@@ -63,23 +74,28 @@ public class MarketPlace extends Thread{
                 }
 
                 if (!loggedIn) {
-                    if (reader.readLine().equals("newAccount")) {
-                        if (!usernameFound) {
-                            synchronized(obj) {
-                                addUserPass("customers.txt", userpass[0], userpass[1]);
+                    try {
+                        if (reader.readLine().equals("newAccount")) {
+                            if (!usernameFound) {
+                                synchronized(obj) {
+                                    addUserPass("customers.txt", userpass[0], userpass[1]);
+                                }
+                                customer = new Customer(userpass[0], userpass[1]);
+                                JOptionPane.showMessageDialog(null, "New account created!",
+                                        "Account Creation", JOptionPane.INFORMATION_MESSAGE);
+                                writer.write("true");
+                                break;
+                            } else {
+                                writer.write("false");
                             }
-                            customer = new Customer(userpass[0], userpass[1]);
-                            System.out.println("New account created!");
-                            writer.write("true");
-                            break;
+                            writer.println();
+                            writer.flush();
                         } else {
-                            writer.write("false");
+                            customer = new Customer(userpass[0], userpass[1]);
+                            break;
                         }
-                        writer.println();
-                        writer.flush();
-                    } else {
-                        customer = new Customer(userpass[0], userpass[1]);
-                        break;
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
                     }
                 } else {
                     customer = new Customer(userpass[0], userpass[1]);
@@ -89,41 +105,48 @@ public class MarketPlace extends Thread{
             
             do {
                 homescreen();
-                System.out.println("Do you want to: 1. view store, 2. search, 3. purchase, 4. edit cart, 5. view cart, 6. view statistics, 7. delete account, or 8. logout?");
-                System.out.println("(Type 1-8)");
-                line = scanner.nextLine();
-                switch (line) {
-                    case "1":
+                String options[] = {"1. view store", "2. search", "3. purchase", "4. edit cart", "5. view cart",
+                        "6. view statistics", "7. delete account", "8. logout"};
+                String userChoice = (String) JOptionPane.showInputDialog(null,
+                        "What do you want to do?", "Menu", JOptionPane.QUESTION_MESSAGE, null,
+                        options, options[0]);
+                int choice = Integer.parseInt(userChoice.charAt(0) + "");
+                switch (choice) {
+                    case 1:
                         Store store = null;
                         do {
                             try {
-                                System.out.println("Which store? (Type a number)");
-                                line = scanner.nextLine();
-
-                                store = getStoreIndex(Integer.parseInt(line));
+                                int storeNum = -1;
+                                storeNum = Integer.parseInt(JOptionPane.showInputDialog(null, "Enter your search text!",
+                                        "Enter Search", JOptionPane.QUESTION_MESSAGE).toLowerCase());
+                                store = getStoreIndex(storeNum);
                                 if (store == null) {
-                                    System.out.println("Please enter a valid store you dummy");
+                                    JOptionPane.showMessageDialog(null, "Please enter a valid store you dummy", "Store Not Valid!",
+                                            JOptionPane.INFORMATION_MESSAGE);
                                 }
                             } catch (Exception e) {
-                                System.out.println("Please enter a valid store you dummy");
+                                JOptionPane.showMessageDialog(null, "Please enter a valid store you dummy", "Store Not Valid!",
+                                        JOptionPane.INFORMATION_MESSAGE);
                             }
                         } while (store == null);
                         boolean valid = false;
                         do {
                             store.listAllProducts();
-                            System.out.println("Would you like to add a product into the " +
-                                    "shopping cart, or go back? (Type 'add' or 'go back')");
-                            line = scanner.nextLine();
+                            line = JOptionPane.showInputDialog(null, "Would you like to add a " +
+                                            "product into the shopping cart, or go back? (Type 'add' or 'go back')",
+                                    "List All Products", JOptionPane.QUESTION_MESSAGE).toLowerCase();
                             switch (line) {
                                 case "add":
                                     while (true) {
                                         try {
-                                            System.out.println("Which product? (Type product number please)");
-                                            line = scanner.nextLine();
+                                            line = JOptionPane.showInputDialog(null,
+                                                    "Which product? (Type product number please)",
+                                                    "Add Product", JOptionPane.QUESTION_MESSAGE).toLowerCase();
                                             customer.addToCart(user, store.getProductList().get(Integer.parseInt(line) - 1));
                                             break;
                                         } catch (Exception e) {
-                                            System.out.println("bruh");
+                                            JOptionPane.showMessageDialog(null, "bruh",
+                                                    "bruh", JOptionPane.INFORMATION_MESSAGE);
                                         }
                                     }
                                     break;
@@ -132,15 +155,17 @@ public class MarketPlace extends Thread{
                                     valid = true;
                                     break;
                                 default:
-                                    System.out.println("Enter valid option! (add / go back)");
+                                    JOptionPane.showMessageDialog(null,
+                                            "Enter valid option! (add / go back)", "Not Valid!",
+                                            JOptionPane.INFORMATION_MESSAGE);
                                     break;
                             }
                         } while (!valid);
                         break;
-                    case "2":
+                    case 2:
                         HashSet<Object> searchResult;
                         do {
-                            System.out.println("Enter the product name you'd like to search:");
+                            System.out.println("Enter the product name you'd like to search:"); //need to add gui here
                             searchResult = this.search(reader, writer); // this.search(scanner.nextLine());
                         } while (searchResult == null);
                         for (Object o : searchResult) {
@@ -148,18 +173,19 @@ public class MarketPlace extends Thread{
                         }
                         this.runSearch(scanner, customer, user);
                         break;
-                    case "3":
+                    case 3:
                         Product[] list = customer.getCustomerCart().getProducts(user);
                         list = this.updateProductQuantities(list);
                         if (list.length > 0) {
                             customer.purchaseCart(list);
                             this.decrementQuantity(list);
-                            System.out.println("Cart has been bought!");
+                            JOptionPane.showMessageDialog(null, "Cart has been bought!",
+                                    "Card Bought!", JOptionPane.INFORMATION_MESSAGE);
                         } else {
                             System.out.println("Your cart is empty! Go buy some stuff");
                         }
                         break;
-                    case "4":
+                    case 4:
                         Product[] cart = customer.getCustomerCart().getProducts(user);
                         System.out.println(Arrays.toString(cart));
                         Product item = null;
@@ -192,7 +218,7 @@ public class MarketPlace extends Thread{
                             }
                         } while (true);
                         break;
-                    case "5":
+                    case 5:
                         Product[] toPrint = customer.getCustomerCart().getProducts(user);
                         if (toPrint.length == 0) {
                             System.out.println("your cart is empty!");
@@ -203,7 +229,7 @@ public class MarketPlace extends Thread{
                             }
                         }
                         break;
-                    case "6":
+                    case 6:
                         int input = 0;
                         ArrayList<String> dashboard = new ArrayList<>();
                         while (input != 3) {
@@ -281,7 +307,7 @@ public class MarketPlace extends Thread{
                             }
                         }
                         break;
-                    case "7":
+                    case 7:
                         System.out.println("Are you sure? (yes or no)");
                         if (scanner.nextLine().contains("yes")) {
                             customer.deleteAccount(user);
@@ -290,7 +316,7 @@ public class MarketPlace extends Thread{
                             break;
                         }
                         return;
-                    case "8":
+                    case 8:
                         customer.getCustomerCart().writeFile();
                         System.out.println("Goodbye!");
                         writeFile();
@@ -732,8 +758,17 @@ public class MarketPlace extends Thread{
     public static void main(String[] args) throws IOException {
         ServerSocket serverSocket = new ServerSocket(6969);
         System.out.println("waiting for users to connect");
+        Socket socket = null;
         while (true) {
-            Socket socket = serverSocket.accept();
+            try {
+                socket = serverSocket.accept();
+            } catch (ConnectException ce) {
+                JOptionPane.showMessageDialog(null, "Connection Not Established!",
+                        "Not Connected!", JOptionPane.ERROR_MESSAGE);
+            }
+            JOptionPane.showMessageDialog(null, "Connection Established!", "Connected!",
+                    JOptionPane.INFORMATION_MESSAGE);
+
             MarketPlace server = new MarketPlace(socket);
             new Thread(server).start();
         }
