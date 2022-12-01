@@ -109,7 +109,8 @@ public class MarketPlace extends Thread{
             do {
                 // this method prints all stores
                 homescreen();
-                writer.write("1. view store,2. search,3. purchase,4. edit cart,5. view cart,6. view statistics,7. delete account,8. logout");
+                writer.write("1. view store,2. search,3. purchase,4. edit cart,5. view cart,6. view statistics," +
+                        "7. delete account,8. logout");
                 try {
                     line = reader.readLine();
                 } catch (IOException e) {
@@ -149,7 +150,8 @@ public class MarketPlace extends Thread{
                                         try {
                                             System.out.println("Which product? (Type product number please)");
                                             line = scanner.nextLine();
-                                            customer.addToCart(user, store.getProductList().get(Integer.parseInt(line) - 1));
+                                            customer.addToCart(user, store.getProductList().get(Integer.parseInt(line)
+                                                    - 1));
                                             break;
                                         } catch (Exception e) {
                                             System.out.println("bruh");
@@ -244,7 +246,8 @@ public class MarketPlace extends Thread{
                                 throw new RuntimeException(e);
                             }
                             if (dash.equals("Number of products sold by each store")) {
-                                dashboard = Dashboard.getCustomerDashboard1("testsample2.txt", "testsample1.txt");
+                                dashboard = Dashboard.getCustomerDashboard1("testsample2.txt",
+                                        "testsample1.txt");
                                 if (dashboard.size() > 1) {
                                     for (int i = 0; i < dashboard.size(); i++) {
                                         writer.write(dashboard.get(i));
@@ -264,7 +267,8 @@ public class MarketPlace extends Thread{
                                     again = false;
                                 }
                             } else if (dash.equals("Your purchased items by store")) {
-                                dashboard = Dashboard.getCustomerDashboard2("username", "testsample2.txt");
+                                dashboard = Dashboard.getCustomerDashboard2("username",
+                                        "testsample2.txt");
                                 if (dashboard.size() > 1) {
                                     for (int i = 0; i < dashboard.size(); i++) {
                                         writer.write(dashboard.get(i));
@@ -661,19 +665,23 @@ public class MarketPlace extends Thread{
                                         } while (input2 < 1 || input2 > 5);
                                         switch (input2) {
                                             case 1:
-                                                Dashboard.printDashboard(Dashboard.sortAlphabetically(dashboard, true));
+                                                Dashboard.printDashboard(Dashboard.sortAlphabetically(dashboard,
+                                                        true));
                                                 System.out.println("---------------------------");
                                                 break;
                                             case 2:
-                                                Dashboard.printDashboard(Dashboard.sortAlphabetically(dashboard, false));
+                                                Dashboard.printDashboard(Dashboard.sortAlphabetically(dashboard,
+                                                        false));
                                                 System.out.println("---------------------------");
                                                 break;
                                             case 3:
-                                                Dashboard.printDashboard(Dashboard.sortQuantity(dashboard, true));
+                                                Dashboard.printDashboard(Dashboard.sortQuantity(dashboard,
+                                                        true));
                                                 System.out.println("---------------------------");
                                                 break;
                                             case 4:
-                                                Dashboard.printDashboard(Dashboard.sortQuantity(dashboard, false));
+                                                Dashboard.printDashboard(Dashboard.sortQuantity(dashboard,
+                                                        false));
                                                 System.out.println("---------------------------");
                                                 break;
                                             case 5:
@@ -732,7 +740,8 @@ public class MarketPlace extends Thread{
                         break;
                     case "9":
                         synchronized(obj) {
-                            sellers.remove(sellerID); // TODO does this delete all their stores from the file? it should right
+                            sellers.remove(sellerID); // TODO does this delete all their stores from the file? it
+                                                        // should right
                         }
 
                         System.out.println("Account deleted, stores ejected, rejected and taken care of. Goodbye.");
@@ -953,7 +962,8 @@ public class MarketPlace extends Thread{
      * @param, none
      */
     public static void writeFile() {
-        try (BufferedWriter bw = new BufferedWriter(new FileWriter(new File("marketplace.txt"), false))) {
+        try (BufferedWriter bw = new BufferedWriter(new FileWriter(new File("marketplace.txt"),
+                false))) {
             for (Seller seller : sellers) {
                 String lineString = "";
                 lineString += seller.getSellerName();
@@ -990,8 +1000,10 @@ public class MarketPlace extends Thread{
                         ArrayList<Product> currProductList = currStore.getProductList();
                         if (currProductList.get(z).equals(products[j])) {
                             currProductList.remove(currStore.getProductList().get(z));
-                            currProductList.add(z, new Product(products[j].getProductName(), products[j].getDescription(),
-                                    products[j].getQuantity() - 1, products[j].getPrice(), products[j].getStoreName()));
+                            currProductList.add(z, new Product(products[j].getProductName(),
+                                    products[j].getDescription(),
+                                    products[j].getQuantity() - 1, products[j].getPrice(),
+                                    products[j].getStoreName()));
                             currStore.setProductList(currProductList);
                         }
                     }
