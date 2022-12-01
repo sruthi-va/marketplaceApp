@@ -85,7 +85,6 @@ public class MarketPlace extends Thread{
                                     addUserPass("customers.txt", userpass[0], userpass[1]);
                                 }
                                 customer = new Customer(userpass[0], userpass[1]);
-                                System.out.println("New account created!");
                                 writer.write("true");
                                 break;
                             } else {
@@ -139,34 +138,7 @@ public class MarketPlace extends Thread{
                             }
                         } while (store == null);
                         boolean valid = false;
-                        do {
-                            store.listAllProducts();
-                            System.out.println("Would you like to add a product into the " +
-                                    "shopping cart, or go back? (Type 'add' or 'go back')");
-                            line = scanner.nextLine();
-                            switch (line) {
-                                case "add":
-                                    while (true) {
-                                        try {
-                                            System.out.println("Which product? (Type product number please)");
-                                            line = scanner.nextLine();
-                                            customer.addToCart(user, store.getProductList().get(Integer.parseInt(line)
-                                                    - 1));
-                                            break;
-                                        } catch (Exception e) {
-                                            System.out.println("bruh");
-                                        }
-                                    }
-                                    break;
-                                case "go back":
-                                    //homescreen();
-                                    valid = true;
-                                    break;
-                                default:
-                                    System.out.println("Enter valid option! (add / go back)");
-                                    break;
-                            }
-                        } while (!valid);
+                        writer.write(store.listAllProducts() + "");
                         break;
                     case "2. search":
                         HashSet<Object> searchResult;
@@ -179,7 +151,7 @@ public class MarketPlace extends Thread{
                         }
                         this.runSearch(scanner, customer, user);
                         break;
-                    case "3. purchase":
+                    case "3. purchase": //server writes over string returned from purchasecart method
                         Product[] list = customer.getCustomerCart().getProducts(user);
                         list = this.updateProductQuantities(list);
                         if (list.length > 0) {

@@ -126,7 +126,6 @@ public class Client {
                 }
 
                 if (choose.equals("Customer")) {
-                    //Customer customer = new Customer(userName, password); //HELP PLEASE
                     runCustomer = true;
 
                     String results = reader.readLine(); // DONE!! server return a string of the drop down options (1.
@@ -167,13 +166,20 @@ public class Client {
                         if (reply.equals("2. search")) {
                             searchGUI(socket, writer, reader, userName, ois, oos);
                         }
-                        if (reply.equals("3. purchase")) {
-                            int display = JOptionPane.showOptionDialog(null,
-                                    "Your items have been bought!", "Shopping Cart",
+                        if (reply.equals("3. purchase")) { //server writes over string returned from purchasecart method
+                            String purchaseResult = reader.readLine();
+                            if (purchaseResult.contains("out of stock")) {
+
+
+                            } else {
+                                int display = JOptionPane.showOptionDialog(null,
+                                    purchaseResult, "Shopping Cart",
                                     JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE, icon,
                                     null, null);
                             if (display == JOptionPane.CLOSED_OPTION) {
                                 return;
+                            }
+
                             }
 
                         }
@@ -474,9 +480,6 @@ public class Client {
                                     }
                                 }
 
-
-
-
                             }
                         }
 
@@ -515,6 +518,8 @@ public class Client {
                         if (reply.equals("10. log out?")) {
                             runSeller = false;
                             run = false;
+                            JOptionPane.showMessageDialog(null, "Thanks for visiting bEtsy!", "Goodbye",
+                                JOptionPane.INFORMATION_MESSAGE);
                         }
                     }
                 }

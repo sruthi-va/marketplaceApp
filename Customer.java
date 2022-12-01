@@ -18,6 +18,7 @@ public class Customer {
 
 
     //tests
+    /*
     public static void main(String[] args) {
         String username = "user1";
         String password = "pandas";
@@ -69,7 +70,7 @@ public class Customer {
         System.out.println(deleteFromCartExpected2.equals(deleteFromCartOutput2));
 
     }
-
+*/
 
     //constructor for customer
     public Customer(String username, String password) {
@@ -78,13 +79,16 @@ public class Customer {
     }
 
     //adds an item to the customer's cart
-    public void addToCart(String userName, Product addProduct) {
+    public String addToCart(String userName, Product addProduct) {
+        String output;
         if (addProduct.getQuantity() == 0) {
-            System.out.println("Out of stock L");
+            output = "Output of stock L";
         } else {
             customerCart.addItem(userName, addProduct);
-            System.out.println("Added to cart!");
+            output = "Added to cart!";
         }
+
+        return output;
     }
 
     //deletes an item from the customer's cart
@@ -93,15 +97,17 @@ public class Customer {
     }
 
     //purchases customer's shopping cart, and updates their buy history
-    public void purchaseCart(Product[] products) {
+    public String purchaseCart(Product[] products) {
+        String output = "";
         for (int i = 0; i < products.length; i++) {
             if (products[i].getQuantity() < 1) {
-                System.out.printf("%s is out of stock! The item was left in your cart.\n", 
+                output = String.format("%s is out of stock! The item was left in your cart.\n", 
                     products[i].getProductName());
             } else {
                 String temp = products[i].getProductName() + "-" + products[i].getStoreName();
                 buyHistory.add(temp);
                 customerCart.removeItem(username, products[i]);
+                output = "Cart has been bought!";
             }
         }
 
@@ -152,7 +158,7 @@ public class Customer {
         } catch (Exception e) {
             e.printStackTrace();
         }
-
+        return output;
 
     }
 

@@ -103,12 +103,18 @@ public class Store {
     }
 
     //lists all the product sold by the seller in this specific store
-    public void listAllProducts() {
-        System.out.println("The products from " + storeName + " are:");
+    public String[] listAllProducts() {
+        ArrayList<String> productArrayList = new ArrayList<String>();
         for (int i = 0; i < productList.size(); i++) {
-            System.out.printf("%d: %s, %d left in stock.\n", (i+1), productList.get(i).toString(), 
-                productList.get(i).getQuantity());
+            if (productList.get(i).getQuantity() < 0) {
+                productArrayList.add(productList.get(i).getProductName());
+            }
         }
+        String[] trueProductList = new String[productArrayList.size()];
+        for (int i = 0; i< productArrayList.size(); i++) {
+            trueProductList[0] = productArrayList.get(i);
+        }
+        return trueProductList;
     }
 
     public String toString() {
