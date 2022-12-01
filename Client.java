@@ -451,6 +451,7 @@ public class Client {
                                         oos.writeObject(product);
                                         oos.flush();
                                         writer.write(currProductIndex);
+                                        writer.newLine();
                                         writer.flush();
                                     } else if (todo.equalsIgnoreCase("delete")) {
                                         Product[] products = (Product[]) ois.readObject();
@@ -474,6 +475,7 @@ public class Client {
                                         }
 
                                         writer.write(currProductIndex);
+                                        writer.newLine();
                                         writer.flush();
                                     } else {
                                         System.out.println("Please type 'create', 'edit', or 'delete'.");
@@ -484,11 +486,35 @@ public class Client {
                         }
 
                         if (reply.equals("3. view sales")) {
-
+                            if (reader.readLine().equals("no stores")) {
+                                // TODO gui for saying that no stores
+                            } else { 
+                                System.out.println("Type a store name to see it's sales, or 'all' to see all of your " +
+                                    "store sales"); // TODO gui
+                                String input = ""; // value from GUI
+                                writer.write(input);
+                                writer.newLine();
+                                writer.flush();
+                                
+                                String sellerHistory = reader.readLine(); // TODO display gui
+                            }
                         }
 
                         if (reply.equals("4. create store")) {
-
+                            boolean repeat = true;
+                            while (repeat) {
+                                System.out.println("What would you like this store to be named?"); // TODO GUI
+                                String storeName = ""; // value from GUI
+                                if (storeName.equalsIgnoreCase("") || storeName.equals(null)) {
+                                    System.out.println("Please enter a valid name!");
+                                } else {
+                                    repeat = false;
+                                    writer.write(storeName);
+                                    writer.newLine();
+                                    writer.flush();
+                                    System.out.println("Store created!"); // TODO
+                                }
+                            }
                         }
 
                         if (reply.equals("5. view statistics")) {
@@ -569,6 +595,7 @@ public class Client {
                                             writer.write("");
                                         }
                                         writer.newLine();
+                                        writer.newLine();
                                         writer.flush();
 
                                         for (int i = 0; i < dashboard.size(); ) {
@@ -588,15 +615,58 @@ public class Client {
                         }
 
                         if (reply.equals("6. delete a store")) {
-                            
+                            boolean valid = false;
+                            do {
+                                String input = ""; // TODO get GUI input from user (which store)
+                                if (input.equalsIgnoreCase("") || input.equals(null)) {
+                                    System.out.println("not a store dumbass"); // TODO GUI 
+                                } else {
+                                    valid = true;
+                                    writer.write(input);
+                                    writer.newLine();
+                                    writer.flush();
+                                    if (reader.readLine().equals("is store")) {
+                                        System.out.println("Store deleted!"); // TODO
+                                    } else {
+                                        System.out.println("still not a store dumbass"); // TODO
+                                    }
+                                } 
+                            } while (!valid);
                         }
 
                         if (reply.equals("7. import stores from a CSV")) {
-
+                            boolean valid = false;
+                            do {
+                                String input = ""; // TODO get GUI input from user (enter filename)
+                                if (input.equalsIgnoreCase("") || input.equals(null)) {
+                                    System.out.println("not a name idiot"); // TODO GUI 
+                                } else {
+                                    valid = true;
+                                    writer.write(input);
+                                    writer.newLine();
+                                    writer.flush();
+                                    if (reader.readLine().equals("error")) {
+                                        System.out.println("aur naur something's wrong with the file"); // TODO
+                                    } else {
+                                        System.out.println("we good"); // TODO
+                                    }
+                                }
+                            } while (!valid);
                         }
 
                         if (reply.equals("8. export stores as a CSV")) {
-
+                            boolean valid = false;
+                            do { 
+                                String input = ""; // TODO user input from gui (enter file to write to)
+                                if (input.equalsIgnoreCase("") || input.equals(null)) {
+                                    System.out.println("not a file name idiot"); // TODO GUI 
+                                } else {
+                                    valid = true;
+                                    writer.write(input);
+                                    writer.newLine();
+                                    writer.flush();
+                                }
+                            } while (!valid);
                         }
 
                         if (reply.equals("9. delete account")) {

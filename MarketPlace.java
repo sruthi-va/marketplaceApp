@@ -1,6 +1,7 @@
 import java.io.*;
 import java.lang.reflect.Array;
 import java.net.*;
+import java.security.InvalidParameterException;
 import java.util.*;
 
 /**
@@ -13,7 +14,7 @@ import java.util.*;
  * @author Catherine Park, Zander Carpenter, Jennifer Wang, Sruthi Vadakuppa, Vanshika Balaji
  * @version Nov 4, 2022
  */
-public class MarketPlace extends Thread{
+public class MarketPlace extends Thread {
     private static ArrayList<Seller> sellers = new ArrayList<>();
     private Socket socket;
     public static Object obj = new Object();
@@ -149,10 +150,10 @@ public class MarketPlace extends Thread{
                         for (Object o : searchResult) {
                             System.out.println(o.toString());
                         }
-                        this.runSearch(scanner, customer, user);
+                        this.runSearch(scanner, customer, userpass[0]);
                         break;
                     case "3. purchase": //server writes over string returned from purchasecart method
-                        Product[] list = customer.getCustomerCart().getProducts(user);
+                        Product[] list = customer.getCustomerCart().getProducts(userpass[0]);
                         list = this.updateProductQuantities(list);
                         if (list.length > 0) {
                             customer.purchaseCart(list);
@@ -163,7 +164,7 @@ public class MarketPlace extends Thread{
                         }
                         break;
                     case "4. edit cart":
-                        Product[] cart = customer.getCustomerCart().getProducts(user);
+                        Product[] cart = customer.getCustomerCart().getProducts(userpass[0]);
                         System.out.println(Arrays.toString(cart));
                         Product item = null;
                         do {
@@ -183,7 +184,7 @@ public class MarketPlace extends Thread{
                                 }
 
                                 if (item != null) {
-                                    customer.deleteFromCart(user, item);
+                                    customer.deleteFromCart(userpass[0], item);
                                 } else {
                                     System.out.println("This item isn't in your cart!!");
                                     break;
@@ -196,7 +197,7 @@ public class MarketPlace extends Thread{
                         } while (true);
                         break;
                     case "5. view cart":
-                        Product[] toPrint = customer.getCustomerCart().getProducts(user);
+                        Product[] toPrint = customer.getCustomerCart().getProducts(userpass[0]);
                         if (toPrint.length == 0) {
                             System.out.println("your cart is empty!");
                         } else {
@@ -306,7 +307,7 @@ public class MarketPlace extends Thread{
                     case "7. delete account":
                         System.out.println("Are you sure? (yes or no)");
                         if (scanner.nextLine().contains("yes")) {
-                            customer.deleteAccount(user);
+                            customer.deleteAccount(userpass[0]);
                             System.out.println("Account deleted, ejected, and rejected. Goodbye");
                         } else {
                             break;
@@ -500,45 +501,42 @@ public class MarketPlace extends Thread{
                                         System.out.println("Please type 'create', 'edit', or 'delete'.");
                                     }
                                 }
-                                System.out.println("Would you like to do something else?");
-                                if (scanner.nextLine().toLowerCase().startsWith("y")) {
-                                    continuing = true;
-                                } else {
-                                    continuing = false;
-                                }
+                                // System.out.println("Would you like to do something else?");
+                                // if (scanner.nextLine().toLowerCase().startsWith("y")) {
+                                //     continuing = true;
+                                // } else {
+                                //     continuing = false;
+                                // }
                             } while (continuing);
                         }
                         break;
                     case "3. view sales":
-                        if (seller.getStores().size() == 0) {
+                        if (sellers.get(sellerID).getStores().size() == 0) {
                             System.out.println("you have no stores!");
-                            break;
-                        }
-                        try {
-                            System.out.println("Type a store name to see it's sales, or 'all' to see all of your " +
-                                    "store sales");
-                            String storeName = scanner.nextLine();
-                            seller.viewSales(storeName);
-                        } catch (IOException e) {
-                            e.printStackTrace();
+                            writer.write("no stores");
+                            writer.println();
+                            writer.flush();
+                        } else {
+                            writer.write("has stores");
+                            writer.println();
+                            writer.flush();
+                            try {
+                                System.out.println("Type a store name to see it's sales, or 'all' to see all of your " +
+                                        "store sales");
+                                String storeName = reader.readLine();
+                                writer.write(seller.viewSales(storeName));
+                                writer.println();
+                                writer.flush();
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
                         }
                         break;
                     case "4. create store":
-                        String storeName = "";
-                        boolean repeat = true;
-                        while (repeat) {
-                            System.out.println("What would you like this store to be named?");
-                            storeName = scanner.nextLine();
-                            if (storeName.equalsIgnoreCase("") || storeName.equals(null)) {
-                                System.out.println("Please enter a valid name!");
-                            } else {
-                                repeat = false;
-                                seller.createStore(seller.getSellerName(), storeName);
-                                System.out.println("Store created!");
-                                synchronized(obj) {
-                                    sellers.set(sellerID, seller);
-                                }
-                            }
+                        String storeName = reader.readLine();
+                        seller.createStore(seller.getSellerName(), storeName);
+                        synchronized(obj) {
+                            sellers.set(sellerID, seller);
                         }
                         break;
                     case "5.view statistics":
@@ -695,35 +693,57 @@ public class MarketPlace extends Thread{
                         }
                         break;
                     case "6. delete a store":
-                        if (seller.getStores().size() == 0) {
+                        if (sellers.get(sellerID).getStores().size() == 0) {
                             System.out.println("you have no stores!");
-                            break;
-                        }
-                        System.out.println("Sorry to hear that, which store?");
-                        String deleteStore = scanner.nextLine();
-                        Store storeInQuestion = null;
-                        ArrayList<Store> currStores = sellers.get(sellerID).getStores();
-                        for (int i = 0; i < currStores.size(); i++) {
-                            if (currStores.get(i).getStoreName().equals(deleteStore)) {
-                                storeInQuestion = currStores.get(i);
+                            writer.write("no stores");
+                            writer.println();
+                            writer.flush();
+                        } else {
+                            writer.write("has stores");
+                            writer.println();
+                            writer.flush();
+                            String deleteStore = reader.readLine();
+                            Store storeInQuestion = null;
+                            ArrayList<Store> currStores = sellers.get(sellerID).getStores();
+                            for (int i = 0; i < currStores.size(); i++) {
+                                if (currStores.get(i).getStoreName().equals(deleteStore)) {
+                                    storeInQuestion = currStores.get(i);
+                                    break;
+                                }
+                            }
+                            if (storeInQuestion == null) {
+                                writer.write("not store");
+                                writer.println();
+                                writer.flush();
                                 break;
                             }
+                            writer.write("is store");
+                            writer.println();
+                            writer.flush();
+                        
+                            currStores.remove(storeInQuestion);
+                            seller.setStores(currStores);
+                            synchronized(obj) {
+                                sellers.set(sellerID, seller);
+                            }
+                            System.out.println("Store deleted from marketplace");
                         }
-                        if (storeInQuestion == null) {
-                            System.out.println("not a store dumbass");
-                            break;
-                        }
-                        currStores.remove(storeInQuestion);
-                        seller.setStores(currStores);
-                        synchronized(obj) {
-                            sellers.set(sellerID, seller);
-                        }
-                        System.out.println("Store deleted from marketplace");
                         break;
                     case "7. import stores from a CSV":
-                        System.out.println("Enter the name of the file you want to import.");
-                        String fileImport = scanner.nextLine();
-                        ArrayList<Store> importedStores = seller.importCSV(fileImport);
+                        String fileImport = reader.readLine();
+                        ArrayList<Store> importedStores;
+                        try {
+                            importedStores = seller.importCSV(fileImport);
+                        } catch (Exception e) {
+                            writer.write("error");
+                            writer.println();
+                            writer.flush();
+                            break;
+                        } 
+                        writer.write("no error");
+                        writer.println();
+                        writer.flush();
+                        
                         for (int i = 0; i < importedStores.size(); i++) {
                             seller.addStore(importedStores.get(i));
                         }
@@ -734,7 +754,7 @@ public class MarketPlace extends Thread{
                         break;
                     case "8. export stores as a CSV":
                         System.out.println("Enter the name of the file you want your stores to be exported to.");
-                        if (seller.exportCSV(scanner.nextLine())) {
+                        if (seller.exportCSV(reader.readLine())) {
                             System.out.println("Exported!");
                         } else {
                             System.out.println("there was a problem!");
@@ -744,8 +764,10 @@ public class MarketPlace extends Thread{
                         synchronized(obj) {
                             sellers.remove(sellerID); // TODO does this delete all their stores from the file? it
                                                         // should right
-                        }
-
+                        }                               // yeah it won't write this seller's stuff to the file
+                                                        // but their history will still exist
+                                                        // that's probably fine right
+                                           
                         System.out.println("Account deleted, stores ejected, rejected and taken care of. Goodbye.");
                         return;
                     case "10. log out":

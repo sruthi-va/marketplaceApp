@@ -1,4 +1,5 @@
 import java.io.*;
+import java.security.InvalidParameterException;
 import java.util.ArrayList;
 
 /**
@@ -53,7 +54,8 @@ public class Seller {
     }
 
     //view all the products sold by this store, or all of the seller's stores
-    public void viewSales(String storeName) throws IOException {
+    public String viewSales(String storeName) throws IOException {
+        String output = "";
         try {
             if (storeName.equalsIgnoreCase("all")) {
                 BufferedReader br = new BufferedReader(new FileReader("purchasehistory.txt"));
@@ -99,14 +101,11 @@ public class Seller {
                             }
                         }
                         if (quantity > 0) {
-                            System.out.printf("%s bought %s %d time(s), you made %f from this sale.\n", customer, item, quantity,
-                                    (quantity*price));
+                            output += String.format("%s bought %s %d time(s), you made %f from this sale.\n", customer, item, quantity,
+                                (quantity*price));
                             bought++;
                         }
                     }
-
-
-
                 }
                 if (bought == 0) {
                     System.out.println("No customers have bought your products yet. :(");
@@ -154,8 +153,8 @@ public class Seller {
                             }
                         }
                         if (quantity > 0) {
-                            System.out.printf("%s bought %s %d time(s), you made %f from this sale.\n", customer, item, quantity,
-                                    (quantity*price));
+                            output += String.format("%s bought %s %d time(s), you made %f from this sale.\n", customer, item, quantity,
+                                (quantity*price));
                             bought++;
                         }
                     }
@@ -169,6 +168,7 @@ public class Seller {
             e.printStackTrace();
             System.out.println("Problem reading all customer's purchase history!");
         }
+        return output;
     }
 
     // create a new store, given a seller's name and store name
@@ -220,9 +220,10 @@ public class Seller {
      * imports
      * @param filename
      * @return
+     * @throws IOException
      */
     // imports csv file and parses store information from it
-    public ArrayList<Store> importCSV(String filename) {
+    public ArrayList<Store> importCSV(String filename) throws IOException, InvalidParameterException {
         ArrayList<Store> output = new ArrayList<>();
         ArrayList<String> tempList = new ArrayList<>();
 
@@ -232,19 +233,15 @@ public class Seller {
 
         String line;
 
-        try {
-            fr = new FileReader(f);
-            bfr = new BufferedReader(fr);
+        fr = new FileReader(f);
+        bfr = new BufferedReader(fr);
 
+        line = bfr.readLine();
+        while (line != null) {
+            tempList.add(line);
             line = bfr.readLine();
-            while (line != null) {
-                tempList.add(line);
-                line = bfr.readLine();
-            }
-            bfr.close();
-        } catch (IOException e) {
-            e.printStackTrace();
         }
+        bfr.close();
 
         try {
             for (int j = 0; j < tempList.size(); j++) {
@@ -256,7 +253,8 @@ public class Seller {
                 output.add(new Store(this.sellerName, thisLine[0], products));
             }
         } catch (Exception e) {
-            System.out.println("Invalid file formatting!");
+            throw new InvalidParameterException("Invalid file formatting!");
+            //System.out.println("Invalid file formatting!");
         }
 
         return output;
