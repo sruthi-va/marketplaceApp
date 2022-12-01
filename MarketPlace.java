@@ -211,79 +211,86 @@ public class MarketPlace extends Thread{
                         }
                         break;
                     case "6. view statistics":
-                        int input = 0;
+                        boolean bool = true;
                         ArrayList<String> dashboard = new ArrayList<>();
-                        while (input != 3) {
-                            do {
-                                System.out.println("What would you like to see? (Type 1-3)");
-                                System.out.println("1. Number of products sold by each store");
-                                System.out.println("2. Your purchased items by store");
-                                System.out.println("3. Return to main menu");
-                                try {
-                                    input = scanner.nextInt();
-                                    scanner.nextLine();
-                                    if (input < 1 || input > 3) {
-                                        System.out.println("Please enter a valid number!");
+                        while (bool) {
+                            boolean again = true;
+                            String dash = reader.readLine();
+                            if (dash.equals("Number of products sold by each store")) {
+                                dashboard = Dashboard.getCustomerDashboard1("testsample2.txt", "testsample1.txt");
+                                if (dashboard.size() > 1) {
+                                    for (int i = 0; i < dashboard.size(); i++) {
+                                        writer.write(dashboard.get(i));
+                                        writer.println();
+                                        writer.flush();
                                     }
-                                } catch (Exception e) {
-                                    System.out.println("Please enter a valid number!");
-                                    scanner.nextLine();
-                                    input = 0;
-                                }
-                            } while (input < 1 || input > 3);
-                            if (input != 3) {
-                                if (input == 1) {
-                                    dashboard = Dashboard.getCustomerDashboard1("customers.txt",
-                                            "marketplace.txt");
+                                    writer.write("");
+                                    writer.println();
+                                    writer.flush();
                                 } else {
-                                    dashboard = Dashboard.getCustomerDashboard2(customer.getUsername(),
-                                            "customers.txt");
+                                    writer.write("There are no stores");
+                                    writer.println();
+                                    writer.flush();
+                                    writer.write("");
+                                    writer.println();
+                                    writer.flush();
+                                    again = false;
                                 }
-                                Dashboard.printDashboard(dashboard);
-                                System.out.println("---------------------------");
-                                int input2 = 0;
-                                if (dashboard.size() > 2) {
-                                    while (input2 != 5) {
-                                        do {
-                                            System.out.println("Would you like to sort? (Type 1-5)");
-                                            System.out.println("1. Sort Alphabetically (A-Z)");
-                                            System.out.println("2. Sort Alphabetically (Z-A)");
-                                            System.out.println("3. Sort by quantity (high-low)");
-                                            System.out.println("4. Sort by quantity (low-high)");
-                                            System.out.println("5. Done");
-                                            try {
-                                                input2 = scanner.nextInt();
-                                                scanner.nextLine();
-                                                if (input2 < 1 || input2 > 5) {
-                                                    System.out.println("Please enter a valid number!");
-                                                }
-                                            } catch (Exception e) {
-                                                System.out.println("Please enter a valid number!");
-                                                scanner.nextLine();
-                                                input2 = 0;
-                                            }
-                                        } while (input2 < 1 || input2 > 5);
-                                        switch (input2) {
-                                            case 1:
-                                                Dashboard.printDashboard(Dashboard.sortAlphabetically(dashboard, true));
-                                                System.out.println("---------------------------");
-                                                break;
-                                            case 2:
-                                                Dashboard.printDashboard(Dashboard.sortAlphabetically(dashboard, false));
-                                                System.out.println("---------------------------");
-                                                break;
-                                            case 3:
-                                                Dashboard.printDashboard(Dashboard.sortQuantity(dashboard, true));
-                                                System.out.println("---------------------------");
-                                                break;
-                                            case 4:
-                                                Dashboard.printDashboard(Dashboard.sortQuantity(dashboard, false));
-                                                System.out.println("---------------------------");
-                                                break;
-                                            case 5:
-                                                break;
-                                        }
+                            } else if (dash.equals("Your purchased items by store")) {
+                                dashboard = Dashboard.getCustomerDashboard2("username", "testsample2.txt");
+                                if (dashboard.size() > 1) {
+                                    for (int i = 0; i < dashboard.size(); i++) {
+                                        writer.write(dashboard.get(i));
+                                        writer.println();
+                                        writer.flush();
                                     }
+                                    writer.write("");
+                                    writer.println();
+                                    writer.flush();
+                                } else {
+                                    writer.write("You haven't bought anything...");
+                                    writer.println();
+                                    writer.flush();
+                                    writer.write("");
+                                    writer.println();
+                                    writer.flush();
+                                    again = false;
+                                }
+                            } else {
+                                writer.write("");
+                                writer.println();
+                                writer.flush();
+                                again = false;
+                                bool = false;
+                            }
+                            while (again) {
+                                String sort = reader.readLine();
+                                if (sort.equals("Alphabetically(A-Z)")) {
+                                    dashboard = Dashboard.sortAlphabetically(dashboard, true);
+                                } else if (sort.equals("Alphabetically(Z-A)")) {
+                                    dashboard = Dashboard.sortAlphabetically(dashboard, false);
+                                } else if (sort.equals("Quantity(high-low)")) {
+                                    dashboard = Dashboard.sortQuantity(dashboard, true);
+                                } else if (sort.equals("Quantity(low-high)")) {
+                                    dashboard = Dashboard.sortQuantity(dashboard, false);
+                                } else {
+                                    again = false;
+                                    writer.write("false");
+                                    writer.println();
+                                    writer.flush();
+                                    writer.write("");
+                                    writer.println();
+                                    writer.flush();
+                                }
+                                if (again) {
+                                    for (int i = 0; i < dashboard.size(); i++) {
+                                        writer.write(dashboard.get(i));
+                                        writer.println();
+                                        writer.flush();
+                                    }
+                                    writer.write("");
+                                    writer.println();
+                                    writer.flush();
                                 }
                             }
                         }
