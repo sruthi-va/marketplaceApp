@@ -290,15 +290,15 @@ public class Client {
                 if (choose.equals("Seller")) {
                     runSeller = true;
                     while (runSeller) {
-                        String results = reader.readLine(); // server return a string of the drop down options (1. view
-                        // store,2. search,3. purchase...) etc
+                        String results = reader.readLine(); // DONE!! server return a string of the drop down options
+                        // (1. view store,2. search,3. purchase...) etc DONE!!
                         String[] dropdown = results.split(",", 0);
                         String reply = (String) JOptionPane.showInputDialog(null,
                                 "What is your choice?",
                         "Choice?", JOptionPane.QUESTION_MESSAGE,
                         icon, dropdown, dropdown[0]);
-                        writer.write(reply); // on server side, read in the line, and have ifs for the corresponding
-                                    // drop down choice
+                        writer.write(reply); // DONE!! on server side, read in the line, and have ifs for the
+                                            // corresponding drop down choice DONE!!
                         writer.newLine();
                         writer.flush();
                         

@@ -537,7 +537,7 @@ public class MarketPlace extends Thread{
                             } while (continuing);
                         }
                         break;
-                    case "3":
+                    case "3. view sales":
                         if (seller.getStores().size() == 0) {
                             System.out.println("you have no stores!");
                             break;
@@ -551,7 +551,7 @@ public class MarketPlace extends Thread{
                             e.printStackTrace();
                         }
                         break;
-                    case "4":
+                    case "4. create store":
                         String storeName = "";
                         boolean repeat = true;
                         while (repeat) {
@@ -569,7 +569,7 @@ public class MarketPlace extends Thread{
                             }
                         }
                         break;
-                    case "5":
+                    case "5.view statistics":
                         if (seller.getStores().size() == 0) {
                             System.out.println("you have no stores!");
                             break;
@@ -692,7 +692,7 @@ public class MarketPlace extends Thread{
                             }
                         }
                         break;
-                    case "6":
+                    case "6. delete a store":
                         if (seller.getStores().size() == 0) {
                             System.out.println("you have no stores!");
                             break;
@@ -718,7 +718,7 @@ public class MarketPlace extends Thread{
                         }
                         System.out.println("Store deleted from marketplace");
                         break;
-                    case "7":
+                    case "7. import stores from a CSV":
                         System.out.println("Enter the name of the file you want to import.");
                         String fileImport = scanner.nextLine();
                         ArrayList<Store> importedStores = seller.importCSV(fileImport);
@@ -730,7 +730,7 @@ public class MarketPlace extends Thread{
                         }
                         System.out.println("Imported!");
                         break;
-                    case "8":
+                    case "8. export stores as a CSV":
                         System.out.println("Enter the name of the file you want your stores to be exported to.");
                         if (seller.exportCSV(scanner.nextLine())) {
                             System.out.println("Exported!");
@@ -738,7 +738,7 @@ public class MarketPlace extends Thread{
                             System.out.println("there was a problem!");
                         }
                         break;
-                    case "9":
+                    case "9.delete account":
                         synchronized(obj) {
                             sellers.remove(sellerID); // TODO does this delete all their stores from the file? it
                                                         // should right
@@ -746,7 +746,7 @@ public class MarketPlace extends Thread{
 
                         System.out.println("Account deleted, stores ejected, rejected and taken care of. Goodbye.");
                         return;
-                    case "10":
+                    case "10. log out":
                         synchronized(obj) {
                             sellers.set(sellerID, seller);
                         }
