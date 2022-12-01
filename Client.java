@@ -209,7 +209,69 @@ public class Client {
                         }
 
                         if (reply.equals("6. view statistics")) {
-                            //TODO xander
+                            boolean bool = true;
+                            ArrayList<String> dashboard = new ArrayList<>();
+                            String[] options = {"Number of products sold by each store", "Your purchased items by store", "Nothing"};
+                            String[] sorts = {"Alphabetically(A-Z)", "Alphabetically(Z-A)", "Quantity(high-low)", "Quantity(low-high)", "Back"};
+                            while (bool) {
+                                boolean again = true;
+                                String title = (String) JOptionPane.showInputDialog(null, "What would you like to see?",
+                                        "Customer Dashboard",
+                                        JOptionPane.QUESTION_MESSAGE, null, options, null);
+                                if (title != null) {
+                                    writer.write(title);
+                                } else {
+                                    writer.write("");
+                                }
+                                writer.newLine();
+                                writer.flush();
+
+                                for (int i = 0; i < dashboard.size(); ) {
+                                    dashboard.remove(i);
+                                }
+                                String line = reader.readLine();
+                                while (!line.isBlank()) {
+                                    dashboard.add(line);
+                                    line = reader.readLine();
+                                }
+                                if (dashboard.isEmpty()) {
+                                    bool = false;
+                                    again = false;
+                                } else if (dashboard.size() == 1) {
+                                    JOptionPane.showMessageDialog(null, dashboard.get(0), "Customer Dashboard",
+                                            JOptionPane.ERROR_MESSAGE);
+                                    again = false;
+                                }
+                                while (again) {
+                                    String dashstring = "";
+                                    for (int i = 0; i < dashboard.size(); i++) {
+                                        dashstring += dashboard.get(i) + "\n";
+                                    }
+                                    dashstring += "\n" + "What would you like to sort by?";
+                                    String sort = (String) JOptionPane.showInputDialog(null, dashstring,
+                                            "Customer Dashboard",
+                                            JOptionPane.INFORMATION_MESSAGE, null, sorts, null);
+                                    if (sort != null) {
+                                        writer.write(sort);
+                                    } else {
+                                        writer.write("");
+                                    }
+                                    writer.newLine();
+                                    writer.flush();
+
+                                    for (int i = 0; i < dashboard.size(); ) {
+                                        dashboard.remove(i);
+                                    }
+                                    String line2 = reader.readLine();
+                                    while (!line2.isBlank()) {
+                                        dashboard.add(line2);
+                                        line2 = reader.readLine();
+                                    }
+                                    if (dashboard.size() == 1) {
+                                        again = false;
+                                    }
+                                }
+                            }
                         }
 
                         if (reply.equals("7. delete account")) {
@@ -428,7 +490,7 @@ public class Client {
                         }
 
                         if (reply.equals("5. view statistics")) {
-                            //TODO xander
+
                         }
 
                         if (reply.equals("6. delete a store")) {
