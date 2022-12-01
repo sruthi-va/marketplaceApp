@@ -492,7 +492,99 @@ public class Client {
                         }
 
                         if (reply.equals("5. view statistics")) {
+                            boolean bool = true;
+                            ArrayList<String> dashboard = new ArrayList<>();
+                            String[] options = {"Number of products bought by each customer at a specific store", "Number of items sold for each product at a specific store", "Nothing"};
+                            String[] sorts = {"Alphabetically(A-Z)", "Alphabetically(Z-A)", "Quantity(high-low)", "Quantity(low-high)", "Back"};
+                            while (bool) {
+                                boolean again = true;
+                                boolean storeStatus = false;
+                                String title = (String) JOptionPane.showInputDialog(null, "What would you like to see?",
+                                        "Seller Dashboard",
+                                        JOptionPane.QUESTION_MESSAGE, null, options, null);
+                                if (title != null) {
+                                    if (title.equals("Number of products bought by each customer at a specific store") || title.equals("Number of items sold for each product at a specific store")) {
+                                        writer.write(title);
+                                        writer.newLine();
+                                        writer.flush();
+                                        String store = JOptionPane.showInputDialog(null, "Please enter one of your stores:",
+                                                "Seller Dashboard",
+                                                JOptionPane.PLAIN_MESSAGE);
+                                        if (store != null) {
+                                            writer.write(store);
+                                        } else {
+                                            writer.write("false");
+                                        }
+                                        writer.newLine();
+                                        writer.flush();
+                                        String status = reader.readLine();
+                                        if (status.equals("true")) {
+                                            storeStatus = true;
+                                        } else {
+                                            JOptionPane.showMessageDialog(null, "You don't have a store under that name...", "Seller Dashboard",
+                                                    JOptionPane.ERROR_MESSAGE);
+                                        }
+                                    } else if (title.equals("Nothing")) {
+                                        writer.write(title);
+                                        writer.newLine();
+                                        writer.flush();
+                                        bool = false;
+                                    }
+                                } else {
+                                    writer.write("");
+                                    writer.newLine();
+                                    writer.flush();
+                                    bool = false;
+                                }
 
+                                if (storeStatus) {
+                                    for (int i = 0; i < dashboard.size(); ) {
+                                        dashboard.remove(i);
+                                    }
+                                    String line = reader.readLine();
+                                    while (!line.isBlank()) {
+                                        dashboard.add(line);
+                                        line = reader.readLine();
+                                    }
+                                    if (dashboard.isEmpty()) {
+                                        bool = false;
+                                        again = false;
+                                    } else if (dashboard.size() == 1) {
+                                        JOptionPane.showMessageDialog(null, dashboard.get(0), "Seller Dashboard",
+                                                JOptionPane.ERROR_MESSAGE);
+                                        again = false;
+                                    }
+                                    while (again) {
+                                        String dashstring = "";
+                                        for (int i = 0; i < dashboard.size(); i++) {
+                                            dashstring += dashboard.get(i) + "\n";
+                                        }
+                                        dashstring += "\n" + "What would you like to sort by?";
+                                        String sort = (String) JOptionPane.showInputDialog(null, dashstring,
+                                                "Seller Dashboard",
+                                                JOptionPane.INFORMATION_MESSAGE, null, sorts, null);
+                                        if (sort != null) {
+                                            writer.write(sort);
+                                        } else {
+                                            writer.write("");
+                                        }
+                                        writer.newLine();
+                                        writer.flush();
+
+                                        for (int i = 0; i < dashboard.size(); ) {
+                                            dashboard.remove(i);
+                                        }
+                                        String line2 = reader.readLine();
+                                        while (!line2.isBlank()) {
+                                            dashboard.add(line2);
+                                            line2 = reader.readLine();
+                                        }
+                                        if (dashboard.size() == 1) {
+                                            again = false;
+                                        }
+                                    }
+                                }
+                            }
                         }
 
                         if (reply.equals("6. delete a store")) {
