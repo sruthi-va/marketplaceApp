@@ -163,14 +163,10 @@ public class MarketPlace extends Thread {
                         if (list.length > 0) {
                             customer.purchaseCart(list);
                             this.decrementQuantity(list);
-                            System.out.println("Cart has been bought!");
-                        } else {
-                            System.out.println("Your cart is empty! Go buy some stuff");
                         }
                         break;
                     case "4. edit cart":
                         Product[] cart = customer.getCustomerCart().getProducts(userpass[0]);
-                        System.out.println(Arrays.toString(cart));
                         Product item = null;
                         try {
                             line = reader.readLine();
@@ -185,9 +181,6 @@ public class MarketPlace extends Thread {
                         }
                         if (item != null) {
                             customer.deleteFromCart(customer.getUsername(), item);
-                        } else {
-                            System.out.println("This item isn't in your cart!!");
-                            break;
                         }
                         break;
                     case "5. view cart":
@@ -303,7 +296,7 @@ public class MarketPlace extends Thread {
                     case "8. logout":
                         return;
                     default:
-                        System.out.println("Enter a valid command :{");
+                        return;
                 } // here
             } while (true);
         } else if (id == 2) {
@@ -338,7 +331,6 @@ public class MarketPlace extends Thread {
                                     sellers.add(seller);
                                     sellerID = sellers.indexOf(seller);
                                 }
-                                System.out.println("New account created!");
                                 writer.write("true");
                                 break;
                             } else {
