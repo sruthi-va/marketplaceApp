@@ -310,7 +310,8 @@ public class Client {
                         
                         if (reply.equals("1. list your stores")) {
                             if (reader.readLine().equals("no stores")) {
-                                // TODO gui for saying that no stores
+                                JOptionPane.showMessageDialog(null, "There are no stores", "Stores",
+                                        JOptionPane.ERROR_MESSAGE);
                             } else {
                                 Store[] stores = (Store[]) ois.readObject();
                                 int k = 1;
@@ -331,7 +332,8 @@ public class Client {
                         if (reply.equals("2. edit stores")) {
 
                             if (reader.readLine().equals("no stores")) {
-                                // TODO gui for saying that no stores
+                                JOptionPane.showMessageDialog(null, "There are no stores", "Stores",
+                                        JOptionPane.ERROR_MESSAGE);
                             } else {
                                 Store[] stores = (Store[]) ois.readObject();
 
@@ -487,7 +489,8 @@ public class Client {
 
                         if (reply.equals("3. view sales")) {
                             if (reader.readLine().equals("no stores")) {
-                                // TODO gui for saying that no stores
+                                JOptionPane.showMessageDialog(null, "There are no stores", "Stores",
+                                        JOptionPane.ERROR_MESSAGE);
                             } else { 
                                 System.out.println("Type a store name to see it's sales, or 'all' to see all of your " +
                                     "store sales"); // TODO gui
@@ -619,16 +622,19 @@ public class Client {
                             do {
                                 String input = ""; // TODO get GUI input from user (which store)
                                 if (input.equalsIgnoreCase("") || input.equals(null)) {
-                                    System.out.println("not a store dumbass"); // TODO GUI 
+                                    JOptionPane.showMessageDialog(null, "Not a store", "Stores",
+                                            JOptionPane.ERROR_MESSAGE);
                                 } else {
                                     valid = true;
                                     writer.write(input);
                                     writer.newLine();
                                     writer.flush();
                                     if (reader.readLine().equals("is store")) {
-                                        System.out.println("Store deleted!"); // TODO
+                                        JOptionPane.showMessageDialog(null, "Stores deleted!", "Stores",
+                                                JOptionPane.INFORMATION_MESSAGE);
                                     } else {
-                                        System.out.println("still not a store dumbass"); // TODO
+                                        JOptionPane.showMessageDialog(null, "Still not a store", "Stores",
+                                                JOptionPane.ERROR_MESSAGE);
                                     }
                                 } 
                             } while (!valid);
@@ -639,7 +645,8 @@ public class Client {
                             do {
                                 String input = ""; // TODO get GUI input from user (enter filename)
                                 if (input.equalsIgnoreCase("") || input.equals(null)) {
-                                    System.out.println("not a name idiot"); // TODO GUI 
+                                    JOptionPane.showMessageDialog(null, "Not a name", "Stores",
+                                            JOptionPane.ERROR_MESSAGE);
                                 } else {
                                     valid = true;
                                     writer.write(input);
@@ -659,7 +666,8 @@ public class Client {
                             do { 
                                 String input = ""; // TODO user input from gui (enter file to write to)
                                 if (input.equalsIgnoreCase("") || input.equals(null)) {
-                                    System.out.println("not a file name idiot"); // TODO GUI 
+                                    JOptionPane.showMessageDialog(null, "Not a file name idiot", "Stores",
+                                            JOptionPane.ERROR_MESSAGE);
                                 } else {
                                     valid = true;
                                     writer.write(input);
