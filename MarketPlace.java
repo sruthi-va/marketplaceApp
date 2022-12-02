@@ -150,7 +150,7 @@ public class MarketPlace extends Thread {
                         for (Object o : searchResult) {
                             System.out.println(o.toString());
                         }
-                        this.runSearch(scanner, customer, userpass[0]);
+                        //this.runSearch(scanner, customer, userpass[0]);
                         break;
                     case "3. purchase": //server writes over string returned from purchasecart method
                         Product[] list = customer.getCustomerCart().getProducts(userpass[0]);
