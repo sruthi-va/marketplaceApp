@@ -565,6 +565,11 @@ public class Client {
                         }
 
                         if (reply.equals("4. create store")) {
+                            // Added a string sent to server so that it prompts the corresponding action
+                            writer.write(reply);
+                            writer.newLine();
+                            writer.flush();
+                            //
                             boolean repeat = true;
                             while (repeat) {
                                 System.out.println("What would you like this store to be named?"); // TODO GUI
@@ -582,6 +587,11 @@ public class Client {
                         }
 
                         if (reply.equals("5. view statistics")) {
+                            // Added a string sent to server so that it prompts the corresponding action
+                            writer.write(reply);
+                            writer.newLine();
+                            writer.flush();
+                            //
                             boolean bool = true;
                             ArrayList<String> dashboard = new ArrayList<>();
                             String[] options = {"Number of products bought by each customer at a specific store", "Number of items sold for each product at a specific store", "Nothing"};
@@ -679,6 +689,11 @@ public class Client {
                         }
 
                         if (reply.equals("6. delete a store")) {
+                            // Added a string sent to server so that it prompts the corresponding action
+                            writer.write(reply);
+                            writer.newLine();
+                            writer.flush();
+                            //
                             boolean valid = false;
                             do {
                                 String input = ""; // TODO get GUI input from user (which store)
@@ -702,6 +717,11 @@ public class Client {
                         }
 
                         if (reply.equals("7. import stores from a CSV")) {
+                            // Added a string sent to server so that it prompts the corresponding action
+                            writer.write(reply);
+                            writer.newLine();
+                            writer.flush();
+                            //
                             boolean valid = false;
                             do {
                                 String input = ""; // TODO get GUI input from user (enter filename)
@@ -723,6 +743,11 @@ public class Client {
                         }
 
                         if (reply.equals("8. export stores as a CSV")) {
+                            // Added a string sent to server so that it prompts the corresponding action
+                            writer.write(reply);
+                            writer.newLine();
+                            writer.flush();
+                            //
                             boolean valid = false;
                             do { 
                                 String input = ""; // TODO user input from gui (enter file to write to)
