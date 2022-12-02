@@ -66,9 +66,6 @@ public class Dashboard {
                 }
             }
         }
-        if (dashboard.size() == 1) {
-            dashboard.add("No one has bought anything...");
-        }
         return dashboard;
     }
 
@@ -106,9 +103,6 @@ public class Dashboard {
                     }
                 }
             }
-        }
-        if (dashboard.size() == 1) {
-            dashboard.add("This store has no products...");
         }
         return dashboard;
     }
@@ -154,7 +148,6 @@ public class Dashboard {
         ArrayList<String> purchasehistory = readFile(purchasehistoryfile);
         ArrayList<String> dashboard = new ArrayList<>();
         dashboard.add("YOUR PURCHASED ITEMS BY STORE");
-        int counter = 0;
         for (int i = 0; i < purchasehistory.size(); i++) {
             String[] splitlist = purchasehistory.get(i).split(",", -1);
             if (splitlist[0].equals(customerName)) {
@@ -169,7 +162,6 @@ public class Dashboard {
                         }
                     }
                     if (bool) {
-                        counter++;
                         products.append(productstore[1]);
                         products.append(": ");
                         products.append(productstore[0]);
@@ -193,9 +185,6 @@ public class Dashboard {
                     }
                 }
             }
-        }
-        if (counter == 0) {
-            dashboard.add("You haven't bought anything...");
         }
         return dashboard;
     }

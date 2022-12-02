@@ -1,6 +1,7 @@
 import java.io.*;
 import java.lang.reflect.Array;
 import java.net.*;
+import java.security.InvalidParameterException;
 import java.util.*;
 
 import javax.swing.JOptionPane;
@@ -15,7 +16,7 @@ import javax.swing.JOptionPane;
  * @author Catherine Park, Zander Carpenter, Jennifer Wang, Sruthi Vadakuppa, Vanshika Balaji
  * @version Nov 4, 2022
  */
-public class MarketPlace extends Thread{
+public class MarketPlace extends Thread {
     private static ArrayList<Seller> sellers = new ArrayList<>();
     private Socket socket;
     public static Object obj = new Object();
@@ -143,7 +144,7 @@ public class MarketPlace extends Thread{
                         customer.addToCart(customer.getUsername(), p);
                         break;
                     case "3. purchase": //server writes over string returned from purchasecart method
-                        Product[] list = customer.getCustomerCart().getProducts(user);
+                        Product[] list = customer.getCustomerCart().getProducts(userpass[0]);
                         list = this.updateProductQuantities(list);
                         if (list.length > 0) {
                             customer.purchaseCart(list);
@@ -154,7 +155,7 @@ public class MarketPlace extends Thread{
                         }
                         break;
                     case "4. edit cart":
-                        Product[] cart = customer.getCustomerCart().getProducts(user);
+                        Product[] cart = customer.getCustomerCart().getProducts(userpass[0]);
                         System.out.println(Arrays.toString(cart));
                         Product item = null;
                         line = reader.readLine();
@@ -458,200 +459,249 @@ public class MarketPlace extends Thread{
                                         System.out.println("Please type 'create', 'edit', or 'delete'.");
                                     }
                                 }
-                                System.out.println("Would you like to do something else?");
-                                if (scanner.nextLine().toLowerCase().startsWith("y")) {
-                                    continuing = true;
-                                } else {
-                                    continuing = false;
-                                }
+                                // System.out.println("Would you like to do something else?");
+                                // if (scanner.nextLine().toLowerCase().startsWith("y")) {
+                                //     continuing = true;
+                                // } else {
+                                //     continuing = false;
+                                // }
                             } while (continuing);
                         }
                         break;
                     case "3. view sales":
-                        if (seller.getStores().size() == 0) {
+                        if (sellers.get(sellerID).getStores().size() == 0) {
                             System.out.println("you have no stores!");
-                            break;
-                        }
-                        try {
-                            System.out.println("Type a store name to see it's sales, or 'all' to see all of your " +
-                                    "store sales");
-                            String storeName = scanner.nextLine();
-                            seller.viewSales(storeName);
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
-                        break;
-                    case "4. create store":
-                        String storeName = "";
-                        boolean repeat = true;
-                        while (repeat) {
-                            System.out.println("What would you like this store to be named?");
-                            storeName = scanner.nextLine();
-                            if (storeName.equalsIgnoreCase("") || storeName.equals(null)) {
-                                System.out.println("Please enter a valid name!");
-                            } else {
-                                repeat = false;
-                                seller.createStore(seller.getSellerName(), storeName);
-                                System.out.println("Store created!");
-                                synchronized(obj) {
-                                    sellers.set(sellerID, seller);
-                                }
+                            writer.write("no stores");
+                            writer.println();
+                            writer.flush();
+                        } else {
+                            writer.write("has stores");
+                            writer.println();
+                            writer.flush();
+                            try {
+                                System.out.println("Type a store name to see it's sales, or 'all' to see all of your " +
+                                        "store sales");
+                                String storeName = reader.readLine();
+                                writer.write(seller.viewSales(storeName));
+                                writer.println();
+                                writer.flush();
+                            } catch (IOException e) {
+                                e.printStackTrace();
                             }
                         }
                         break;
-                    case "5.view statistics":
-                        if (seller.getStores().size() == 0) {
-                            System.out.println("you have no stores!");
-                            break;
+                    case "4. create store":
+                        String storeName = reader.readLine();
+                        seller.createStore(seller.getSellerName(), storeName);
+                        synchronized(obj) {
+                            sellers.set(sellerID, seller);
                         }
-                        int input = 0;
+                        break;
+                    case "5.view statistics":
+                        boolean bool = true;
                         ArrayList<String> dashboard = new ArrayList<>();
-                        while (input != 3) {
-                            do {
-                                System.out.println("What would you like to see? (Type 1-3)");
-                                System.out.println("1. Number of products bought by each customer at a specific store");
-                                System.out.println("2. Number of items sold for each product at a specific store");
-                                System.out.println("3. Return to main menu");
+                        while (bool) {
+                            boolean again = true;
+                            String dash = null;
+                            try {
+                                dash = reader.readLine();
+                            } catch (IOException e) {
+                                throw new RuntimeException(e);
+                            }
+                            if (dash.equals("Number of products bought by each customer at a specific store")) {
+                                String store = null;
                                 try {
-                                    input = scanner.nextInt();
-                                    scanner.nextLine();
-                                    if (input < 1 || input > 3) {
-                                        System.out.println("Please enter a valid number!");
-                                    }
-                                } catch (Exception e) {
-                                    System.out.println("Please enter a valid number!");
-                                    scanner.nextLine();
-                                    input = 0;
+                                    store = reader.readLine();
+                                } catch (IOException e){
+                                    throw new RuntimeException(e);
                                 }
-                            } while (input < 1 || input > 3);
-                            if (input != 3) {
-                                String store = "";
-                                boolean bool = false;
-                                int input2 = 0;
-                                while (!bool) {
-                                    System.out.println("Please enter one of your stores:");
-                                    store = scanner.nextLine();
-                                    ArrayList<String> marketplaceinfo = Dashboard.readFile("marketplace.txt");
-                                    for (int i = 0; i < marketplaceinfo.size(); i++) {
-                                        String[] sellerinfo = marketplaceinfo.get(i).split(";");
-                                        if (sellerinfo[0].equals(seller.getSellerName())) {
-                                            for (int j = 1; j < sellerinfo.length; j++) {
-                                                String[] storeinfo = sellerinfo[j].split("-");
-                                                if (storeinfo[0].equalsIgnoreCase(store)) {
-                                                    bool = true;
-                                                }
+                                ArrayList<String> marketplaceinfo = Dashboard.readFile("testsample1.txt");
+                                boolean status = false;
+                                for (int i = 0; i < marketplaceinfo.size(); i++) {
+                                    String[] sellerinfo = marketplaceinfo.get(i).split(";");
+                                    if (sellerinfo[0].equals(seller.getSellerName())) {
+                                        for (int j = 1; j < sellerinfo.length; j++) {
+                                            String[] storeinfo = sellerinfo[j].split("-");
+                                            if (storeinfo[0].equalsIgnoreCase(store)) {
+                                                status = true;
                                             }
                                         }
                                     }
-                                    if (!bool) {
-                                        System.out.println("You don't have a store under that name...");
-                                        boolean error;
-                                        do {
-                                            System.out.println("Try again? (type yes or no)");
-                                            String again = scanner.nextLine();
-                                            if (again.equalsIgnoreCase("yes")) {
-                                                bool = false;
-                                                error = false;
-                                            } else if (again.equalsIgnoreCase("no")) {
-                                                bool = true;
-                                                input = 0;
-                                                input2 = 5;
-                                                error = false;
-                                            } else {
-                                                error = true;
-                                                System.out.println("Invalid input, please enter yes or no");
-                                            }
-                                        } while (error);
+                                }
+                                if (status) {
+                                    writer.write("true");
+                                    writer.println();
+                                    writer.flush();
+                                    dashboard = Dashboard.getSellerDashboard1(store, "testsample2.txt");
+                                    if (dashboard.size() > 1) {
+                                        for (int i = 0; i < dashboard.size(); i++) {
+                                            writer.write(dashboard.get(i));
+                                            writer.println();
+                                            writer.flush();
+                                        }
+                                        writer.write("");
+                                        writer.println();
+                                        writer.flush();
+                                    } else {
+                                        writer.write("No one has bought anything...");
+                                        writer.println();
+                                        writer.flush();
+                                        writer.write("");
+                                        writer.println();
+                                        writer.flush();
+                                        again = false;
                                     }
+                                } else {
+                                    writer.write("false");
+                                    writer.println();
+                                    writer.flush();
+                                    again = false;
                                 }
-                                if (input == 1) {
-                                    dashboard = Dashboard.getSellerDashboard1(store, "customers.txt");
-                                } else if (input == 2) {
-                                    dashboard = Dashboard.getSellerDashboard2(store, seller.getSellerName(),
-                                            "customers.txt", "marketplace.txt");
+                            } else if (dash.equals("Number of items sold for each product at a specific store")) {
+                                String store = null;
+                                try {
+                                    store = reader.readLine();
+                                } catch (IOException e) {
+                                    throw new RuntimeException(e);
                                 }
-                                Dashboard.printDashboard(dashboard);
-                                System.out.println("---------------------------");
-                                if (dashboard.size() > 2) {
-                                    while (input2 != 5) {
-                                        do {
-                                            System.out.println("Would you like to sort? (Type 1-5)");
-                                            System.out.println("1. Sort Alphabetically (A-Z)");
-                                            System.out.println("2. Sort Alphabetically (Z-A)");
-                                            System.out.println("3. Sort by quantity (high-low)");
-                                            System.out.println("4. Sort by quantity (low-high)");
-                                            System.out.println("5. Done");
-                                            try {
-                                                input2 = scanner.nextInt();
-                                                scanner.nextLine();
-                                                if (input2 < 1 || input2 > 5) {
-                                                    System.out.println("Please enter a valid number!");
-                                                }
-                                            } catch (Exception e) {
-                                                System.out.println("Please enter a valid number!");
-                                                scanner.nextLine();
-                                                input2 = 0;
+                                ArrayList<String> marketplaceinfo = Dashboard.readFile("testsample1.txt");
+                                boolean status = false;
+                                for (int i = 0; i < marketplaceinfo.size(); i++) {
+                                    String[] sellerinfo = marketplaceinfo.get(i).split(";");
+                                    if (sellerinfo[0].equals(seller.getSellerName())) {
+                                        for (int j = 1; j < sellerinfo.length; j++) {
+                                            String[] storeinfo = sellerinfo[j].split("-");
+                                            if (storeinfo[0].equalsIgnoreCase(store)) {
+                                                status = true;
                                             }
-                                        } while (input2 < 1 || input2 > 5);
-                                        switch (input2) {
-                                            case 1:
-                                                Dashboard.printDashboard(Dashboard.sortAlphabetically(dashboard,
-                                                        true));
-                                                System.out.println("---------------------------");
-                                                break;
-                                            case 2:
-                                                Dashboard.printDashboard(Dashboard.sortAlphabetically(dashboard,
-                                                        false));
-                                                System.out.println("---------------------------");
-                                                break;
-                                            case 3:
-                                                Dashboard.printDashboard(Dashboard.sortQuantity(dashboard,
-                                                        true));
-                                                System.out.println("---------------------------");
-                                                break;
-                                            case 4:
-                                                Dashboard.printDashboard(Dashboard.sortQuantity(dashboard,
-                                                        false));
-                                                System.out.println("---------------------------");
-                                                break;
-                                            case 5:
-                                                break;
                                         }
                                     }
+                                }
+                                if (status) {
+                                    writer.write("true");
+                                    writer.println();
+                                    writer.flush();
+                                    dashboard = Dashboard.getSellerDashboard2(store, seller.getSellerName(), "testsample2.txt", "testsample1.txt");
+                                    if (dashboard.size() > 1) {
+                                        for (int i = 0; i < dashboard.size(); i++) {
+                                            writer.write(dashboard.get(i));
+                                            writer.println();
+                                            writer.flush();
+                                        }
+                                        writer.write("");
+                                        writer.println();
+                                        writer.flush();
+                                    } else {
+                                        writer.write("This store has no products...");
+                                        writer.println();
+                                        writer.flush();
+                                        writer.write("");
+                                        writer.println();
+                                        writer.flush();
+                                        again = false;
+                                    }
+                                } else {
+                                    writer.write("false");
+                                    writer.println();
+                                    writer.flush();
+                                    again = false;
+                                }
+                            } else {
+                                writer.write("");
+                                writer.println();
+                                writer.flush();
+                                again = false;
+                                bool = false;
+                            }
+                            while (again) {
+                                String sort = null;
+                                try {
+                                    sort = reader.readLine();
+                                } catch (IOException e) {
+                                    throw new RuntimeException(e);
+                                }
+                                if (sort.equals("Alphabetically(A-Z)")) {
+                                    dashboard = Dashboard.sortAlphabetically(dashboard, true);
+                                } else if (sort.equals("Alphabetically(Z-A)")) {
+                                    dashboard = Dashboard.sortAlphabetically(dashboard, false);
+                                } else if (sort.equals("Quantity(high-low)")) {
+                                    dashboard = Dashboard.sortQuantity(dashboard, true);
+                                } else if (sort.equals("Quantity(low-high)")) {
+                                    dashboard = Dashboard.sortQuantity(dashboard, false);
+                                } else {
+                                    again = false;
+                                    writer.write("false");
+                                    writer.println();
+                                    writer.flush();
+                                    writer.write("");
+                                    writer.println();
+                                    writer.flush();
+                                }
+                                if (again) {
+                                    for (int i = 0; i < dashboard.size(); i++) {
+                                        writer.write(dashboard.get(i));
+                                        writer.println();
+                                        writer.flush();
+                                    }
+                                    writer.write("");
+                                    writer.println();
+                                    writer.flush();
                                 }
                             }
                         }
                         break;
                     case "6. delete a store":
-                        if (seller.getStores().size() == 0) {
+                        if (sellers.get(sellerID).getStores().size() == 0) {
                             System.out.println("you have no stores!");
-                            break;
-                        }
-                        System.out.println("Sorry to hear that, which store?");
-                        String deleteStore = scanner.nextLine();
-                        Store storeInQuestion = null;
-                        ArrayList<Store> currStores = sellers.get(sellerID).getStores();
-                        for (int i = 0; i < currStores.size(); i++) {
-                            if (currStores.get(i).getStoreName().equals(deleteStore)) {
-                                storeInQuestion = currStores.get(i);
+                            writer.write("no stores");
+                            writer.println();
+                            writer.flush();
+                        } else {
+                            writer.write("has stores");
+                            writer.println();
+                            writer.flush();
+                            String deleteStore = reader.readLine();
+                            Store storeInQuestion = null;
+                            ArrayList<Store> currStores = sellers.get(sellerID).getStores();
+                            for (int i = 0; i < currStores.size(); i++) {
+                                if (currStores.get(i).getStoreName().equals(deleteStore)) {
+                                    storeInQuestion = currStores.get(i);
+                                    break;
+                                }
+                            }
+                            if (storeInQuestion == null) {
+                                writer.write("not store");
+                                writer.println();
+                                writer.flush();
                                 break;
                             }
+                            writer.write("is store");
+                            writer.println();
+                            writer.flush();
+                        
+                            currStores.remove(storeInQuestion);
+                            seller.setStores(currStores);
+                            synchronized(obj) {
+                                sellers.set(sellerID, seller);
+                            }
+                            System.out.println("Store deleted from marketplace");
                         }
-                        if (storeInQuestion == null) {
-                            System.out.println("not a store dumbass");
-                            break;
-                        }
-                        currStores.remove(storeInQuestion);
-                        seller.setStores(currStores);
-                        synchronized(obj) {
-                            sellers.set(sellerID, seller);
-                        }
-                        System.out.println("Store deleted from marketplace");
                         break;
                     case "7. import stores from a CSV":
-                        System.out.println("Enter the name of the file you want to import.");
-                        String fileImport = scanner.nextLine();
-                        ArrayList<Store> importedStores = seller.importCSV(fileImport);
+                        String fileImport = reader.readLine();
+                        ArrayList<Store> importedStores;
+                        try {
+                            importedStores = seller.importCSV(fileImport);
+                        } catch (Exception e) {
+                            writer.write("error");
+                            writer.println();
+                            writer.flush();
+                            break;
+                        } 
+                        writer.write("no error");
+                        writer.println();
+                        writer.flush();
+                        
                         for (int i = 0; i < importedStores.size(); i++) {
                             seller.addStore(importedStores.get(i));
                         }
@@ -662,7 +712,7 @@ public class MarketPlace extends Thread{
                         break;
                     case "8. export stores as a CSV":
                         System.out.println("Enter the name of the file you want your stores to be exported to.");
-                        if (seller.exportCSV(scanner.nextLine())) {
+                        if (seller.exportCSV(reader.readLine())) {
                             System.out.println("Exported!");
                         } else {
                             System.out.println("there was a problem!");
@@ -672,8 +722,10 @@ public class MarketPlace extends Thread{
                         synchronized(obj) {
                             sellers.remove(sellerID); // TODO does this delete all their stores from the file? it
                                                         // should right
-                        }
-
+                        }                               // yeah it won't write this seller's stuff to the file
+                                                        // but their history will still exist
+                                                        // that's probably fine right
+                                           
                         System.out.println("Account deleted, stores ejected, rejected and taken care of. Goodbye.");
                         return;
                     case "10. log out":
