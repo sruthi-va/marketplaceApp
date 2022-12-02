@@ -141,121 +141,81 @@ public class Client {
                         writer.newLine();
                         writer.flush();
 
-                        if (reply.equals("1. view store")) {
-                            String[] chooseStore = (String[]) ois.readObject();
-                            String viewStore = (String) JOptionPane.showInputDialog(null,
-                                    "Which store do you want to view?",
-                                    "View Stores?", JOptionPane.QUESTION_MESSAGE,
-                                    icon, chooseStore, chooseStore[0]);
-                            writer.write(viewStore);
-                            writer.newLine();
-                            writer.flush();
+                        switch (reply) {
+                            case "1. view store":
 
-                            String[] storeProducts = (String[]) ois.readObject();
-                            String chooseProduct = (String) JOptionPane.showInputDialog(null,
-                                    "Click on the product you want to buy.","Store's Product List",
-                                    JOptionPane.QUESTION_MESSAGE,icon, storeProducts, storeProducts[0]);
-                            if (chooseProduct == null) {
-                                runCustomer = true;
-                            } else {
-                                writer.write(chooseProduct);
+                                String[] chooseStore = (String[]) ois.readObject();
+                                String viewStore = (String) JOptionPane.showInputDialog(null,
+                                        "Which store do you want to view?",
+                                        "View Stores?", JOptionPane.QUESTION_MESSAGE,
+                                        icon, chooseStore, chooseStore[0]);
+                                writer.write(viewStore);
                                 writer.newLine();
                                 writer.flush();
-                            }
-                        }
-                        if (reply.equals("2. search")) {
-                            searchGUI(socket, writer, reader, userName, ois, oos);
-                        }
-                        if (reply.equals("3. purchase")) { //server writes over string returned from purchasecart method
-                            String purchaseResult = reader.readLine();
-                            if (purchaseResult.contains("out of stock")) {
 
-
-                            } else {
-                                int display = JOptionPane.showOptionDialog(null,
-                                    purchaseResult, "Shopping Cart",
-                                    JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE, icon,
-                                    null, null);
-                            if (display == JOptionPane.CLOSED_OPTION) {
-                                return;
-                            }
-
-                            }
-
-                        }
-                        
-                        if (reply.equals("4. edit cart")) {
-                            String[] displayCart = (String[]) ois.readObject();
-                            String deleteItem = (String) JOptionPane.showInputDialog(null,
-                                    "Click on the product you want to remove to cart.",
-                                    "Your Shopping Cart", JOptionPane.QUESTION_MESSAGE,icon, displayCart,
-                                    displayCart[0]);
-                            if (deleteItem == null) {
-                                runCustomer = true;
-                            } else {
-                                writer.write(deleteItem);
-                                writer.newLine();
-                                writer.flush();
-                            }
-                        }
-
-                        if (reply.equals("5. view cart")) {
-                            String shoppingcart = reader.readLine();
-                            JOptionPane.showMessageDialog(null, shoppingcart, "Shopping Cart",
-                        JOptionPane.INFORMATION_MESSAGE);
-                            
-
-                        }
-
-                        if (reply.equals("6. view statistics")) {
-                            boolean bool = true;
-                            ArrayList<String> dashboard = new ArrayList<>();
-                            String[] options = {"Number of products sold by each store",
-                                    "Your purchased items by store", "Nothing"};
-                            String[] sorts = {"Alphabetically(A-Z)", "Alphabetically(Z-A)", "Quantity(high-low)",
-                                    "Quantity(low-high)", "Back"};
-                            while (bool) {
-                                boolean again = true;
-                                String title = (String) JOptionPane.showInputDialog(null,
-                                        "What would you like to see?",
-                                        "Customer Dashboard",
-                                        JOptionPane.QUESTION_MESSAGE, null, options, null);
-                                if (title != null) {
-                                    writer.write(title);
+                                String[] storeProducts = (String[]) ois.readObject();
+                                String chooseProduct = (String) JOptionPane.showInputDialog(null,
+                                        "Click on the product you want to buy.","Store's Product List",
+                                        JOptionPane.QUESTION_MESSAGE,icon, storeProducts, storeProducts[0]);
+                                if (chooseProduct == null) {
+                                    runCustomer = true;
                                 } else {
-                                    writer.write("");
+                                    whatToDoWithProduct(null, userName, oos);
                                 }
-                                writer.newLine();
-                                writer.flush();
-
-                                for (int i = 0; i < dashboard.size(); ) {
-                                    dashboard.remove(i);
-                                }
-                                String line = reader.readLine();
-                                while (!line.isBlank()) {
-                                    dashboard.add(line);
-                                    line = reader.readLine();
-                                }
-                                if (dashboard.isEmpty()) {
-                                    bool = false;
-                                    again = false;
-                                } else if (dashboard.size() == 1) {
-                                    JOptionPane.showMessageDialog(null, dashboard.get(0),
-                                            "Customer Dashboard",
-                                            JOptionPane.ERROR_MESSAGE);
-                                    again = false;
-                                }
-                                while (again) {
-                                    String dashstring = "";
-                                    for (int i = 0; i < dashboard.size(); i++) {
-                                        dashstring += dashboard.get(i) + "\n";
+                                break;
+                            case "2. search":
+                                searchGUI(socket, writer, reader, userName, ois, oos);
+                                break;
+                            case "3. purchase":  
+                                String purchaseResult = reader.readLine();
+                                if (purchaseResult.contains("out of stock")) {
+                                } else {
+                                    int display = JOptionPane.showOptionDialog(null,
+                                        purchaseResult, "Shopping Cart",
+                                        JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE, icon,
+                                        null, null);
+                                    if (display == JOptionPane.CLOSED_OPTION) {
+                                        return;
                                     }
-                                    dashstring += "\n" + "What would you like to sort by?";
-                                    String sort = (String) JOptionPane.showInputDialog(null, dashstring,
+                                }
+                                break;
+                            case "4. edit cart":
+                                String[] displayCart = (String[]) ois.readObject();
+                                String deleteItem = (String) JOptionPane.showInputDialog(null,
+                                        "Click on the product you want to remove to cart.",
+                                        "Your Shopping Cart", JOptionPane.QUESTION_MESSAGE,icon, displayCart,
+                                        displayCart[0]);
+                                if (deleteItem == null) {
+                                    runCustomer = true;
+                                } else {
+                                    writer.write(deleteItem);
+                                    writer.newLine();
+                                    writer.flush();
+                                }
+                                break;
+                            case "5. view cart":
+                                String shoppingcart = reader.readLine();
+                                if (shoppingcart != null) {
+                                    shoppingcart = "your cart is empty!";
+                                } 
+                                JOptionPane.showMessageDialog(null, shoppingcart, "Shopping Cart",
+                                        JOptionPane.INFORMATION_MESSAGE);
+                                break;
+                            case "6. view statistics":
+                                boolean bool = true;
+                                ArrayList<String> dashboard = new ArrayList<>();
+                                String[] options = {"Number of products sold by each store",
+                                        "Your purchased items by store", "Nothing"};
+                                String[] sorts = {"Alphabetically(A-Z)", "Alphabetically(Z-A)", "Quantity(high-low)",
+                                        "Quantity(low-high)", "Back"};
+                                while (bool) {
+                                    boolean again = true;
+                                    String title = (String) JOptionPane.showInputDialog(null,
+                                            "What would you like to see?",
                                             "Customer Dashboard",
-                                            JOptionPane.INFORMATION_MESSAGE, null, sorts, null);
-                                    if (sort != null) {
-                                        writer.write(sort);
+                                            JOptionPane.QUESTION_MESSAGE, null, options, null);
+                                    if (title != null) {
+                                        writer.write(title);
                                     } else {
                                         writer.write("");
                                     }
@@ -265,31 +225,67 @@ public class Client {
                                     for (int i = 0; i < dashboard.size(); ) {
                                         dashboard.remove(i);
                                     }
-                                    String line2 = reader.readLine();
-                                    while (!line2.isBlank()) {
-                                        dashboard.add(line2);
-                                        line2 = reader.readLine();
+                                    String line = reader.readLine();
+                                    while (!line.isBlank()) {
+                                        dashboard.add(line);
+                                        line = reader.readLine();
                                     }
-                                    if (dashboard.size() == 1) {
+                                    if (dashboard.isEmpty()) {
+                                        bool = false;
+                                        again = false;
+                                    } else if (dashboard.size() == 1) {
+                                        JOptionPane.showMessageDialog(null, dashboard.get(0),
+                                                "Customer Dashboard",
+                                                JOptionPane.ERROR_MESSAGE);
                                         again = false;
                                     }
+                                    while (again) {
+                                        String dashstring = "";
+                                        for (int i = 0; i < dashboard.size(); i++) {
+                                            dashstring += dashboard.get(i) + "\n";
+                                        }
+                                        dashstring += "\n" + "What would you like to sort by?";
+                                        String sort = (String) JOptionPane.showInputDialog(null, dashstring,
+                                                "Customer Dashboard",
+                                                JOptionPane.INFORMATION_MESSAGE, null, sorts, null);
+                                        if (sort != null) {
+                                            writer.write(sort);
+                                        } else {
+                                            writer.write("");
+                                        }
+                                        writer.newLine();
+                                        writer.flush();
+
+                                        for (int i = 0; i < dashboard.size(); ) {
+                                            dashboard.remove(i);
+                                        }
+                                        String line2 = reader.readLine();
+                                        while (!line2.isBlank()) {
+                                            dashboard.add(line2);
+                                            line2 = reader.readLine();
+                                        }
+                                        if (dashboard.size() == 1) {
+                                            again = false;
+                                        }
+                                    }
                                 }
-                            }
+                                break;
+
+                            case "7. delete account":
+                                JOptionPane.showMessageDialog(null, "Your account has been deleted.",
+                                        "bEtsy",JOptionPane.INFORMATION_MESSAGE);
+                                runCustomer = false;
+                                return;
+                            
+                            case "8. logout":
+                                JOptionPane.showMessageDialog(null, "Goodbye!",
+                                        "bEtsy",JOptionPane.INFORMATION_MESSAGE);
+                                runCustomer = false;
+                                run = false;
+                                return;
+                            default:
+                                return;
                         }
-
-                        if (reply.equals("7. delete account")) {
-                            JOptionPane.showMessageDialog(null, "Your account has been deleted.",
-                                    "bEtsy",
-                        JOptionPane.INFORMATION_MESSAGE);
-                        runCustomer = false;
-
-                        }
-
-                        if (reply.equals("8. logout")) {
-                            runCustomer = false;
-                            run = false;
-                        }
-
                     }
 
                 }
@@ -310,7 +306,8 @@ public class Client {
                         
                         if (reply.equals("1. list your stores")) {
                             if (reader.readLine().equals("no stores")) {
-                                // TODO gui for saying that no stores
+                                JOptionPane.showMessageDialog(null, "There are no stores", "Stores",
+                                        JOptionPane.ERROR_MESSAGE);
                             } else {
                                 Store[] stores = (Store[]) ois.readObject();
                                 int k = 1;
@@ -329,11 +326,12 @@ public class Client {
                         }
 
                         if (reply.equals("2. edit stores")) {
-
                             if (reader.readLine().equals("no stores")) {
-                                // TODO gui for saying that no stores
+                                JOptionPane.showMessageDialog(null, "There are no stores", "Stores",
+                                        JOptionPane.ERROR_MESSAGE);
                             } else {
                                 Store[] stores = (Store[]) ois.readObject();
+                                String[] storesStr = new String[stores.length];
 
                                 int poop = 1;
                                 for (Store s : stores) {
@@ -343,10 +341,14 @@ public class Client {
                                         System.out.println("   - " + currProducts.get(i).toString());
                                     }
                                     poop++;
+                                    storesStr[poop - 1] = s.getStoreName();
                                 }
                                 // TODO display stores in a gui
 
-                                Store chosenStore = null; // TODO this should be set to what the user chooses
+                                String chosenStore = (String) JOptionPane.showInputDialog(null, "Which store do you want to view?", 
+                                    "View Store", JOptionPane.QUESTION_MESSAGE,
+                                    null, storesStr, storesStr[0]);
+
                                 
                                 oos.writeObject(chosenStore);
                                 oos.flush();
@@ -355,8 +357,12 @@ public class Client {
                                 boolean valid = false;
                                 while (!valid) {
                                     // TODO gui
+                                    String[] strArr = {"create", "edit", "delete products"};
+                                    String todo = (String) JOptionPane.showInputDialog(null,
+                                "What is your choice?",
+                        "Choice?", JOptionPane.QUESTION_MESSAGE,
+                        icon, strArr, dropdown[0]);
                                     //System.out.println("Do you want to create, edit, or delete products?");
-                                    String todo = null;
                                     writer.write(todo);
                                     writer.newLine();
                                     writer.flush(); 
@@ -487,7 +493,8 @@ public class Client {
 
                         if (reply.equals("3. view sales")) {
                             if (reader.readLine().equals("no stores")) {
-                                // TODO gui for saying that no stores
+                                JOptionPane.showMessageDialog(null, "There are no stores", "Stores",
+                                        JOptionPane.ERROR_MESSAGE);
                             } else { 
                                 System.out.println("Type a store name to see it's sales, or 'all' to see all of your " +
                                     "store sales"); // TODO gui
@@ -496,6 +503,7 @@ public class Client {
                                 writer.newLine();
                                 writer.flush();
                                 
+
                                 String sellerHistory = reader.readLine(); // TODO display gui
                             }
                         }
@@ -617,18 +625,22 @@ public class Client {
                         if (reply.equals("6. delete a store")) {
                             boolean valid = false;
                             do {
-                                String input = ""; // TODO get GUI input from user (which store)
+                                String input = JOptionPane.showInputDialog(null, "Which store?",
+                                "Delete Store", JOptionPane.QUESTION_MESSAGE);
                                 if (input.equalsIgnoreCase("") || input.equals(null)) {
-                                    System.out.println("not a store dumbass"); // TODO GUI 
+                                    JOptionPane.showMessageDialog(null, "Not a store", "Stores",
+                                            JOptionPane.ERROR_MESSAGE);
                                 } else {
                                     valid = true;
                                     writer.write(input);
                                     writer.newLine();
                                     writer.flush();
                                     if (reader.readLine().equals("is store")) {
-                                        System.out.println("Store deleted!"); // TODO
+                                        JOptionPane.showMessageDialog(null, "Stores deleted!", "Stores",
+                                                JOptionPane.INFORMATION_MESSAGE);
                                     } else {
-                                        System.out.println("still not a store dumbass"); // TODO
+                                        JOptionPane.showMessageDialog(null, "Still not a store", "Stores",
+                                                JOptionPane.ERROR_MESSAGE);
                                     }
                                 } 
                             } while (!valid);
@@ -637,9 +649,11 @@ public class Client {
                         if (reply.equals("7. import stores from a CSV")) {
                             boolean valid = false;
                             do {
-                                String input = ""; // TODO get GUI input from user (enter filename)
+                                String input = JOptionPane.showInputDialog(null, "What file do you want to import?",
+                                "Import Stores from CSV", JOptionPane.QUESTION_MESSAGE);
                                 if (input.equalsIgnoreCase("") || input.equals(null)) {
-                                    System.out.println("not a name idiot"); // TODO GUI 
+                                    JOptionPane.showMessageDialog(null, "Not a name", "Stores",
+                                            JOptionPane.ERROR_MESSAGE);
                                 } else {
                                     valid = true;
                                     writer.write(input);
@@ -655,11 +669,18 @@ public class Client {
                         }
 
                         if (reply.equals("8. export stores as a CSV")) {
+                            // Added a string sent to server so that it prompts the corresponding action
+                            writer.write(reply);
+                            writer.newLine();
+                            writer.flush();
+                            //
                             boolean valid = false;
                             do { 
-                                String input = ""; // TODO user input from gui (enter file to write to)
+                                String input = JOptionPane.showInputDialog(null, "What file do you want to export your stores to?",
+                                "Export Stores to CSV", JOptionPane.QUESTION_MESSAGE);
                                 if (input.equalsIgnoreCase("") || input.equals(null)) {
-                                    System.out.println("not a file name idiot"); // TODO GUI 
+                                    JOptionPane.showMessageDialog(null, "Not a file name idiot", "Stores",
+                                            JOptionPane.ERROR_MESSAGE);
                                 } else {
                                     valid = true;
                                     writer.write(input);
@@ -670,6 +691,12 @@ public class Client {
                         }
 
                         if (reply.equals("9. delete account")) {
+                            // Added a string sent to server so that it prompts the corresponding action
+                            writer.write(reply);
+                            writer.newLine();
+                            writer.flush();
+                            //
+                            
                             JOptionPane.showMessageDialog(null, "Your account has been deleted.",
                                     "bEtsy",
                         JOptionPane.INFORMATION_MESSAGE);
@@ -678,6 +705,12 @@ public class Client {
                         }
 
                         if (reply.equals("10. log out?")) {
+                            // Added a string sent to server so that it prompts the corresponding action
+                            writer.write(reply);
+                            writer.newLine();
+                            writer.flush();
+                            //
+                            
                             runSeller = false;
                             run = false;
                             JOptionPane.showMessageDialog(null, "Thanks for visiting bEtsy!", "Goodbye",
