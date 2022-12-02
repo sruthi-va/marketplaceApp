@@ -51,6 +51,7 @@ public class Client {
                 writer.newLine();
                 writer.flush();
                 while (true) {
+                    System.out.println("Starting loop");
                     do {
                         JTextField userField = new JTextField(15);
                         JTextField passField = new JTextField(15);
@@ -97,15 +98,18 @@ public class Client {
                             "Error", JOptionPane.YES_NO_OPTION, JOptionPane.INFORMATION_MESSAGE, icon, 
                             options1, null);
                         if (cancel == JOptionPane.CLOSED_OPTION) {
+                            System.out.println("closed");
                             writer.write("quit");
                             writer.newLine();
                             writer.flush();
                             return;
                         } else if (cancel == JOptionPane.YES_OPTION) {
+                            System.out.println("newAccount");
                             writer.write("newAccount");
                             writer.newLine();
                             writer.flush();
                             String validUsername = reader.readLine();
+                            System.out.println(validUsername);
                             if (validUsername.equals("false")) {
                                 cancel = JOptionPane.showOptionDialog(null, 
                                     "Username already exists! Try logging in again.", "Error",
@@ -114,8 +118,11 @@ public class Client {
                                 if (cancel == JOptionPane.CLOSED_OPTION) {
                                     return;
                                 }
+                            } else {
+                                break;
                             }
                         } else if (cancel == JOptionPane.NO_OPTION) {
+                            System.out.println("tryAgain");
                             writer.write("tryAgain");
                             writer.newLine();
                             writer.flush();
@@ -125,12 +132,14 @@ public class Client {
                     }
                 }
 
+                System.out.println(choose);
                 if (choose.equals("Customer")) {
                     runCustomer = true;
 
                     String results = reader.readLine(); // DONE!! server return a string of the drop down options (1.
                                                         // view store,2. search,3. purchase...) etc DONE!!
                     // separate by commas
+                    System.out.println(results);
                     while (runCustomer) {
                         String[] dropdown = results.split(",", 0);
                         String reply = (String) JOptionPane.showInputDialog(null,
@@ -143,7 +152,6 @@ public class Client {
 
                         switch (reply) {
                             case "1. view store":
-
                                 String[] chooseStore = (String[]) ois.readObject();
                                 String viewStore = (String) JOptionPane.showInputDialog(null,
                                         "Which store do you want to view?",
@@ -723,7 +731,7 @@ public class Client {
 
             } catch (Exception e) {
                 JOptionPane.showMessageDialog(null, "Thanks for visiting bEtsy!", "Goodbye",
-                        JOptionPane.ERROR_MESSAGE);
+                        JOptionPane.INFORMATION_MESSAGE);
                 return;
             }
         }

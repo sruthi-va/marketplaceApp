@@ -53,14 +53,17 @@ public class MarketPlace extends Thread {
         }
 
         String[] userpass = new String[0];
-        try {
-            userpass = reader.readLine().split(";;");
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
 
         if (id == 1) {
             while (true) {
+                System.out.println("Starting loop");
+                try {
+                    userpass = reader.readLine().split(";;");
+                    System.out.println(userpass[0] + " " + userpass[1]);
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+                
                 ArrayList<String> usernames = readFile("customers.txt");
                 boolean usernameFound = false;
                 boolean loggedIn = false;
@@ -79,22 +82,35 @@ public class MarketPlace extends Thread {
                         break;
                     }
                 }
+                
+                if (!usernameFound) {
+                    writer.write("false");
+                    writer.println();
+                    writer.flush();
+                }
 
                 if (!loggedIn) {
                     try {
-                        if (reader.readLine().equals("newAccount")) {
+                        String input = reader.readLine();
+                        if (input.equals("newAccount")) {
+                            System.out.println("recieved new account");
                             if (!usernameFound) {
+                                System.out.println("username doesn't already exist");
                                 synchronized(obj) {
                                     addUserPass("customers.txt", userpass[0], userpass[1]);
                                 }
                                 customer = new Customer(userpass[0], userpass[1]);
                                 writer.write("true");
+                                System.out.println("sent true");
                                 break;
                             } else {
                                 writer.write("false");
+                                System.out.println("sent false");
                             }
                             writer.println();
                             writer.flush();
+                        } else if (input.equals("tryAgain")) {
+                            continue;
                         } else {
                             customer = new Customer(userpass[0], userpass[1]);
                             break;
@@ -107,14 +123,17 @@ public class MarketPlace extends Thread {
                     break;
                 }
             }
-
+            System.out.println("here");
             do {
                 try {
-                    // receive prompt from client
+                    writer.write("1. view store,2. search,3. purchase,4. edit cart,5. view cart,6. view statistics,7. delete account,8. logout");
+                    writer.println();
+                    writer.flush();
                     line = reader.readLine();
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 }
+                System.out.println(line);
                 switch (line) {
                     case "1. view store":
                         Store store = null;
@@ -128,7 +147,8 @@ public class MarketPlace extends Thread {
                             oos.writeObject(allStores);
                             oos.flush();
                         } catch (IOException e) {
-                            throw new RuntimeException(e);
+                            e.printStackTrace();
+                            //throw new RuntimeException(e);
                         }
                         // receive which store to view
                         try {
@@ -167,6 +187,12 @@ public class MarketPlace extends Thread {
                         break;
                     case "4. edit cart":
                         Product[] cart = customer.getCustomerCart().getProducts(userpass[0]);
+                        try {
+                            oos.writeObject(cart);
+                            oos.flush();
+                        } catch (IOException e2) {
+                            e2.printStackTrace();
+                        }
                         Product item = null;
                         try {
                             line = reader.readLine();
@@ -191,6 +217,7 @@ public class MarketPlace extends Thread {
                             cartString += "\n";
                         }
                         writer.write(cartString);
+                        writer.println();
                         writer.flush();
                         break;
                     case "6. view statistics":
@@ -205,8 +232,8 @@ public class MarketPlace extends Thread {
                                 throw new RuntimeException(e);
                             }
                             if (dash.equals("Number of products sold by each store")) {
-                                dashboard = Dashboard.getCustomerDashboard1("testsample2.txt",
-                                        "testsample1.txt");
+                                dashboard = Dashboard.getCustomerDashboard1("customers.txt",
+                                        "marketplace.txt");
                                 if (dashboard.size() > 1) {
                                     for (int i = 0; i < dashboard.size(); i++) {
                                         writer.write(dashboard.get(i));
@@ -227,7 +254,7 @@ public class MarketPlace extends Thread {
                                 }
                             } else if (dash.equals("Your purchased items by store")) {
                                 dashboard = Dashboard.getCustomerDashboard2("username",
-                                        "testsample2.txt");
+                                        "customers.txt");
                                 if (dashboard.size() > 1) {
                                     for (int i = 0; i < dashboard.size(); i++) {
                                         writer.write(dashboard.get(i));
@@ -301,8 +328,17 @@ public class MarketPlace extends Thread {
             } while (true);
         } else if (id == 2) {
             int sellerID = -1;
+            
 
             while (true) {
+                userpass = new String[0];
+                try {
+                    userpass = reader.readLine().split(";;");
+                    System.out.println(userpass[0] + " " + userpass[1]);
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+
                 ArrayList<String> usernames = readFile("sellers.txt");
                 boolean usernameFound = false;
                 boolean loggedIn = false;
@@ -324,7 +360,9 @@ public class MarketPlace extends Thread {
 
                 if (!loggedIn) {
                     try {
-                        if (reader.readLine().equals("newAccount")) {
+                        String read = reader.readLine();
+                        System.out.println(read);
+                        if (read.equals("newAccount")) {
                             if (!usernameFound) {
                                 synchronized(obj) {
                                     addUserPass("sellers.txt", userpass[0], userpass[1]);
@@ -332,6 +370,8 @@ public class MarketPlace extends Thread {
                                     sellerID = sellers.indexOf(seller);
                                 }
                                 writer.write("true");
+                                writer.println();
+                                writer.flush();
                                 break;
                             } else {
                                 writer.write("false");
@@ -361,12 +401,18 @@ public class MarketPlace extends Thread {
                 }
             }
 
+            try {
+                writer.write("1. list your stores,2. edit stores,3. view sales,4. create store,5. " +
+                    "view statistics,6. delete a store,7. import stores from a CSV,8. export stores as a CSV,9. " +
+                    "delete account,10. log out");
+                writer.println();
+                writer.flush();
+                line = reader.readLine();
+            } catch (IOException e1) {
+                e1.printStackTrace();
+            }
+
             do {
-                try {
-                    line = reader.readLine();
-                } catch (IOException e1) {
-                    e1.printStackTrace();
-                }
                 switch (line) {
                     case "1. list your stores":
                         int k = 1;
@@ -528,7 +574,7 @@ public class MarketPlace extends Thread {
                                 } catch (IOException e){
                                     throw new RuntimeException(e);
                                 }
-                                ArrayList<String> marketplaceinfo = Dashboard.readFile("testsample1.txt");
+                                ArrayList<String> marketplaceinfo = Dashboard.readFile("marketplace.txt");
                                 boolean status = false;
                                 for (int i = 0; i < marketplaceinfo.size(); i++) {
                                     String[] sellerinfo = marketplaceinfo.get(i).split(";");
@@ -545,7 +591,7 @@ public class MarketPlace extends Thread {
                                     writer.write("true");
                                     writer.println();
                                     writer.flush();
-                                    dashboard = Dashboard.getSellerDashboard1(store, "testsample2.txt");
+                                    dashboard = Dashboard.getSellerDashboard1(store, "customers.txt");
                                     if (dashboard.size() > 1) {
                                         for (int i = 0; i < dashboard.size(); i++) {
                                             writer.write(dashboard.get(i));
@@ -577,7 +623,7 @@ public class MarketPlace extends Thread {
                                 } catch (IOException e) {
                                     throw new RuntimeException(e);
                                 }
-                                ArrayList<String> marketplaceinfo = Dashboard.readFile("testsample1.txt");
+                                ArrayList<String> marketplaceinfo = Dashboard.readFile("marketplace.txt");
                                 boolean status = false;
                                 for (int i = 0; i < marketplaceinfo.size(); i++) {
                                     String[] sellerinfo = marketplaceinfo.get(i).split(";");
@@ -594,7 +640,7 @@ public class MarketPlace extends Thread {
                                     writer.write("true");
                                     writer.println();
                                     writer.flush();
-                                    dashboard = Dashboard.getSellerDashboard2(store, seller.getSellerName(), "testsample2.txt", "testsample1.txt");
+                                    dashboard = Dashboard.getSellerDashboard2(store, seller.getSellerName(), "customers.txt", "marketplace.txt");
                                     if (dashboard.size() > 1) {
                                         for (int i = 0; i < dashboard.size(); i++) {
                                             writer.write(dashboard.get(i));
@@ -777,6 +823,7 @@ public class MarketPlace extends Thread {
         System.out.println("waiting for users to connect");
         while (true) {
             Socket socket = serverSocket.accept();
+            System.out.println("got a connection");
             MarketPlace server = new MarketPlace(socket);
             new Thread(server).start();
         }
