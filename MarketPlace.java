@@ -59,7 +59,7 @@ public class MarketPlace extends Thread {
                 System.out.println("Starting loop");
                 try {
                     userpass = reader.readLine().split(";;");
-                    System.out.println(userpass[0] + " " + userpass[1]);
+                    System.out.println("from server: " + userpass[0] + " " + userpass[1]);
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 }
@@ -123,6 +123,7 @@ public class MarketPlace extends Thread {
                     break;
                 }
             }
+
             System.out.println("here");
             do {
                 try {
@@ -133,7 +134,7 @@ public class MarketPlace extends Thread {
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 }
-                System.out.println(line);
+                System.out.println("from server: " + line);
                 switch (line) {
                     case "1. view store":
                         Store store = null;
@@ -146,12 +147,6 @@ public class MarketPlace extends Thread {
                         try {
                             oos.writeObject(allStores);
                             oos.flush();
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                            //throw new RuntimeException(e);
-                        }
-                        // receive which store to view
-                        try {
                             line = reader.readLine();
                         } catch (IOException e1) {
                             e1.printStackTrace();
@@ -413,9 +408,9 @@ public class MarketPlace extends Thread {
             }
 
             do {
+                System.out.println(line);
                 switch (line) {
                     case "1. list your stores":
-                        int k = 1;
                         if (seller.getStores().size() == 0) {
                             writer.write("no stores");
                             writer.println();

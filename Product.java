@@ -1,3 +1,4 @@
+import java.io.Serializable;
 
 /**
  * This class contains all the methods that directly pertain to products. Getters and setters allow other classes to
@@ -8,7 +9,7 @@
  * @author Sruthi Vadakuppa
  * @version November 13, 2022
  */
-public class Product {
+public class Product implements Serializable {
     // add to store: add product w/ product name, description, quantity, and price to each store
     private String productName;
     private String description;

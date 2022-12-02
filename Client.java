@@ -135,7 +135,6 @@ public class Client {
                 System.out.println(choose);
                 if (choose.equals("Customer")) {
                     runCustomer = true;
-
                     String results = reader.readLine(); // DONE!! server return a string of the drop down options (1.
                                                         // view store,2. search,3. purchase...) etc DONE!!
                     // separate by commas
@@ -149,7 +148,7 @@ public class Client {
                                             // corresponding drop down choice DONE!!
                         writer.newLine();
                         writer.flush();
-
+                        System.out.println("from client " + reply);
                         switch (reply) {
                             case "1. view store":
                                 String[] chooseStore = (String[]) ois.readObject();

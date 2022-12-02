@@ -1,5 +1,6 @@
 import java.io.*;
 import java.util.ArrayList;
+import java.io.Serializable;
 
 /**
  * This class contains all the methods that directly pertain towards editing the store. This class has the
@@ -10,7 +11,7 @@ import java.util.ArrayList;
  * @author Sruthi Vadakuppa
  * @version November 13, 2022
  */
-public class Store {
+public class Store implements Serializable {
     String sellerName;
     String storeName;
     ArrayList<Product> productList = new ArrayList<>();
