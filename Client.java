@@ -152,6 +152,9 @@ public class Client {
                         switch (reply) {
                             case "1. view store":
                                 String[] chooseStore = (String[]) ois.readObject();
+                                if (chooseStore == null) {
+                                    System.out.println("null in client");
+                                }
                                 String viewStore = (String) JOptionPane.showInputDialog(null,
                                         "Which store do you want to view?",
                                         "View Stores?", JOptionPane.QUESTION_MESSAGE,
@@ -161,13 +164,18 @@ public class Client {
                                 writer.flush();
 
                                 String[] storeProducts = (String[]) ois.readObject();
-                                String chooseProduct = (String) JOptionPane.showInputDialog(null,
-                                        "Click on the product you want to buy.","Store's Product List",
-                                        JOptionPane.QUESTION_MESSAGE,icon, storeProducts, storeProducts[0]);
-                                if (chooseProduct == null) {
-                                    runCustomer = true;
+                                if (storeProducts.length == 0) {
+                                    JOptionPane.showMessageDialog(null, "This store is empty", "Store's Product List",
+                                        JOptionPane.ERROR_MESSAGE);
                                 } else {
-                                    whatToDoWithProduct(null, userName, oos);
+                                    String chooseProduct = (String) JOptionPane.showInputDialog(null,
+                                            "Click on the product you want to buy.","Store's Product List",
+                                            JOptionPane.QUESTION_MESSAGE,icon, storeProducts, storeProducts[0]);
+                                    if (chooseProduct == null) {
+                                        runCustomer = true;
+                                    } else {
+                                        whatToDoWithProduct(null, userName, oos);
+                                    }
                                 }
                                 break;
                             case "2. search":
@@ -729,6 +737,7 @@ public class Client {
 
 
             } catch (Exception e) {
+                e.printStackTrace();
                 JOptionPane.showMessageDialog(null, "Thanks for visiting bEtsy!", "Goodbye",
                         JOptionPane.INFORMATION_MESSAGE);
                 return;
