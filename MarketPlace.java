@@ -59,7 +59,7 @@ public class MarketPlace extends Thread {
                 System.out.println("Starting loop");
                 try {
                     userpass = reader.readLine().split(";;");
-                    System.out.println(userpass[0] + " " + userpass[1]);
+                    System.out.println("from server: " + userpass[0] + " " + userpass[1]);
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 }
@@ -123,6 +123,7 @@ public class MarketPlace extends Thread {
                     break;
                 }
             }
+
             System.out.println("here");
             do {
                 try {
@@ -133,7 +134,7 @@ public class MarketPlace extends Thread {
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 }
-                System.out.println(line);
+                System.out.println("from server: " + line);
                 switch (line) {
                     case "1. view store":
                         Store store = null;
@@ -143,39 +144,42 @@ public class MarketPlace extends Thread {
                                 allStores.add(sellers.get(i).getStores().get(j));
                             }
                         }
+                        String[] allStoresArray = new String[allStores.size()];
+                        for (int i = 0; i < allStores.size(); i++) {
+                            allStoresArray[i] = allStores.get(i).getStoreName();
+                        }
                         try {
-                            oos.writeObject(allStores);
+                            oos.writeObject(allStoresArray);
                             oos.flush();
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                            //throw new RuntimeException(e);
-                        }
-                        // receive which store to view
-                        try {
+                             // receive which store to view
                             line = reader.readLine();
-                        } catch (IOException e1) {
-                            e1.printStackTrace();
-                        }
-                        for (Store st : allStores) {
-                            if (st.getStoreName().equals(line)) {
-                                try {
+                            Store chosen = new Store("", "", null);
+                            for (Store st : allStores) {
+                                if (st.getStoreName().equals(line)) {
+                                    chosen = st;
                                     oos.writeObject(st.listAllProducts());
-                                } catch (IOException e) {
-                                    // TODO Auto-generated catch block
-                                    e.printStackTrace();
+                                    oos.flush();
+                                    break;
+                                }
+                            } 
+                            // receive product name
+                            line = reader.readLine();
+                            // find the obejct
+                            for (Product p : chosen.getProductList()) {
+                                if (p.getProductName().equals(line)) {
+                                    oos.writeObject(p);
+                                    break;
                                 }
                             }
+                            whatToDoWithProductReply(customer, ois);
+                        } catch (IOException e) {
+                                // TODO: Auto-generated catch block
+                                e.printStackTrace();
                         }
                         break;
                     case "2. search":
-                        search(reader, writer, oos, ois);
-                        Product p = null;
-                        try {
-                            p = (Product) ois.readObject();
-                        } catch (ClassNotFoundException | IOException e1) {
-                            e1.printStackTrace();
-                        }
-                        customer.addToCart(customer.getUsername(), p);
+                        search(reader, writer, oos, ois, customer);
+                        
                         break;
                     case "3. purchase": //server writes over string returned from purchasecart method
                         Product[] list = customer.getCustomerCart().getProducts(userpass[0]);
@@ -413,9 +417,9 @@ public class MarketPlace extends Thread {
             }
 
             do {
+                System.out.println(line);
                 switch (line) {
                     case "1. list your stores":
-                        int k = 1;
                         if (seller.getStores().size() == 0) {
                             writer.write("no stores");
                             writer.println();
@@ -886,7 +890,7 @@ public class MarketPlace extends Thread {
      * @param, none
      */
     public void parseFile() {
-        ArrayList<Seller> thisSellers = new ArrayList<Seller>();
+        // ArrayList<Seller> thisSellers = new ArrayList<Seller>();
         try (BufferedReader br = new BufferedReader(new FileReader(new File("marketplace.txt")))) {
             String line = br.readLine();
             while (line != null) {
@@ -902,7 +906,7 @@ public class MarketPlace extends Thread {
                             //System.out.print(productsAndDesc.length);
                             System.out.println("Product format is not right! something is missing!");
                         }
-                        // System.out.println(storesAndProducts[j]);
+                        System.out.println(storesAndProducts[j]);
                         // System.out.println(Arrays.toString(productsAndDesc));
                         thisProducts.add(new Product(productsAndDesc[0], productsAndDesc[1],
                                 Integer.parseInt(productsAndDesc[2]), Double.parseDouble(productsAndDesc[3]),
@@ -925,7 +929,7 @@ public class MarketPlace extends Thread {
      * @param, keyword A String word that the customer inputs to search for
      * @return An HashSet type Object
      */
-    public Product search(BufferedReader reader, PrintWriter writer, ObjectOutputStream oos, ObjectInputStream ois) {
+    public void search(BufferedReader reader, PrintWriter writer, ObjectOutputStream oos, ObjectInputStream ois, Customer customer) {
         Product curr;
         try {
             // ObjectOutputStream oos = new ObjectOutputStream(new DataOutputStream(socket.getOutputStream()));
@@ -952,11 +956,20 @@ public class MarketPlace extends Thread {
                     break;
                 }
             }
-            curr = (Product) ois.readObject();
-            return curr;
+            whatToDoWithProductReply(customer, ois);
         } catch (Exception e) {
             e.printStackTrace();
-            return null;
+            return;
+        }
+    }
+    public void whatToDoWithProductReply(Customer customer, ObjectInputStream ois) {
+        try {
+            Product inQuestion = (Product) ois.readObject();
+            if (inQuestion != null) {
+                customer.addToCart(customer.getUsername(), inQuestion);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 

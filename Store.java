@@ -1,5 +1,6 @@
 import java.io.*;
 import java.util.ArrayList;
+import java.io.Serializable;
 
 /**
  * This class contains all the methods that directly pertain towards editing the store. This class has the
@@ -10,7 +11,7 @@ import java.util.ArrayList;
  * @author Sruthi Vadakuppa
  * @version November 13, 2022
  */
-public class Store {
+public class Store implements Serializable {
     String sellerName;
     String storeName;
     ArrayList<Product> productList = new ArrayList<>();
@@ -106,17 +107,18 @@ public class Store {
     public String[] listAllProducts() {
         ArrayList<String> productArrayList = new ArrayList<String>();
         for (int i = 0; i < productList.size(); i++) {
-            if (productList.get(i).getQuantity() < 0) {
+            if (productList.get(i).getQuantity() > 0) {
                 productArrayList.add(productList.get(i).getProductName());
             }
         }
-        String[] trueProductList = new String[productArrayList.size()];
-        for (int i = 0; i< productArrayList.size(); i++) {
-            trueProductList[0] = productArrayList.get(i);
-        }
+        String[] trueProductList = productArrayList.toArray(new String[0]);
+        // for (int i = 0; i < productArrayList.size(); i++) {
+        //     trueProductList[0] = productArrayList.get(i);
+        // }
         return trueProductList;
     }
 
+    @Override
     public String toString() {
         return String.format("%s by user %s", this.storeName, this.sellerName);
     }
