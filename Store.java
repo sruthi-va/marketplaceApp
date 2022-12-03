@@ -118,6 +118,7 @@ public class Store implements Serializable {
         return trueProductList;
     }
 
+    @Override
     public String toString() {
         return String.format("%s by user %s", this.storeName, this.sellerName);
     }

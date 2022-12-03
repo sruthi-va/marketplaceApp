@@ -144,22 +144,23 @@ public class MarketPlace extends Thread {
                                 allStores.add(sellers.get(i).getStores().get(j));
                             }
                         }
-                        try {
-                            oos.writeObject(allStores);
-                            oos.flush();
-                            line = reader.readLine();
-                        } catch (IOException e1) {
-                            e1.printStackTrace();
+                        String[] allStoresArray = new String[allStores.size()];
+                        for (int i = 0; i < allStores.size(); i++) {
+                            allStoresArray[i] = allStores.get(i).getStoreName();
                         }
-                        for (Store st : allStores) {
-                            if (st.getStoreName().equals(line)) {
-                                try {
+                        try {
+                            oos.writeObject(allStoresArray);
+                            oos.flush();
+                             // receive which store to view
+                            line = reader.readLine();
+                            for (Store st : allStores) {
+                                if (st.getStoreName().equals(line)) {
                                     oos.writeObject(st.listAllProducts());
-                                } catch (IOException e) {
-                                    // TODO Auto-generated catch block
-                                    e.printStackTrace();
                                 }
                             }
+                        } catch (IOException e) {
+                                // TODO: Auto-generated catch block
+                                e.printStackTrace();
                         }
                         break;
                     case "2. search":
