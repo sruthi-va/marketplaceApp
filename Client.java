@@ -57,9 +57,10 @@ public class Client {
                         JTextField passField = new JTextField(15);
 
                         JPanel myPanel = new JPanel();
+                        myPanel.setLayout(new GridLayout(2, 2));
                         myPanel.add(new JLabel("Username:"));
                         myPanel.add(userField);
-                        myPanel.add(Box.createHorizontalStrut(15)); // a spacer
+                        //myPanel.add(Box.createHorizontalStrut(15)); // a spacer
                         myPanel.add(new JLabel("Password:"));
                         myPanel.add(passField);
 
