@@ -334,9 +334,9 @@ public class Client {
                 }
                 if (choose.equals("Seller")) {
                     runSeller = true;
+                    String results = reader.readLine(); // DONE!! server return a string of the drop down options
+                    // (1. view store,2. search,3. purchase...) etc DONE!!
                     while (runSeller) {
-                        String results = reader.readLine(); // DONE!! server return a string of the drop down options
-                        // (1. view store,2. search,3. purchase...) etc DONE!!
                         String[] dropdown = results.split(",", 0);
                         String reply = (String) JOptionPane.showInputDialog(null,
                                 "What is your choice?",
@@ -349,10 +349,12 @@ public class Client {
                         
                         if (reply.equals("1. list your stores")) {
                             if (reader.readLine().equals("no stores")) {
+                                System.out.println("no stores??");
                                 JOptionPane.showMessageDialog(null, "There are no stores", "Stores",
                                         JOptionPane.ERROR_MESSAGE);
                             } else {
-                                Store[] stores = (Store[]) ois.readObject();
+                                System.out.println("has stores??");
+                                @SuppressWarnings("unchecked") ArrayList<Store> stores = (ArrayList<Store>) ois.readObject();
                                 int k = 1;
                                 String output = "";
 
@@ -365,8 +367,9 @@ public class Client {
                                     }
                                     k++;
                                 }
-                                 JOptionPane.showMessageDialog(null, output, "Stores",
-                                        JOptionPane.INFORMATION_MESSAGE);
+                                System.out.println(output);
+                                JOptionPane.showMessageDialog(null, output, "Stores",
+                                    JOptionPane.INFORMATION_MESSAGE);
                             }
                         }
 
@@ -375,7 +378,7 @@ public class Client {
                                 JOptionPane.showMessageDialog(null, "There are no stores", "Stores",
                                         JOptionPane.ERROR_MESSAGE);
                             } else {
-                                Store[] stores = (Store[]) ois.readObject();
+                                @SuppressWarnings("unchecked") ArrayList<Store> stores = (ArrayList<Store>) ois.readObject();
                                 String output = "";
 
                                 int poop = 1;
@@ -389,12 +392,12 @@ public class Client {
                                     poop++;
                                 }
 
-                                JOptionPane.showMessageDialog(null, output, "Stores",
-                                        JOptionPane.INFORMATION_MESSAGE);
+                                /*JOptionPane.showMessageDialog(null, output, "Stores",
+                                        JOptionPane.INFORMATION_MESSAGE);*/
 
                                 Store chosenStore = (Store) JOptionPane.showInputDialog(null, "Which store do you want to view?", 
                                     "View Store", JOptionPane.QUESTION_MESSAGE,
-                                    null, stores, stores[0]);
+                                    null, stores.toArray(), stores.toArray()[0]);
 
                                 
                                 oos.writeObject(chosenStore);
@@ -403,11 +406,10 @@ public class Client {
 
                                 boolean valid = false;
                                 while (!valid) {
-                                    String[] strArr = {"create", "edit", "delete products"};
-                                    String todo = (String) JOptionPane.showInputDialog(null,
-                                "What is your choice?",
-                        "Choice?", JOptionPane.QUESTION_MESSAGE,
-                        icon, strArr, dropdown[0]);
+                                    String[] strArr = {"create product", "edit product", "delete product"};
+                                    String todo = (String) JOptionPane.showInputDialog(null, 
+                                        "What do you want to do?", "Edit Store", 
+                                        JOptionPane.QUESTION_MESSAGE, icon, strArr, dropdown[0]);
                                     writer.write(todo);
                                     writer.newLine();
                                     writer.flush(); 
@@ -753,7 +755,7 @@ public class Client {
 
                         }
 
-                        if (reply.equals("10. log out?")) {
+                        if (reply.equals("10. log out")) {
                             runSeller = false;
                             run = false;
                             JOptionPane.showMessageDialog(null, "Thanks for visiting bEtsy!", "Goodbye",

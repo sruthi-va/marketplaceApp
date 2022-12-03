@@ -39,11 +39,12 @@ public class MarketPlace extends Thread {
 
         Customer customer = null;
         Seller seller = null;
-        int id = 0;
+        int id = 2;
         String line = "";
         String cOrS = null;
         try {
             cOrS = reader.readLine();
+            System.out.println(cOrS);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -343,7 +344,7 @@ public class MarketPlace extends Thread {
                 System.out.println("Starting loop");
                 try {
                     userpass = reader.readLine().split(";;");
-                    System.out.println("from server: " + userpass[0] + " " + userpass[1]);
+                    System.out.println("from client: " + userpass[0] + " " + userpass[1]);
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 }
@@ -414,32 +415,36 @@ public class MarketPlace extends Thread {
                 }
             }
 
-            try {
-                writer.write("1. list your stores,2. edit stores,3. view sales,4. create store,5. " +
-                    "view statistics,6. delete a store,7. import stores from a CSV,8. export stores as a CSV,9. " +
-                    "delete account,10. log out");
-                writer.println();
-                writer.flush();
-                line = reader.readLine();
-            } catch (IOException e1) {
-                e1.printStackTrace();
-            }
+            writer.write("1. list your stores,2. edit stores,3. view sales,4. create store,5. " +
+                "view statistics,6. delete a store,7. import stores from a CSV,8. export stores as a CSV,9. " +
+                "delete account,10. log out");
+            writer.println();
+            writer.flush();
 
             do {
+                try {
+                    line = reader.readLine();
+                } catch (IOException e2) {
+                    // TODO Auto-generated catch block
+                    e2.printStackTrace();
+                }
                 System.out.println(line);
                 switch (line) {
                     case "1. list your stores":
                         if (seller.getStores().size() == 0) {
                             writer.write("no stores");
+                            System.out.println("no stores??");
                             writer.println();
                             writer.flush();
                         } else {
                             writer.write("has stores");
+                            System.out.println("has stores??");
                             writer.println();
                             writer.flush();
                             try {
                                 oos.writeObject(seller.getStores());
                                 oos.flush();
+                                System.out.println("sent stores");
                             } catch (IOException e) {
                                 throw new RuntimeException(e);
                             }
@@ -466,12 +471,24 @@ public class MarketPlace extends Thread {
                                 Store currentStore = null;
                                 try {
                                     currentStore = (Store) ois.readObject();
+                                    System.out.println(currentStore);
                                 } catch (IOException e) {
                                     throw new RuntimeException(e);
                                 } catch (ClassNotFoundException e) {
                                     throw new RuntimeException(e);
                                 }
-                                int currentStoreID = seller.getStores().indexOf(currentStore);
+
+                                System.out.println(Arrays.toString(seller.getStores().toArray()));
+                                
+                                int currentStoreID = -1;
+                                for (int i = 0; i < seller.getStores().size(); i++) {
+                                    if (seller.getStores().get(i).toString().equals(currentStore.toString())) {
+                                        currentStoreID = i;
+                                    }
+                                    System.out.println(seller.getStores().get(i).toString().equals(currentStore.toString()));
+                                }
+
+                                System.out.println(currentStoreID);
 
                                 boolean valid = false;
                                 while (!valid) {
@@ -915,7 +932,7 @@ public class MarketPlace extends Thread {
                             //System.out.print(productsAndDesc.length);
                             System.out.println("Product format is not right! something is missing!");
                         }
-                        System.out.println(storesAndProducts[j]);
+                        //System.out.println(storesAndProducts[j]);
                         // System.out.println(Arrays.toString(productsAndDesc));
                         thisProducts.add(new Product(productsAndDesc[0], productsAndDesc[1],
                                 Integer.parseInt(productsAndDesc[2]), Double.parseDouble(productsAndDesc[3]),
