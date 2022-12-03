@@ -111,10 +111,10 @@ public class Store implements Serializable {
                 productArrayList.add(productList.get(i).getProductName());
             }
         }
-        String[] trueProductList = new String[productArrayList.size()];
-        for (int i = 0; i< productArrayList.size(); i++) {
-            trueProductList[0] = productArrayList.get(i);
-        }
+        String[] trueProductList = productArrayList.toArray(new String[0]);
+        // for (int i = 0; i < productArrayList.size(); i++) {
+        //     trueProductList[0] = productArrayList.get(i);
+        // }
         return trueProductList;
     }
 

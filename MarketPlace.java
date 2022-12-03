@@ -153,15 +153,13 @@ public class MarketPlace extends Thread {
                             oos.flush();
                              // receive which store to view
                             line = reader.readLine();
-                            String [] arr = new String[0];
                             for (Store st : allStores) {
                                 if (st.getStoreName().equals(line)) {
-                                    arr = st.listAllProducts();
+                                    oos.writeObject(st.listAllProducts());
+                                    oos.flush();
                                     break;
                                 }
                             }
-                            oos.writeObject(arr);
-                            oos.flush();
                         } catch (IOException e) {
                                 // TODO: Auto-generated catch block
                                 e.printStackTrace();
