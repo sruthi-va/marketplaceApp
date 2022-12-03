@@ -153,12 +153,27 @@ public class MarketPlace extends Thread {
                             oos.flush();
                              // receive which store to view
                             line = reader.readLine();
+                            Store chosen = new Store("", "", null);
                             for (Store st : allStores) {
                                 if (st.getStoreName().equals(line)) {
+                                    chosen = st;
                                     oos.writeObject(st.listAllProducts());
                                     oos.flush();
                                     break;
                                 }
+                            } 
+                            // receive product name
+                            line = reader.readLine();
+                            // find the obejct
+                            for (Product p : chosen.getProductList()) {
+                                if (p.getProductName().equals(line)) {
+                                    oos.writeObject(p);
+                                    break;
+                                }
+                            }
+                            Product inQuestion = whatToDoWithProductReply(ois);
+                            if (whatToDoWithProductReply(ois) != null) {
+                                customer.addToCart(customer.getUsername(), inQuestion);
                             }
                         } catch (IOException e) {
                                 // TODO: Auto-generated catch block
@@ -923,7 +938,7 @@ public class MarketPlace extends Thread {
      * @param, keyword A String word that the customer inputs to search for
      * @return An HashSet type Object
      */
-    public Product search(BufferedReader reader, PrintWriter writer, ObjectOutputStream oos, ObjectInputStream ois) {
+    public void search(BufferedReader reader, PrintWriter writer, ObjectOutputStream oos, ObjectInputStream ois) {
         Product curr;
         try {
             // ObjectOutputStream oos = new ObjectOutputStream(new DataOutputStream(socket.getOutputStream()));
@@ -950,8 +965,15 @@ public class MarketPlace extends Thread {
                     break;
                 }
             }
-            curr = (Product) ois.readObject();
-            return curr;
+            whatToDoWithProductReply(ois);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return;
+        }
+    }
+    public Product whatToDoWithProductReply(ObjectInputStream ois) {
+        try {
+            return (Product) ois.readObject();
         } catch (Exception e) {
             e.printStackTrace();
             return null;

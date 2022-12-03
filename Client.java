@@ -169,12 +169,16 @@ public class Client {
                                         JOptionPane.ERROR_MESSAGE);
                                 } else {
                                     String chooseProduct = (String) JOptionPane.showInputDialog(null,
-                                            "Click on the product you want to buy.","Store's Product List",
+                                            "Click on a product.","Store's Product List",
                                             JOptionPane.QUESTION_MESSAGE,icon, storeProducts, storeProducts[0]);
                                     if (chooseProduct == null) {
                                         runCustomer = true;
                                     } else {
-                                        whatToDoWithProduct(null, userName, oos);
+                                        writer.write(chooseProduct);
+                                        writer.newLine();
+                                        writer.flush();
+
+                                        whatToDoWithProduct((Product) ois.readObject(), userName, oos);
                                     }
                                 }
                                 break;
