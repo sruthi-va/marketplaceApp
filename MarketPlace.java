@@ -123,16 +123,18 @@ public class MarketPlace extends Thread {
                     break;
                 }
             }
+            
+            writer.write("1. view store,2. search,3. purchase,4. edit cart,5. view cart,6. view statistics,7. delete account,8. logout");
+            writer.println();
+            writer.flush();
 
             System.out.println("here");
             do {
                 try {
-                    writer.write("1. view store,2. search,3. purchase,4. edit cart,5. view cart,6. view statistics,7. delete account,8. logout");
-                    writer.println();
-                    writer.flush();
                     line = reader.readLine();
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
+                } catch (IOException e3) {
+                    e3.printStackTrace();
+                    return;
                 }
                 System.out.println("from server: " + line);
                 switch (line) {
@@ -199,27 +201,31 @@ public class MarketPlace extends Thread {
                         }
                         Product item = null;
                         try {
-                            line = reader.readLine();
+                            item = (Product) ois.readObject();
                         } catch (IOException e1) {
                             e1.printStackTrace();
+                        } catch (ClassNotFoundException e) {
+                            e.printStackTrace();
                         }
-                        for (int i = 0; i < cart.length; i++) {
+                        /*for (int i = 0; i < cart.length; i++) {
                             if (cart[i].getProductName().equals(line)) {
                                 item = cart[i];
                                 break;
                             }
-                        }
+                        }*/
                         if (item != null) {
                             customer.deleteFromCart(customer.getUsername(), item);
                         }
                         break;
                     case "5. view cart":
                         Product[] toPrint = customer.getCustomerCart().getProducts(customer.getUsername());
+                        System.out.println(Arrays.toString(toPrint));
                         String cartString = "";
                         for (Product pr : toPrint) {
-                            cartString += pr.getProductName();
-                            cartString += "\n";
+                            cartString += pr.toString();
+                            cartString += ";;";
                         }
+                        System.out.println(cartString);
                         writer.write(cartString);
                         writer.println();
                         writer.flush();
@@ -332,17 +338,16 @@ public class MarketPlace extends Thread {
             } while (true);
         } else if (id == 2) {
             int sellerID = -1;
-            
 
             while (true) {
-                userpass = new String[0];
+                System.out.println("Starting loop");
                 try {
                     userpass = reader.readLine().split(";;");
-                    System.out.println(userpass[0] + " " + userpass[1]);
+                    System.out.println("from server: " + userpass[0] + " " + userpass[1]);
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 }
-
+                
                 ArrayList<String> usernames = readFile("sellers.txt");
                 boolean usernameFound = false;
                 boolean loggedIn = false;
@@ -361,47 +366,51 @@ public class MarketPlace extends Thread {
                         break;
                     }
                 }
+                
+                if (!usernameFound) {
+                    writer.write("false");
+                    writer.println();
+                    writer.flush();
+                }
 
                 if (!loggedIn) {
                     try {
-                        String read = reader.readLine();
-                        System.out.println(read);
-                        if (read.equals("newAccount")) {
+                        String input = reader.readLine();
+                        if (input.equals("newAccount")) {
+                            System.out.println("recieved new account");
                             if (!usernameFound) {
+                                System.out.println("username doesn't already exist");
                                 synchronized(obj) {
                                     addUserPass("sellers.txt", userpass[0], userpass[1]);
+                                    seller = new Seller(new ArrayList<>(), userpass[0]);
                                     sellers.add(seller);
                                     sellerID = sellers.indexOf(seller);
                                 }
                                 writer.write("true");
-                                writer.println();
-                                writer.flush();
+                                System.out.println("sent true");
                                 break;
                             } else {
                                 writer.write("false");
+                                System.out.println("sent false");
                             }
                             writer.println();
                             writer.flush();
+                        } else if (input.equals("tryAgain")) {
+                            continue;
                         } else {
                             seller = new Seller(new ArrayList<>(), userpass[0]);
+                            sellers.add(seller);
+                            sellerID = sellers.indexOf(seller);
                             break;
                         }
                     } catch (IOException e) {
                         throw new RuntimeException(e);
                     }
                 } else {
-                    for (Seller s : sellers) {
-                        if (userpass[0].equals(s.getSellerName())) {
-                            seller = s;
-                            sellerID = sellers.indexOf(s);
-                        }
-                    }
-                    if (sellerID == -1) {
-                        synchronized(obj) {
-                            sellers.add(seller);
-                        }
-                        sellerID = sellers.indexOf(seller);
-                    }
+                    seller = new Seller(new ArrayList<>(), userpass[0]);
+                    sellers.add(seller);
+                    sellerID = sellers.indexOf(seller);
+                    break;
                 }
             }
 

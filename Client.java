@@ -200,25 +200,47 @@ public class Client {
                                 }
                                 break;
                             case "4. edit cart":
-                                String[] displayCart = (String[]) ois.readObject();
-                                String deleteItem = (String) JOptionPane.showInputDialog(null,
-                                        "Click on the product you want to remove to cart.",
-                                        "Your Shopping Cart", JOptionPane.QUESTION_MESSAGE,icon, displayCart,
-                                        displayCart[0]);
+                                Product[] displayCart = (Product[]) ois.readObject();
+                                String[] names = new String[displayCart.length];
+                                for (int i = 0; i < displayCart.length; i++) {
+                                    names[i] = displayCart[i].getProductName();
+                                }
+                                /*String deleteItem = (String) JOptionPane.showInputDialog(null,
+                                    "Click on the product you want to remove to cart.",
+                                    "Your Shopping Cart", JOptionPane.QUESTION_MESSAGE,icon, names,
+                                    names[0]);*/
+                                Product deleteItem = (Product) JOptionPane.showInputDialog(null,
+                                    "Click on the product you want to remove to cart.",
+                                    "Your Shopping Cart", JOptionPane.QUESTION_MESSAGE,icon, displayCart,
+                                    displayCart[0]);
+
+                                System.out.println("worked");
+                                /*Product chosen = null;
+                                for (int i = 0; i < displayCart.length; i++) {
+                                    if (displayCart[i].getProductName().equals(deleteItem)) {
+                                        chosen = displayCart[i];
+                                    }
+                                }*/
+
                                 if (deleteItem == null) {
                                     runCustomer = true;
+                                    oos.writeObject(null);
+                                    oos.flush();
                                 } else {
-                                    writer.write(deleteItem);
-                                    writer.newLine();
-                                    writer.flush();
+                                    oos.writeObject(deleteItem);
+                                    oos.flush();
+                                    JOptionPane.showMessageDialog(null, "Item deleted!", "Shopping Cart",
+                                        JOptionPane.INFORMATION_MESSAGE);
                                 }
                                 break;
                             case "5. view cart":
                                 String shoppingcart = reader.readLine();
-                                if (shoppingcart != null) {
+                                System.out.println(shoppingcart + " read");
+                                if (shoppingcart == "") {
                                     shoppingcart = "your cart is empty!";
                                 } 
-                                JOptionPane.showMessageDialog(null, shoppingcart, "Shopping Cart",
+                                String thing = shoppingcart.replace(";;", "\n");
+                                JOptionPane.showMessageDialog(null, thing, "Shopping Cart",
                                         JOptionPane.INFORMATION_MESSAGE);
                                 break;
                             case "6. view statistics":
@@ -795,7 +817,7 @@ public class Client {
     public static void whatToDoWithProduct(Product product, String userName, ObjectOutputStream oos) {
         try {
             int choice = JOptionPane.showConfirmDialog(null, 
-                "Add " + product.getProductName() + " to cart? yes or no?", 
+                String.format("%s\nAdd %s to cart? Yes or no?", product.toString(), product.getProductName()),
                 "MarketPlace", JOptionPane.YES_NO_OPTION);
             if (choice == 0) {
                 oos.writeObject(product);
