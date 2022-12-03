@@ -153,11 +153,15 @@ public class MarketPlace extends Thread {
                             oos.flush();
                              // receive which store to view
                             line = reader.readLine();
+                            String [] arr = new String[0];
                             for (Store st : allStores) {
                                 if (st.getStoreName().equals(line)) {
-                                    oos.writeObject(st.listAllProducts());
+                                    arr = st.listAllProducts();
+                                    break;
                                 }
                             }
+                            oos.writeObject(arr);
+                            oos.flush();
                         } catch (IOException e) {
                                 // TODO: Auto-generated catch block
                                 e.printStackTrace();
@@ -882,7 +886,7 @@ public class MarketPlace extends Thread {
      * @param, none
      */
     public void parseFile() {
-        ArrayList<Seller> thisSellers = new ArrayList<Seller>();
+        // ArrayList<Seller> thisSellers = new ArrayList<Seller>();
         try (BufferedReader br = new BufferedReader(new FileReader(new File("marketplace.txt")))) {
             String line = br.readLine();
             while (line != null) {
@@ -898,7 +902,7 @@ public class MarketPlace extends Thread {
                             //System.out.print(productsAndDesc.length);
                             System.out.println("Product format is not right! something is missing!");
                         }
-                        // System.out.println(storesAndProducts[j]);
+                        System.out.println(storesAndProducts[j]);
                         // System.out.println(Arrays.toString(productsAndDesc));
                         thisProducts.add(new Product(productsAndDesc[0], productsAndDesc[1],
                                 Integer.parseInt(productsAndDesc[2]), Double.parseDouble(productsAndDesc[3]),

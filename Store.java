@@ -107,7 +107,7 @@ public class Store implements Serializable {
     public String[] listAllProducts() {
         ArrayList<String> productArrayList = new ArrayList<String>();
         for (int i = 0; i < productList.size(); i++) {
-            if (productList.get(i).getQuantity() < 0) {
+            if (productList.get(i).getQuantity() > 0) {
                 productArrayList.add(productList.get(i).getProductName());
             }
         }
