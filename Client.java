@@ -785,7 +785,7 @@ public class Client {
             writer.newLine();
             writer.flush(); // ensure data is sent to the server
             
-            @SuppressWarnings("unchecked") ArrayList<Object> results = (ArrayList<Object>) ois.readObject();
+            @SuppressWarnings("unchecked") HashSet<Object> results = (HashSet<Object>) ois.readObject();
             ArrayList<String> resultString = new ArrayList<>();
             for (Object p : results) {
                 Product curr = (Product) p;
