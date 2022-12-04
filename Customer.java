@@ -199,6 +199,23 @@ public class Customer {
 
     }
 
+    public boolean customerExportCSV(String fileToWrite) {
+        try {
+            File f = new File(fileToWrite);
+            f.createNewFile();
+            FileOutputStream fos = new FileOutputStream(f, false);
+            PrintWriter pw = new PrintWriter(fos);
+
+            pw.println(this.buyHistory);
+            pw.close();
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+
+    }
+
     /**
      * @return String return the username
      */

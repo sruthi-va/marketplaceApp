@@ -404,138 +404,141 @@ public class Client {
                                 oos.flush();
 
 
-                                boolean valid = false;
-                                while (!valid) {
-                                    String[] strArr = {"create product", "edit product", "delete product"};
-                                    String todo = (String) JOptionPane.showInputDialog(null, 
-                                        "What do you want to do?", "Edit Store", 
-                                        JOptionPane.QUESTION_MESSAGE, icon, strArr, dropdown[0]);
-                                    writer.write(todo);
-                                    writer.newLine();
-                                    writer.flush(); 
-                                    
-                                    if (todo.equalsIgnoreCase("create")) {
-                                        valid = true;
+                                //boolean valid = false;
+                                System.out.println("started loop");
+                                String[] strArr = {"create product", "edit product", "delete product"};
+                                String todo = (String) JOptionPane.showInputDialog(null, 
+                                    "What do you want to do?", "Edit Store", 
+                                    JOptionPane.QUESTION_MESSAGE, icon, strArr, dropdown[0]);
+                                writer.write(todo);
+                                writer.newLine();
+                                writer.flush(); 
+                                System.out.println("sent " + todo); 
+                                
+                                if (todo.equalsIgnoreCase("create product")) {
+                                    //valid = true;
 
-                                        JTextField prodName = new JTextField(15);
-                                        JTextField prodDesc = new JTextField(15);
-                                        JTextField prodQuant = new JTextField(15);
-                                        JTextField prodPrice = new JTextField(15);
-                
-                                        JPanel myPanel = new JPanel();
-                                        myPanel.setLayout(new GridLayout(4, 2));
-                                        myPanel.add(new JLabel("Product Name:"));
-                                        myPanel.add(prodName);
-                                        myPanel.add(new JLabel("Product Description:"));
-                                        myPanel.add(prodDesc);
-                                        myPanel.add(new JLabel("Product Quantity:"));
-                                        myPanel.add(prodQuant);
-                                        myPanel.add(new JLabel("Product Price:"));
-                                        myPanel.add(prodPrice);
-                
-                                        int result = JOptionPane.showConfirmDialog(null, myPanel, 
-                                                "Enter Product Details", JOptionPane.OK_CANCEL_OPTION);
-                                                
-                                        String name = prodName.getText();
-                                        String desc = prodDesc.getText();
-                                        String quant = prodQuant.getText();
-                                        String price = prodPrice.getText();
+                                    JTextField prodName = new JTextField(15);
+                                    JTextField prodDesc = new JTextField(15);
+                                    JTextField prodQuant = new JTextField(15);
+                                    JTextField prodPrice = new JTextField(15);
+            
+                                    JPanel myPanel = new JPanel();
+                                    myPanel.setLayout(new GridLayout(4, 2));
+                                    myPanel.add(new JLabel("Product Name:"));
+                                    myPanel.add(prodName);
+                                    myPanel.add(new JLabel("Product Description:"));
+                                    myPanel.add(prodDesc);
+                                    myPanel.add(new JLabel("Product Quantity:"));
+                                    myPanel.add(prodQuant);
+                                    myPanel.add(new JLabel("Product Price:"));
+                                    myPanel.add(prodPrice);
+            
+                                    int result = JOptionPane.showConfirmDialog(null, myPanel, 
+                                            "Enter Product Details", JOptionPane.OK_CANCEL_OPTION);
                                             
-                                        System.out.printf("%s, %s, %s, %s\n", name, desc, quant, price);
+                                    String name = prodName.getText();
+                                    String desc = prodDesc.getText();
+                                    String quant = prodQuant.getText();
+                                    String price = prodPrice.getText();
+                                        
+                                    System.out.printf("%s, %s, %s, %s\n", name, desc, quant, price);
 
-                                        Product product = new Product(name, desc, Integer.parseInt(quant), 
-                                            Double.parseDouble(price), chosenStore.getStoreName());
+                                    Product product = new Product(name, desc, Integer.parseInt(quant), 
+                                        Double.parseDouble(price), chosenStore.getStoreName());
 
-                                        oos.writeObject(product);
-                                        oos.flush();
-                                    } else if (todo.equalsIgnoreCase("edit")) {
-                                        valid = true;
-                                        Product[] products = (Product[]) ois.readObject();
-                                        String[] names = new String[products.length];
-                                        Product currProduct;
-                                        int currProductIndex = -1;
-                                        int i = 0;
-                                        for (Product p : products) {
-                                            names[i] = p.getProductName();
-                                            i++;
-                                        }
-
-                                        String chosenName = (String) JOptionPane.showInputDialog(null, "What product do you want to edit?", 
-                                            "Edit Product", JOptionPane.QUESTION_MESSAGE, 
-                                            null, names, names[0]);
-
-                                        i = 0;
-                                        for (Product p : products) {
-                                            if (p.getProductName().equals(chosenName)) { 
-                                                currProduct = p;
-                                                currProductIndex = i;
-                                            }
-                                            i++;
-                                        }
-
-                                        JTextField prodName = new JTextField(15);
-                                        JTextField prodDesc = new JTextField(15);
-                                        JTextField prodQuant = new JTextField(15);
-                                        JTextField prodPrice = new JTextField(15);
-                
-                                        JPanel myPanel = new JPanel();
-                                        myPanel.setLayout(new GridLayout(4, 2));
-                                        myPanel.add(new JLabel("Product Name:"));
-                                        myPanel.add(prodName);
-                                        myPanel.add(new JLabel("Product Description:"));
-                                        myPanel.add(prodDesc);
-                                        myPanel.add(new JLabel("Product Quantity:"));
-                                        myPanel.add(prodQuant);
-                                        myPanel.add(new JLabel("Product Price:"));
-                                        myPanel.add(prodPrice);
-                
-                                        int result = JOptionPane.showConfirmDialog(null, myPanel, 
-                                                "Enter Product Details", JOptionPane.OK_CANCEL_OPTION);
-                                                
-                                        String name = prodName.getText();
-                                        String desc = prodDesc.getText();
-                                        String quant = prodQuant.getText();
-                                        String price = prodPrice.getText();
-                                            
-                                        System.out.printf("%s, %s, %s, %s\n", name, desc, quant, price);
-
-                                        Product product = new Product(name, desc, Integer.parseInt(quant), 
-                                            Double.parseDouble(price), chosenStore.getStoreName());
-
-                                        oos.writeObject(product);
-                                        oos.flush();
-                                        writer.write(currProductIndex);
-                                        writer.newLine();
-                                        writer.flush();
-                                    } else if (todo.equalsIgnoreCase("delete")) {
-                                        Product[] products = (Product[]) ois.readObject();
-                                        String[] names = new String[products.length];
-                                        int currProductIndex = -1;
-                                        int i = 0;
-                                        for (Product p : products) {
-                                            names[i] = p.getProductName();
-                                            i++;
-                                        }
-
-                                        String chosenName = (String) JOptionPane.showInputDialog(null, "What product do you want to edit?", 
-                                            "Edit Product", JOptionPane.QUESTION_MESSAGE, 
-                                            null, names, names[0]);
-
-                                        i = 0;
-                                        for (Product p : products) {
-                                            if (p.getProductName().equals(chosenName)) { 
-                                                currProductIndex = i;
-                                            }
-                                            i++;
-                                        }
-
-                                        writer.write(currProductIndex);
-                                        writer.newLine();
-                                        writer.flush();
-                                    } else {
-                                        System.out.println("Please type 'create', 'edit', or 'delete'.");
+                                    oos.writeObject(product);
+                                    oos.flush();
+                                    System.out.println("write " + product.toString() + " in oos");
+                                } else if (todo.equalsIgnoreCase("edit product")) {
+                                    //valid = true;
+                                    @SuppressWarnings("unchecked") ArrayList<Product> products = (ArrayList<Product>) ois.readObject();
+                                    String[] names = new String[products.size()];
+                                    Product currProduct;
+                                    int currProductIndex = -1;
+                                    int i = 0;
+                                    for (Product p : products) {
+                                        names[i] = p.getProductName();
+                                        i++;
                                     }
+
+                                    String chosenName = (String) JOptionPane.showInputDialog(null, "What product do you want to edit?", 
+                                        "Edit Product", JOptionPane.QUESTION_MESSAGE, 
+                                        null, names, names[0]);
+
+                                    i = 0;
+                                    for (Product p : products) {
+                                        if (p.getProductName().equals(chosenName)) { 
+                                            currProduct = p;
+                                            currProductIndex = i;
+                                        }
+                                        i++;
+                                    }
+
+                                    JTextField prodName = new JTextField(15);
+                                    JTextField prodDesc = new JTextField(15);
+                                    JTextField prodQuant = new JTextField(15);
+                                    JTextField prodPrice = new JTextField(15);
+            
+                                    JPanel myPanel = new JPanel();
+                                    myPanel.setLayout(new GridLayout(4, 2));
+                                    myPanel.add(new JLabel("Product Name:"));
+                                    myPanel.add(prodName);
+                                    myPanel.add(new JLabel("Product Description:"));
+                                    myPanel.add(prodDesc);
+                                    myPanel.add(new JLabel("Product Quantity:"));
+                                    myPanel.add(prodQuant);
+                                    myPanel.add(new JLabel("Product Price:"));
+                                    myPanel.add(prodPrice);
+            
+                                    int result = JOptionPane.showConfirmDialog(null, myPanel, 
+                                            "Enter Product Details", JOptionPane.OK_CANCEL_OPTION);
+                                            
+                                    String name = prodName.getText();
+                                    String desc = prodDesc.getText();
+                                    String quant = prodQuant.getText();
+                                    String price = prodPrice.getText();
+                                        
+                                    System.out.printf("%s, %s, %s, %s\n", name, desc, quant, price);
+
+                                    Product product = new Product(name, desc, Integer.parseInt(quant), 
+                                        Double.parseDouble(price), chosenStore.getStoreName());
+
+                                    oos.writeObject(product);
+                                    oos.flush();
+                                    writer.write(currProductIndex);
+                                    writer.newLine();
+                                    writer.flush();
+                                    System.out.println("write " + product.toString() + " in oos");
+                                } else if (todo.equalsIgnoreCase("delete product")) {
+                                    @SuppressWarnings("unchecked") ArrayList<Product> products = (ArrayList<Product>) ois.readObject();
+                                    String[] names = new String[products.size()];
+                                    int currProductIndex = -1;
+                                    int i = 0;
+                                    for (Product p : products) {
+                                        names[i] = p.getProductName();
+                                        i++;
+                                    }
+
+                                    String chosenName = (String) JOptionPane.showInputDialog(null, "What product do you want to edit?", 
+                                        "Edit Product", JOptionPane.QUESTION_MESSAGE, 
+                                        null, names, names[0]);
+
+                                    i = 0;
+                                    for (Product p : products) {
+                                        if (p.getProductName().equals(chosenName)) { 
+                                            currProductIndex = i;
+                                        }
+                                        i++;
+                                    }
+
+                                    writer.write(currProductIndex);
+                                    writer.newLine();
+                                    writer.flush();
+                                } else {
+                                    System.out.println("Please type 'create', 'edit', or 'delete'.");
                                 }
+                                break;
 
                             }
                         }
@@ -704,7 +707,13 @@ public class Client {
                             } while (!valid);
                         }
 
-                        if (reply.equals("7. import stores from a CSV")) {
+                        if (reply.equals("7. view customer shopping carts")) {
+                            String output = reader.readLine().replace(";;", "\n");
+                            JOptionPane.showMessageDialog(null, output, "Customer Carts",
+                                JOptionPane.INFORMATION_MESSAGE);
+                        }
+
+                        if (reply.equals("8. import stores from a CSV")) {
                             boolean valid = false;
                             do {
                                 String input = JOptionPane.showInputDialog(null, "What file do you want to import?",
@@ -730,7 +739,7 @@ public class Client {
                             } while (!valid);
                         }
 
-                        if (reply.equals("8. export stores as a CSV")) {
+                        if (reply.equals("9. export stores as a CSV")) {
                             boolean valid = false;
                             do { 
                                 String input = JOptionPane.showInputDialog(null, "What file do you want to export your stores to?",
@@ -747,7 +756,7 @@ public class Client {
                             } while (!valid);
                         }
 
-                        if (reply.equals("9. delete account")) {
+                        if (reply.equals("10. delete account")) {
                             JOptionPane.showMessageDialog(null, "Your account has been deleted.",
                                     "bEtsy",
                         JOptionPane.INFORMATION_MESSAGE);
@@ -755,7 +764,7 @@ public class Client {
 
                         }
 
-                        if (reply.equals("10. log out")) {
+                        if (reply.equals("11. log out")) {
                             runSeller = false;
                             run = false;
                             JOptionPane.showMessageDialog(null, "Thanks for visiting bEtsy!", "Goodbye",

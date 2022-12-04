@@ -82,6 +82,10 @@ public class ShoppingCart {
         }
     }
 
+    public ArrayList<ArrayList<Object>> getAllCarts() {
+        return this.cart;
+    }
+
     /**
      * applicable for both if item was bought or removed
      * @param username of customer

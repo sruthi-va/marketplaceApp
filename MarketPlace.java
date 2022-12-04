@@ -125,7 +125,8 @@ public class MarketPlace extends Thread {
                 }
             }
             
-            writer.write("1. view store,2. search,3. purchase,4. edit cart,5. view cart,6. view statistics,7. delete account,8. logout");
+            writer.write("1. view store,2. search,3. purchase,4. edit cart,5. view cart," + 
+            "6. view statistics,7. export buy history to csv file,8. delete account,9. logout");
             writer.println();
             writer.flush();
 
@@ -328,10 +329,22 @@ public class MarketPlace extends Thread {
                             }
                         }
                         break;
-                    case "7. delete account":
+                    case "7. export buy history to csv file":
+                    System.out.println("Enter the name of the file you want your buy history to be exported to.");
+                        try {
+                            if (customer.customerExportCSV(reader.readLine())) {
+                                System.out.println("Exported!");
+                            } else {
+                                System.out.println("there was a problem!");
+                            }
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                        break;
+                    case "8. delete account":
                     customer.deleteAccount(customer.getUsername());
                     return;
-                    case "8. logout":
+                    case "9. logout":
                         return;
                     default:
                         return;
@@ -409,23 +422,36 @@ public class MarketPlace extends Thread {
                     }
                 } else {
                     seller = new Seller(new ArrayList<>(), userpass[0]);
-                    sellers.add(seller);
-                    sellerID = sellers.indexOf(seller);
+                    boolean found = false;
+                    for (int i = 0; i < sellers.size(); i++) {
+                        if (seller.getSellerName().equals(sellers.get(i).getSellerName())) {
+                            seller = sellers.get(i);
+                            sellerID = i;
+                            found = true;
+                            break;
+                        }
+                    }
+
+                    if (!found) {
+                        sellers.add(seller);
+                        sellerID = sellers.indexOf(seller);
+                    }
                     break;
                 }
             }
 
+            ShoppingCart cart = new ShoppingCart();
+
             writer.write("1. list your stores,2. edit stores,3. view sales,4. create store,5. " +
-                "view statistics,6. delete a store,7. import stores from a CSV,8. export stores as a CSV,9. " +
-                "delete account,10. log out");
+                "view statistics,6. delete a store,7. view customer shopping carts,8. import stores from a CSV," +
+                "9. export stores as a CSV,10. delete account,11. log out");
             writer.println();
             writer.flush();
 
             do {
-                try {
+                try { 
                     line = reader.readLine();
                 } catch (IOException e2) {
-                    // TODO Auto-generated catch block
                     e2.printStackTrace();
                 }
                 System.out.println(line);
@@ -498,7 +524,7 @@ public class MarketPlace extends Thread {
                                     } catch (IOException e) {
                                         throw new RuntimeException(e);
                                     }
-                                    if (todo.equalsIgnoreCase("create")) {
+                                    if (todo.equalsIgnoreCase("create product")) {
                                         Product toAdd = null;
                                         try {
                                             toAdd = (Product) ois.readObject();
@@ -512,12 +538,14 @@ public class MarketPlace extends Thread {
                                         synchronized(obj) {
                                             sellers.set(sellerID, seller);
                                         }
-                                    } else if (todo.equalsIgnoreCase("edit")) {
+                                    } else if (todo.equalsIgnoreCase("edit product")) {
                                         valid = true;
                                         try {
                                             oos.writeObject(currentStore.getProductList());
                                             Product toEdit = (Product) ois.readObject();
+                                            System.out.println("read ois " + toEdit.toString());
                                             int currProductIndex = Integer.parseInt(reader.readLine());
+                                            System.out.println("read reader " + currProductIndex);
                                             ArrayList<Product> products = currentStore.getProductList();
                                             products.set(currProductIndex, toEdit);
                                             currentStore.setProductList(products);
@@ -530,7 +558,7 @@ public class MarketPlace extends Thread {
                                         } catch (ClassNotFoundException e) {
                                             throw new RuntimeException(e);
                                         }
-                                    } else if (todo.equalsIgnoreCase("delete")) {
+                                    } else if (todo.equalsIgnoreCase("delete product")) {
                                         valid = true;
                                         try {
                                             oos.writeObject(currentStore.getProductList());
@@ -781,12 +809,24 @@ public class MarketPlace extends Thread {
                             System.out.println("Store deleted from marketplace");
                         }
                         break;
-                    case "7. import stores from a CSV":
+                    case "7. view customer shopping carts":
+                        ArrayList<ArrayList<Object>> cusCart = cart.getAllCarts();
+                        String output = "";
+                        for (int i = 0; i < cusCart.size(); i++) {
+                            output += (String) cusCart.get(i).get(0) + ": ;;";
+                            for (int j = 1; j < cusCart.get(i).size(); j++) {
+                                output += "   " + ((Product) cusCart.get(i).get(j)).toString() + ";;";
+                            }
+                        }
+                        writer.write(output);
+                        writer.println();
+                        writer.flush();
+                        break;
+                    case "8. import stores from a CSV":
                         String fileImport = "";
                         try {
                             fileImport = reader.readLine();
                         } catch (IOException e1) {
-                            // TODO Auto-generated catch block
                             e1.printStackTrace();
                         }
                         ArrayList<Store> importedStores;
@@ -810,7 +850,7 @@ public class MarketPlace extends Thread {
                         }
                         System.out.println("Imported!");
                         break;
-                    case "8. export stores as a CSV":
+                    case "9. export stores as a CSV":
                         System.out.println("Enter the name of the file you want your stores to be exported to.");
                         try {
                             if (seller.exportCSV(reader.readLine())) {
@@ -822,7 +862,7 @@ public class MarketPlace extends Thread {
                             e.printStackTrace();
                         }
                         break;
-                    case "9.delete account":
+                    case "10.delete account":
                         synchronized(obj) {
                             sellers.remove(sellerID); // TODO does this delete all their stores from the file? it
                                                         // should right
@@ -832,7 +872,7 @@ public class MarketPlace extends Thread {
                                            
                         System.out.println("Account deleted, stores ejected, rejected and taken care of. Goodbye.");
                         return;
-                    case "10. log out":
+                    case "11. log out":
                         synchronized(obj) {
                             sellers.set(sellerID, seller);
                         }
