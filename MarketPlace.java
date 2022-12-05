@@ -1,10 +1,6 @@
 import java.io.*;
-import java.lang.reflect.Array;
 import java.net.*;
-import java.security.InvalidParameterException;
 import java.util.*;
-
-import javax.swing.JOptionPane;
 
 /**
  * A program that runs the actual marketplace,
@@ -102,14 +98,16 @@ public class MarketPlace extends Thread {
                                 }
                                 customer = new Customer(userpass[0], userpass[1]);
                                 writer.write("true");
+                                writer.println();
+                                writer.flush();
                                 System.out.println("sent true");
                                 break;
                             } else {
                                 writer.write("false");
+                                writer.println();
+                                writer.flush();
                                 System.out.println("sent false");
                             }
-                            writer.println();
-                            writer.flush();
                         } else if (input.equals("tryAgain")) {
                             continue;
                         } else {
@@ -521,13 +519,16 @@ public class MarketPlace extends Thread {
                                     String todo = null;
                                     try {
                                         todo = reader.readLine();
+                                        System.out.println(todo);
                                     } catch (IOException e) {
                                         throw new RuntimeException(e);
                                     }
+                                    System.out.println("started if statements");
                                     if (todo.equalsIgnoreCase("create product")) {
                                         Product toAdd = null;
                                         try {
                                             toAdd = (Product) ois.readObject();
+                                            System.out.println("read" + toAdd.toString());
                                         } catch (IOException e) {
                                             throw new RuntimeException(e);
                                         } catch (ClassNotFoundException e) {

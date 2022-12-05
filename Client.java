@@ -1,19 +1,22 @@
 import javax.swing.*;
-import javax.swing.colorchooser.ColorChooserComponentFactory;
-import javax.swing.text.DefaultEditorKit.InsertBreakAction;
 
 import java.io.*;
 import java.net.*;
 import java.util.*;
 import java.awt.*;
-import java.awt.event.*;
 
 public class Client {
     public static void main(String[] args) throws IOException {
         boolean run = true;
         boolean runCustomer = false;
         boolean runSeller = false;
-        Socket socket = new Socket("localhost", 6969);
+        Socket socket;
+        try {
+            socket = new Socket("localhost", 6969);
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, "Cannot connect to server! :(", "Marketplace", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
         String userName = "";
         String password = "";
         String userChoice[] = { "Customer", "Seller" };
@@ -114,12 +117,19 @@ public class Client {
                             if (validUsername.equals("false")) {
                                 cancel = JOptionPane.showOptionDialog(null, 
                                     "Username already exists! Try logging in again.", "Error",
-                                    JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE, null, 
+                                    JOptionPane.DEFAULT_OPTION, JOptionPane.ERROR_MESSAGE, icon, 
                                     null, null);
                                 if (cancel == JOptionPane.CLOSED_OPTION) {
                                     return;
                                 }
                             } else {
+                                cancel = JOptionPane.showOptionDialog(null, 
+                                    "New account created!", "Log In",
+                                    JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE, icon, 
+                                    null, null);
+                                if (cancel == JOptionPane.CLOSED_OPTION) {
+                                    return;
+                                }
                                 break;
                             }
                         } else if (cancel == JOptionPane.NO_OPTION) {
@@ -312,14 +322,28 @@ public class Client {
                                     }
                                 }
                                 break;
+                            case "7. export buy history to csv file":
+                            boolean valid = false;
+                            do { 
+                                String input = JOptionPane.showInputDialog(null, "What file do you want to export your stores to?",
+                                "Export buy history to CSV", JOptionPane.QUESTION_MESSAGE);
+                                if (input.equalsIgnoreCase("") || input.equals(null)) {
+                                    JOptionPane.showMessageDialog(null, "Not a file name.", "Export buy history",
+                                            JOptionPane.ERROR_MESSAGE);
+                                } else {
+                                    valid = true;
+                                    writer.write(input);
+                                    writer.newLine();
+                                    writer.flush();
+                                }
+                            } while (!valid);
 
-                            case "7. delete account":
+                            case "8. delete account":
                                 JOptionPane.showMessageDialog(null, "Your account has been deleted.",
                                         "bEtsy",JOptionPane.INFORMATION_MESSAGE);
                                 runCustomer = false;
                                 return;
-                            
-                            case "8. logout":
+                            case "9. logout":
                                 JOptionPane.showMessageDialog(null, "Goodbye!",
                                         "bEtsy",JOptionPane.INFORMATION_MESSAGE);
                                 runCustomer = false;
@@ -538,8 +562,6 @@ public class Client {
                                 } else {
                                     System.out.println("Please type 'create', 'edit', or 'delete'.");
                                 }
-                                break;
-
                             }
                         }
 
@@ -580,8 +602,8 @@ public class Client {
                                     writer.write(storeName);
                                     writer.newLine();
                                     writer.flush();
-                                     JOptionPane.showMessageDialog(null, "Store Created", "Create Store", 
-                                    JOptionPane.INFORMATION_MESSAGE);
+                                    JOptionPane.showMessageDialog(null, "Store Created", "Create Store", 
+                                        JOptionPane.INFORMATION_MESSAGE);
                                 }
                             }
                         }
@@ -745,7 +767,7 @@ public class Client {
                                 String input = JOptionPane.showInputDialog(null, "What file do you want to export your stores to?",
                                 "Export Stores to CSV", JOptionPane.QUESTION_MESSAGE);
                                 if (input.equalsIgnoreCase("") || input.equals(null)) {
-                                    JOptionPane.showMessageDialog(null, "Not a file name idiot", "Stores",
+                                    JOptionPane.showMessageDialog(null, "Not a file name", "Stores",
                                             JOptionPane.ERROR_MESSAGE);
                                 } else {
                                     valid = true;
