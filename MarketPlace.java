@@ -23,13 +23,10 @@ public class MarketPlace extends Thread {
         ObjectOutputStream oos;
         ObjectInputStream ois;
         try {
-            reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-            writer = new PrintWriter(socket.getOutputStream());
             oos = new ObjectOutputStream(new DataOutputStream(socket.getOutputStream()));
             ois = new ObjectInputStream(new DataInputStream(socket.getInputStream()));
 
         } catch (IOException e1) {
-            e1.printStackTrace();
             return;
         }
 
@@ -316,7 +313,8 @@ public class MarketPlace extends Thread {
                         return;
                     default:
                         return;
-                } // here
+                } 
+                refreshStream(ois, oos);
             } while (true);
         } else if (id == 2) {
             int sellerID = -1;
@@ -400,6 +398,7 @@ public class MarketPlace extends Thread {
                     }
                     break;
                 }
+                refreshStream(ois, oos);
             }
 
             ShoppingCart cart = new ShoppingCart();
@@ -790,6 +789,8 @@ public class MarketPlace extends Thread {
                         System.out.println("Please enter a valid command");
                         break;
                 }
+                refreshStream(ois, oos);
+                // MarketPlace.ObjectOutputStream.reset();
             } while (true);
         }
     }
@@ -898,15 +899,17 @@ public class MarketPlace extends Thread {
             oos.writeObject(searchResult);
             oos.flush();
             keyword = reader.readLine(); // get index
-            for (Object p : searchResult) {
-                curr = (Product) p;
-                if (curr.getProductName().equals(keyword)) {
-                    oos.writeObject(curr); // send product
-                    oos.flush();
-                    break;
+            if (keyword != null) {
+                for (Object p : searchResult) {
+                    curr = (Product) p;
+                    if (curr.getProductName().equals(keyword)) {
+                        oos.writeObject(curr); // send product
+                        oos.flush();
+                        break;
+                    }
                 }
+                whatToDoWithProductReply(customer, ois);
             }
-            whatToDoWithProductReply(customer, ois);
         } catch (Exception e) {
             e.printStackTrace();
             return;
@@ -1067,9 +1070,20 @@ public class MarketPlace extends Thread {
 
         return outputArray;
     }
-    private void writeAndFlush(String sendString, PrintWriter writer) {
-        writer.write(sendString);
-        writer.println();
-        writer.flush();
+    private void writeAndFlush(Object sendThing, ObjectOutputStream oos) {
+        try {
+            oos.writeObject(sendThing);
+            oos.flush();
+        } catch (Exception e) {
+            return;
+        }
+    }
+    private void refreshStream(ObjectInputStream ois, ObjectOutputStream oos) {
+        try {
+            ois.close();
+            oos.close();
+        } catch (Exception e) {
+            return;
+        }
     }
 }
