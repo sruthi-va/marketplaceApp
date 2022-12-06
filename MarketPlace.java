@@ -69,21 +69,17 @@ public class MarketPlace extends Thread {
                     if (userpass[0].equals(splitLine[0])) {
                         usernameFound = true;
                         if (userpass[1].equals(splitLine[1])) {
-                            writer.write("true"); // isValid
+                            writeAndFlush("true", writer); // isValid
                             loggedIn = true;
                         } else {
-                            writer.write("false");
+                            writeAndFlush("false", writer);
                         }
-                        writer.println();
-                        writer.flush();
                         break;
                     }
                 }
                 
                 if (!usernameFound) {
-                    writer.write("false");
-                    writer.println();
-                    writer.flush();
+                    writeAndFlush("false", writer);
                 }
 
                 if (!loggedIn) {
@@ -97,16 +93,12 @@ public class MarketPlace extends Thread {
                                     addUserPass("customers.txt", userpass[0], userpass[1]);
                                 }
                                 customer = new Customer(userpass[0], userpass[1]);
-                                writer.write("true");
-                                writer.println();
-                                writer.flush();
-                                System.out.println("sent true");
+                                writeAndFlush("true", writer);
+                                System.out.println("sent true"); // TEST
                                 break;
                             } else {
-                                writer.write("false");
-                                writer.println();
-                                writer.flush();
-                                System.out.println("sent false");
+                                writeAndFlush("false", writer);
+                                System.out.println("sent false"); // TEST
                             }
                         } else if (input.equals("tryAgain")) {
                             continue;
@@ -123,11 +115,8 @@ public class MarketPlace extends Thread {
                 }
             }
             
-            writer.write("1. view store,2. search,3. purchase,4. edit cart,5. view cart," + 
-            "6. view statistics,7. export buy history to csv file,8. delete account,9. logout");
-            writer.println();
-            writer.flush();
-
+            writeAndFlush("1. view store,2. search,3. purchase,4. edit cart,5. view cart," + 
+            "6. view statistics,7. export buy history to csv file,8. delete account,9. logout", writer);
             System.out.println("here");
             do {
                 try {
@@ -229,10 +218,8 @@ public class MarketPlace extends Thread {
                             cartString += pr.toString();
                             cartString += ";;";
                         }
-                        System.out.println(cartString);
-                        writer.write(cartString);
-                        writer.println();
-                        writer.flush();
+                        System.out.println(cartString); // TEST
+                        writeAndFlush(cartString, writer);
                         break;
                     case "6. view statistics":
                         boolean bool = true;
@@ -250,20 +237,12 @@ public class MarketPlace extends Thread {
                                         "marketplace.txt");
                                 if (dashboard.size() > 1) {
                                     for (int i = 0; i < dashboard.size(); i++) {
-                                        writer.write(dashboard.get(i));
-                                        writer.println();
-                                        writer.flush();
+                                        writeAndFlush(dashboard.get(i), writer);
                                     }
-                                    writer.write("");
-                                    writer.println();
-                                    writer.flush();
+                                    writeAndFlush("", writer);
                                 } else {
-                                    writer.write("There are no stores");
-                                    writer.println();
-                                    writer.flush();
-                                    writer.write("");
-                                    writer.println();
-                                    writer.flush();
+                                    writeAndFlush("There are no stores", writer);
+                                    writeAndFlush("", writer);
                                     again = false;
                                 }
                             } else if (dash.equals("Your purchased items by store")) {
@@ -271,26 +250,16 @@ public class MarketPlace extends Thread {
                                         "customers.txt");
                                 if (dashboard.size() > 1) {
                                     for (int i = 0; i < dashboard.size(); i++) {
-                                        writer.write(dashboard.get(i));
-                                        writer.println();
-                                        writer.flush();
+                                        writeAndFlush(dashboard.get(i), writer);
                                     }
-                                    writer.write("");
-                                    writer.println();
-                                    writer.flush();
+                                    writeAndFlush("", writer);
                                 } else {
-                                    writer.write("You haven't bought anything...");
-                                    writer.println();
-                                    writer.flush();
-                                    writer.write("");
-                                    writer.println();
-                                    writer.flush();
+                                    writeAndFlush("You haven't bought anything...", writer);
+                                    writeAndFlush("", writer);
                                     again = false;
                                 }
                             } else {
-                                writer.write("");
-                                writer.println();
-                                writer.flush();
+                                writeAndFlush("", writer);
                                 again = false;
                                 bool = false;
                             }
@@ -311,22 +280,14 @@ public class MarketPlace extends Thread {
                                     dashboard = Dashboard.sortQuantity(dashboard, false);
                                 } else {
                                     again = false;
-                                    writer.write("false");
-                                    writer.println();
-                                    writer.flush();
-                                    writer.write("");
-                                    writer.println();
-                                    writer.flush();
+                                    writeAndFlush("false", writer);
+                                    writeAndFlush("", writer);
                                 }
                                 if (again) {
                                     for (int i = 0; i < dashboard.size(); i++) {
-                                        writer.write(dashboard.get(i));
-                                        writer.println();
-                                        writer.flush();
+                                        writeAndFlush(dashboard.get(i), writer);
                                     }
-                                    writer.write("");
-                                    writer.println();
-                                    writer.flush();
+                                    writeAndFlush("", writer);
                                 }
                             }
                         }
@@ -372,21 +333,17 @@ public class MarketPlace extends Thread {
                     if (userpass[0].equals(splitLine[0])) {
                         usernameFound = true;
                         if (userpass[1].equals(splitLine[1])) {
-                            writer.write("true"); // isValid
+                            writeAndFlush("true", writer); // isValid
                             loggedIn = true;
                         } else {
-                            writer.write("false");
+                            writeAndFlush("false", writer);
                         }
-                        writer.println();
-                        writer.flush();
                         break;
                     }
                 }
                 
                 if (!usernameFound) {
-                    writer.write("false");
-                    writer.println();
-                    writer.flush();
+                    writeAndFlush("false", writer);
                 }
 
                 if (!loggedIn) {
@@ -402,15 +359,13 @@ public class MarketPlace extends Thread {
                                     sellers.add(seller);
                                     sellerID = sellers.indexOf(seller);
                                 }
-                                writer.write("true");
+                                writeAndFlush("true", writer);
                                 System.out.println("sent true");
                                 break;
                             } else {
-                                writer.write("false");
+                                writeAndFlush("false", writer);
                                 System.out.println("sent false");
                             }
-                            writer.println();
-                            writer.flush();
                         } else if (input.equals("tryAgain")) {
                             continue;
                         } else {
@@ -444,11 +399,9 @@ public class MarketPlace extends Thread {
 
             ShoppingCart cart = new ShoppingCart();
 
-            writer.write("1. list your stores,2. edit stores,3. view sales,4. create store,5. " +
+            writeAndFlush("1. list your stores,2. edit stores,3. view sales,4. create store,5. " +
                 "view statistics,6. delete a store,7. view customer shopping carts,8. import stores from a CSV," +
-                "9. export stores as a CSV,10. delete account,11. log out");
-            writer.println();
-            writer.flush();
+                "9. export stores as a CSV,10. delete account,11. log out", writer);
 
             do {
                 try { 
@@ -460,15 +413,11 @@ public class MarketPlace extends Thread {
                 switch (line) {
                     case "1. list your stores":
                         if (seller.getStores().size() == 0) {
-                            writer.write("no stores");
+                            writeAndFlush("no stores", writer);
                             System.out.println("no stores??");
-                            writer.println();
-                            writer.flush();
                         } else {
-                            writer.write("has stores");
+                            writeAndFlush("has stores", writer);
                             System.out.println("has stores??");
-                            writer.println();
-                            writer.flush();
                             try {
                                 oos.writeObject(seller.getStores());
                                 oos.flush();
@@ -480,13 +429,9 @@ public class MarketPlace extends Thread {
                         break;
                     case "2. edit stores":
                         if (sellers.get(sellerID).getStores().size() == 0) {
-                            writer.write("no stores");
-                            writer.println();
-                            writer.flush();
+                            writeAndFlush("no stores", writer);
                         } else {
-                            writer.write("has stores");
-                            writer.println();
-                            writer.flush();
+                            writeAndFlush("has stores", writer);
                             try {
                                 oos.writeObject(sellers.get(sellerID).getStores());
                                 oos.flush();
@@ -580,20 +525,14 @@ public class MarketPlace extends Thread {
                     case "3. view sales":
                         if (sellers.get(sellerID).getStores().size() == 0) {
                             System.out.println("you have no stores!");
-                            writer.write("no stores");
-                            writer.println();
-                            writer.flush();
+                            writeAndFlush("no stores", writer);
                         } else {
-                            writer.write("has stores");
-                            writer.println();
-                            writer.flush();
+                            writeAndFlush("has stores", writer);
                             try {
                                 System.out.println("Type a store name to see it's sales, or 'all' to see all of your " +
                                         "store sales");
                                 String storeName = reader.readLine();
-                                writer.write(seller.viewSales(storeName));
-                                writer.println();
-                                writer.flush();
+                                writeAndFlush(seller.viewSales(storeName), writer);
                             } catch (IOException e) {
                                 e.printStackTrace();
                             }
@@ -643,32 +582,20 @@ public class MarketPlace extends Thread {
                                     }
                                 }
                                 if (status) {
-                                    writer.write("true");
-                                    writer.println();
-                                    writer.flush();
+                                    writeAndFlush("true", writer);
                                     dashboard = Dashboard.getSellerDashboard1(store, "customers.txt");
                                     if (dashboard.size() > 1) {
                                         for (int i = 0; i < dashboard.size(); i++) {
-                                            writer.write(dashboard.get(i));
-                                            writer.println();
-                                            writer.flush();
+                                            writeAndFlush(dashboard.get(i), writer);
                                         }
-                                        writer.write("");
-                                        writer.println();
-                                        writer.flush();
+                                        writeAndFlush("", writer);
                                     } else {
-                                        writer.write("No one has bought anything...");
-                                        writer.println();
-                                        writer.flush();
-                                        writer.write("");
-                                        writer.println();
-                                        writer.flush();
+                                        writeAndFlush("No one has bought anything...", writer);
+                                        writeAndFlush("", writer);
                                         again = false;
                                     }
                                 } else {
-                                    writer.write("false");
-                                    writer.println();
-                                    writer.flush();
+                                    writeAndFlush("false", writer);
                                     again = false;
                                 }
                             } else if (dash.equals("Number of items sold for each product at a specific store")) {
@@ -692,38 +619,25 @@ public class MarketPlace extends Thread {
                                     }
                                 }
                                 if (status) {
-                                    writer.write("true");
-                                    writer.println();
-                                    writer.flush();
+                                    writeAndFlush("true", writer);
                                     dashboard = Dashboard.getSellerDashboard2(store, seller.getSellerName(), "customers.txt", "marketplace.txt");
                                     if (dashboard.size() > 1) {
                                         for (int i = 0; i < dashboard.size(); i++) {
-                                            writer.write(dashboard.get(i));
-                                            writer.println();
-                                            writer.flush();
+                                            writeAndFlush(dashboard.get(i), writer);
                                         }
-                                        writer.write("");
-                                        writer.println();
-                                        writer.flush();
+                                        writeAndFlush("", writer);
+
                                     } else {
-                                        writer.write("This store has no products...");
-                                        writer.println();
-                                        writer.flush();
-                                        writer.write("");
-                                        writer.println();
-                                        writer.flush();
+                                        writeAndFlush("This store has no products...", writer);
+                                        writeAndFlush("", writer);
                                         again = false;
                                     }
                                 } else {
-                                    writer.write("false");
-                                    writer.println();
-                                    writer.flush();
+                                    writeAndFlush("false", writer);
                                     again = false;
                                 }
                             } else {
-                                writer.write("");
-                                writer.println();
-                                writer.flush();
+                                writeAndFlush("", writer);
                                 again = false;
                                 bool = false;
                             }
@@ -744,22 +658,14 @@ public class MarketPlace extends Thread {
                                     dashboard = Dashboard.sortQuantity(dashboard, false);
                                 } else {
                                     again = false;
-                                    writer.write("false");
-                                    writer.println();
-                                    writer.flush();
-                                    writer.write("");
-                                    writer.println();
-                                    writer.flush();
+                                    writeAndFlush("false", writer);
+                                    writeAndFlush("", writer);
                                 }
                                 if (again) {
                                     for (int i = 0; i < dashboard.size(); i++) {
-                                        writer.write(dashboard.get(i));
-                                        writer.println();
-                                        writer.flush();
+                                        writeAndFlush(dashboard.get(i), writer);
                                     }
-                                    writer.write("");
-                                    writer.println();
-                                    writer.flush();
+                                    writeAndFlush("", writer);
                                 }
                             }
                         }
@@ -767,13 +673,9 @@ public class MarketPlace extends Thread {
                     case "6. delete a store":
                         if (sellers.get(sellerID).getStores().size() == 0) {
                             System.out.println("you have no stores!");
-                            writer.write("no stores");
-                            writer.println();
-                            writer.flush();
+                            writeAndFlush("no stores", writer);
                         } else {
-                            writer.write("has stores");
-                            writer.println();
-                            writer.flush();
+                            writeAndFlush("has stores", writer);
                             String deleteStore = "";
                             try {
                                 deleteStore = reader.readLine();
@@ -789,14 +691,10 @@ public class MarketPlace extends Thread {
                                 }
                             }
                             if (storeInQuestion == null) {
-                                writer.write("not store");
-                                writer.println();
-                                writer.flush();
+                                writeAndFlush("not store", writer);
                                 break;
                             }
-                            writer.write("is store");
-                            writer.println();
-                            writer.flush();
+                            writeAndFlush("is store", writer);
                         
                             currStores.remove(storeInQuestion);
                             seller.setStores(currStores);
@@ -815,9 +713,7 @@ public class MarketPlace extends Thread {
                                 output += "   " + ((Product) cusCart.get(i).get(j)).toString() + ";;";
                             }
                         }
-                        writer.write(output);
-                        writer.println();
-                        writer.flush();
+                        writeAndFlush(output, writer);
                         break;
                     case "8. import stores from a CSV":
                         String fileImport = "";
@@ -830,14 +726,10 @@ public class MarketPlace extends Thread {
                         try {
                             importedStores = seller.importCSV(fileImport);
                         } catch (Exception e) {
-                            writer.write("error");
-                            writer.println();
-                            writer.flush();
+                            writeAndFlush("error", writer);
                             break;
                         } 
-                        writer.write("no error");
-                        writer.println();
-                        writer.flush();
+                        writeAndFlush("no error", writer);
                         
                         for (int i = 0; i < importedStores.size(); i++) {
                             seller.addStore(importedStores.get(i));
@@ -906,28 +798,6 @@ public class MarketPlace extends Thread {
         this.socket = socket;
         parseFile();
     }
-
-    // /**
-    //  * Displays all the stores in the marketplace; is the homescreen of the customer
-    //  *
-    //  * @return none
-    //  * @param, none
-    //  */
-    // public static void homescreen() {
-    //     int i = 1;
-    //     ArrayList<String> storeStrings = new ArrayList<>();
-    //     for (Seller s : sellers) {
-    //         for (Store st : s.getStores()) {
-    //             storeStrings.add(i + ": " + st.toString());
-    //             i++;
-    //         }
-    //     }
-    //     if (i == 1) {
-    //         System.out.println("The Market is quiet for once. No life breathes");
-    //     } else {
-    //         JOptionPane.showOptionDialog(null, storeStrings, "MarketPlace", i, i, null, null, storeStrings)
-    //     }
-    // }
 
     public static Store getStoreIndex(int index) {
         int i = 1;
@@ -1180,21 +1050,9 @@ public class MarketPlace extends Thread {
 
         return outputArray;
     }
-
-    /*
-    public void updateSeller(Seller seller) {
-        Seller slay = null;
-        for (Seller s : sellers) {
-            if (s.getSellerName().equals(seller.getSellerName())) {
-                slay = s;
-                break;
-            }
-        }
-        if (slay == null) {
-            sellers.add(seller);
-        } else {
-            sellers.remove(slay);
-            sellers.add(seller);
-        }
-    }*/
+    private void writeAndFlush(String sendString, PrintWriter writer) {
+        writer.write(sendString);
+        writer.println();
+        writer.flush();
+    }
 }
