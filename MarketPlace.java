@@ -252,7 +252,7 @@ public class MarketPlace extends Thread {
                                     again = false;
                                 }
                             } else if (dash.equals("Your purchased items by store")) {
-                                dashboard = Dashboard.getCustomerDashboard2("username",
+                                dashboard = Dashboard.getCustomerDashboard2(customer.getUsername(),
                                         "customers.txt");
                                 if (dashboard.size() > 1) {
                                     for (int i = 0; i < dashboard.size(); i++) {
@@ -638,7 +638,7 @@ public class MarketPlace extends Thread {
                                         throw new RuntimeException(e);
                                     }
                                     if (!store.equals("")) {
-                                        dashboard = Dashboard.getSellerDashboard2(store, "Seller1", "testsample2.txt", "testsample1.txt");
+                                        dashboard = Dashboard.getSellerDashboard2(store, seller.getSellerName(), "testsample2.txt", "testsample1.txt");
                                         if (dashboard.size() > 1) {
                                             for (int i = 0; i < dashboard.size(); i++) {
                                                 writeAndFlush(dashboard.get(i), writer);
