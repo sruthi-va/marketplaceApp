@@ -33,11 +33,18 @@ public class Client {
 
         while (run) {
             try {
+                BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
+                BufferedReader reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+                ObjectOutputStream oos = new ObjectOutputStream(new DataOutputStream(socket.getOutputStream()));
+                ObjectInputStream ois = new ObjectInputStream(new DataInputStream(socket.getInputStream()));
                 int cancel = JOptionPane.showOptionDialog(null, "Welcome to bEtsy!",
                         "Welcome", JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE, icon, null,
                         null);
                 if (cancel == JOptionPane.CLOSED_OPTION) {
+                    writeAndFlush("exit", writer);
                     return;
+                } else {
+                    writeAndFlush("we good", writer);
                 }
                 ObjectOutputStream oos = new ObjectOutputStream(new DataOutputStream(socket.getOutputStream()));
                 ObjectInputStream ois = new ObjectInputStream(new DataInputStream(socket.getInputStream()));

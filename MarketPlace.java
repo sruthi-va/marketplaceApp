@@ -30,6 +30,16 @@ public class MarketPlace extends Thread {
             return;
         }
 
+        String welcome = null;
+        try {
+            welcome = reader.readLine();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        if (welcome.equals("exit")) {
+            return;
+        }
+
         Customer customer = null;
         Seller seller = null;
         int id = 2;
@@ -44,6 +54,8 @@ public class MarketPlace extends Thread {
 
         if (cOrS.equals("Customer")) {
             id = 1;
+        } else if (cOrS.equals("no")){
+            return;
         }
 
         String[] userpass = new String[0];
@@ -554,7 +566,7 @@ public class MarketPlace extends Thread {
                             sellers.set(sellerID, seller);
                         }
                         break;
-                    case "5.view statistics":
+                    case "5. view statistics":
                         boolean bool = true;
                         ArrayList<String> dashboard = new ArrayList<>();
                         while (bool) {
@@ -566,7 +578,7 @@ public class MarketPlace extends Thread {
                                 throw new RuntimeException(e);
                             }
                             if (dash.equals("Number of products bought by each customer at a specific store")) {
-                                ArrayList<String> marketplaceinfo = Dashboard.readFile("testsample1.txt");
+                                ArrayList<String> marketplaceinfo = Dashboard.readFile("marketplace.txt");
                                 boolean status = false;
                                 for (int i = 0; i < marketplaceinfo.size(); i++) {
                                     String[] sellerinfo = marketplaceinfo.get(i).split(";");
@@ -592,7 +604,7 @@ public class MarketPlace extends Thread {
                                         throw new RuntimeException(e);
                                     }
                                     if (!store.equals("")) {
-                                        dashboard = Dashboard.getSellerDashboard1(store, "testsample2.txt");
+                                        dashboard = Dashboard.getSellerDashboard1(store, "customers.txt");
                                         if (dashboard.size() > 1) {
                                             for (int i = 0; i < dashboard.size(); i++) {
                                                 writeAndFlush(dashboard.get(i), writer);
@@ -610,7 +622,7 @@ public class MarketPlace extends Thread {
                                     again = false;
                                 }
                             } else if (dash.equals("Number of items sold for each product at a specific store")) {
-                                ArrayList<String> marketplaceinfo = Dashboard.readFile("testsample1.txt");
+                                ArrayList<String> marketplaceinfo = Dashboard.readFile("marketplace.txt");
                                 boolean status = false;
                                 for (int i = 0; i < marketplaceinfo.size(); i++) {
                                     String[] sellerinfo = marketplaceinfo.get(i).split(";");
@@ -636,7 +648,7 @@ public class MarketPlace extends Thread {
                                         throw new RuntimeException(e);
                                     }
                                     if (!store.equals("")) {
-                                        dashboard = Dashboard.getSellerDashboard2(store, seller.getSellerName(), "testsample2.txt", "testsample1.txt");
+                                        dashboard = Dashboard.getSellerDashboard2(store, seller.getSellerName(), "customers.txt", "marketplace.txt");
                                         if (dashboard.size() > 1) {
                                             for (int i = 0; i < dashboard.size(); i++) {
                                                 writeAndFlush(dashboard.get(i), writer);
