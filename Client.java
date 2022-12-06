@@ -764,26 +764,33 @@ public class Client {
             int continueQues = 0;
             String searchWord = JOptionPane.showInputDialog(null,
                     "Enter Search", "Search Bar", JOptionPane.QUESTION_MESSAGE); // enter search
-            writeAndFlush(searchWord, writer);
-            
-            @SuppressWarnings("unchecked") HashSet<Object> results = (HashSet<Object>) ois.readObject();
-            ArrayList<String> resultString = new ArrayList<>();
-            for (Object p : results) {
-                Product curr = (Product) p;
-                resultString.add(curr.getProductName());
-            }
-            if (results.isEmpty()) {
-                JOptionPane.showMessageDialog(null,
-                        "Error: There's nothing on this bro :((", "Search Bar", JOptionPane.ERROR_MESSAGE);
+            if (searchWord != null) {
+                writeAndFlush(searchWord, writer);
+                @SuppressWarnings("unchecked") HashSet<Object> results = (HashSet<Object>) ois.readObject();
+                ArrayList<String> resultString = new ArrayList<>();
+                for (Object p : results) {
+                    Product curr = (Product) p;
+                    resultString.add(curr.getProductName());
+                }
+                if (results.isEmpty()) {
+                    JOptionPane.showMessageDialog(null,
+                            "Error: There's nothing on this bro :((", "Search Bar", JOptionPane.ERROR_MESSAGE);
+                    return;
+                } else {
+                    chosenProduct = (String) JOptionPane.showInputDialog(null,
+                            "Select Desired Product", "MarketPlace",
+                            JOptionPane.PLAIN_MESSAGE, null, resultString.toArray(new String[0]),
+                            null);
+                    if (chosenProduct != null) {
+                        writeAndFlush(chosenProduct, writer);
+                        Product product = (Product) ois.readObject();
+                        whatToDoWithProduct(product, userName, oos);
+                    }
+                }
             } else {
-                chosenProduct = (String) JOptionPane.showInputDialog(null,
-                        "Select Desired Product", "MarketPlace",
-                        JOptionPane.PLAIN_MESSAGE, null, resultString.toArray(new String[0]),
-                        null);
-                writeAndFlush(chosenProduct, writer);
-                Product product = (Product) ois.readObject();
-                // fix this
-                whatToDoWithProduct(product, userName, oos);
+                JOptionPane.showMessageDialog(null,
+                        "Error: Empty search", "Search Bar", JOptionPane.ERROR_MESSAGE);
+                return;
             }
         } catch (Exception e) {
             e.printStackTrace();
