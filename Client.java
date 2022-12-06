@@ -161,7 +161,7 @@ public class Client {
                                         writeAndFlush(viewStore, writer);
                                 String[] storeProducts = (String[]) ois.readObject();
                                 if (storeProducts.length == 0) {
-                                    JOptionPane.showMessageDialog(null, "This store is empty", "Store's Product List",
+                                    JOptionPane.showMessageDialog(null, "This store doesn't have anything in stock :(", "Store's Product List",
                                         JOptionPane.ERROR_MESSAGE);
                                 } else {
                                     String chooseProduct = (String) JOptionPane.showInputDialog(null,
@@ -723,16 +723,16 @@ public class Client {
                                 } else {
                                     valid = true;
                                     writeAndFlush(input, writer);
+                                    JOptionPane.showMessageDialog(null, "Exported!", "Stores",
+                                        JOptionPane.ERROR_MESSAGE);
                                 }
                             } while (!valid);
                         }
 
                         if (reply.equals("10. delete account")) {
-                            JOptionPane.showMessageDialog(null, "Your account has been deleted.",
-                                    "bEtsy",
-                        JOptionPane.INFORMATION_MESSAGE);
-                        runSeller = false;
-
+                            JOptionPane.showMessageDialog(null, "Your account has been deleted.", 
+                                "bEtsy", JOptionPane.INFORMATION_MESSAGE);
+                            runSeller = false;
                         }
 
                         if (reply.equals("11. log out")) {
@@ -795,7 +795,7 @@ public class Client {
     public static void whatToDoWithProduct(Product product, String userName, ObjectOutputStream oos) {
         try {
             int choice = JOptionPane.showConfirmDialog(null, 
-                String.format("%s\nAdd %s to cart? Yes or no?", product.toString(), product.getProductName()),
+                String.format("%s. %d in stock.\nAdd %s to cart? Yes or no?", product.toString(), product.getQuantity(), product.getProductName()),
                 "MarketPlace", JOptionPane.YES_NO_OPTION);
             if (choice == 0) {
                 oos.writeObject(product);
