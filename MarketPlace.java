@@ -170,7 +170,6 @@ public class MarketPlace extends Thread {
                         break;
                     case "2. search":
                         search(reader, writer, oos, ois, customer);
-                        
                         break;
                     case "3. purchase": //server writes over string returned from purchasecart method
                         Product[] list = customer.getCustomerCart().getProducts(userpass[0]);
@@ -777,7 +776,6 @@ public class MarketPlace extends Thread {
                         break;
                 }
             } while (true);
-
         }
     }
 
