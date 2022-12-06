@@ -143,7 +143,7 @@ public class MarketPlace extends Thread {
                             oos.writeObject(allStoresArray);
                             oos.flush();
                             if (allStoresArray.length == 0) {
-                                System.out.println("no products");
+                                System.out.println("no stores");
                             } else {
                                 // receive which store to view
                                 line = reader.readLine();
@@ -156,16 +156,21 @@ public class MarketPlace extends Thread {
                                         break;
                                     }
                                 } 
-                                // receive product name
-                                line = reader.readLine();
-                                // find the obejct
-                                for (Product p : chosen.getProductList()) {
-                                    if (p.getProductName().equals(line)) {
-                                        oos.writeObject(p);
-                                        break;
+
+                                if (chosen.getProductList().size() == 0) {
+                                    System.out.println("no stores");
+                                } else {
+                                    // receive product name
+                                    line = reader.readLine();
+                                    // find the obejct
+                                    for (Product p : chosen.getProductList()) {
+                                        if (p.getProductName().equals(line)) {
+                                            oos.writeObject(p);
+                                            break;
+                                        }
                                     }
+                                    whatToDoWithProductReply(customer, ois);
                                 }
-                                whatToDoWithProductReply(customer, ois);
                             }
                         } catch (IOException e) {
                                 // TODO: Auto-generated catch block
@@ -180,7 +185,8 @@ public class MarketPlace extends Thread {
                         Product[] list = customer.getCustomerCart().getProducts(userpass[0]);
                         list = this.updateProductQuantities(list);
                         if (list.length > 0) {
-                            customer.purchaseCart(list);
+                            String output = customer.purchaseCart(list);
+                            writeAndFlush(output, writer);
                             this.decrementQuantity(list);
                         }
                         break;

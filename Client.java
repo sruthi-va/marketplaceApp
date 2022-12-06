@@ -151,7 +151,7 @@ public class Client {
                         switch (reply) {
                             case "1. view store":
                                 String[] chooseStore = (String[]) ois.readObject();
-                                if (chooseStore == null) {
+                                if (chooseStore == null || chooseStore.length == 0) {
                                     System.out.println("null in client");
                                 }
                                 String viewStore = (String) JOptionPane.showInputDialog(null,
@@ -181,15 +181,12 @@ public class Client {
                                 break;
                             case "3. purchase":  
                                 String purchaseResult = reader.readLine();
-                                if (purchaseResult.contains("out of stock")) {
-                                } else {
-                                    int display = JOptionPane.showOptionDialog(null,
-                                        purchaseResult, "Shopping Cart",
-                                        JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE, icon,
-                                        null, null);
-                                    if (display == JOptionPane.CLOSED_OPTION) {
-                                        return;
-                                    }
+                                int display = JOptionPane.showOptionDialog(null,
+                                    purchaseResult, "Shopping Cart",
+                                    JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE, icon,
+                                    null, null);
+                                if (display == JOptionPane.CLOSED_OPTION) {
+                                    return;
                                 }
                                 break;
                             case "4. edit cart":
@@ -220,7 +217,7 @@ public class Client {
                             case "5. view cart":
                                 String shoppingcart = reader.readLine();
                                 System.out.println(shoppingcart + " read");
-                                if (shoppingcart == "") {
+                                if (shoppingcart == "" || shoppingcart.isEmpty()) {
                                     shoppingcart = "your cart is empty!";
                                 } 
                                 String thing = shoppingcart.replace(";;", "\n");
