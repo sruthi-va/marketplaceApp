@@ -33,17 +33,20 @@ public class Client {
 
         while (run) {
             try {
-                int cancel = JOptionPane.showOptionDialog(null, "Welcome to bEtsy!",
-                        "Welcome", JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE, icon, null,
-                        null);
-                if (cancel == JOptionPane.CLOSED_OPTION) {
-                    return;
-                }
-
                 BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
                 BufferedReader reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
                 ObjectOutputStream oos = new ObjectOutputStream(new DataOutputStream(socket.getOutputStream()));
                 ObjectInputStream ois = new ObjectInputStream(new DataInputStream(socket.getInputStream()));
+                int cancel = JOptionPane.showOptionDialog(null, "Welcome to bEtsy!",
+                        "Welcome", JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE, icon, null,
+                        null);
+                if (cancel == JOptionPane.CLOSED_OPTION) {
+                    writeAndFlush("exit", writer);
+                    return;
+                } else {
+                    writeAndFlush("we good", writer);
+                }
+
                 choose = (String) JOptionPane.showInputDialog(null,
                         "Are you a customer or seller?","Choice?", JOptionPane.QUESTION_MESSAGE,
                         icon, userChoice, userChoice[0]);
