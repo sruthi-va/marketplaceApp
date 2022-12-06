@@ -386,9 +386,10 @@ public class Client {
                                     ArrayList<Product> currProducts = s.getProductList();
                                     output += k + ": " + s.toString();
                                     for (int i = 0; i < currProducts.size(); i++) {
-                                        output += "   - " + currProducts.get(i).toString() +
+                                        output += "\n    - " + currProducts.get(i).toString() +
                                                 ", " + currProducts.get(i).getQuantity() + " left in stock.";
                                     }
+                                    output += "\n";
                                     k++;
                                 }
                                 System.out.println(output);
@@ -415,9 +416,6 @@ public class Client {
                                     }
                                     poop++;
                                 }
-
-                                /*JOptionPane.showMessageDialog(null, output, "Stores",
-                                        JOptionPane.INFORMATION_MESSAGE);*/
 
                                 Store chosenStore = (Store) JOptionPane.showInputDialog(null, "Which store do you want to view?", 
                                     "View Store", JOptionPane.QUESTION_MESSAGE,
@@ -474,6 +472,8 @@ public class Client {
                                     oos.writeObject(product);
                                     oos.flush();
                                     System.out.println("write " + product.toString() + " in oos");
+                                    JOptionPane.showMessageDialog(null, product.getProductName() + " added to store!", "Edit Store",
+                                        JOptionPane.INFORMATION_MESSAGE);
                                 } else if (todo.equalsIgnoreCase("edit product")) {
                                     //valid = true;
                                     @SuppressWarnings("unchecked") ArrayList<Product> products = (ArrayList<Product>) ois.readObject();
@@ -534,6 +534,8 @@ public class Client {
                                     writer.newLine();
                                     writer.flush();
                                     System.out.println("write " + product.toString() + " in oos");
+                                    JOptionPane.showMessageDialog(null, product.getProductName() + " edited!", "Edit Store",
+                                        JOptionPane.INFORMATION_MESSAGE);
                                 } else if (todo.equalsIgnoreCase("delete product")) {
                                     @SuppressWarnings("unchecked") ArrayList<Product> products = (ArrayList<Product>) ois.readObject();
                                     String[] names = new String[products.size()];
@@ -559,6 +561,9 @@ public class Client {
                                     writer.write(currProductIndex);
                                     writer.newLine();
                                     writer.flush();
+
+                                    JOptionPane.showMessageDialog(null, chosenName + " deleted!", "Edit Store",
+                                        JOptionPane.INFORMATION_MESSAGE);
                                 } else {
                                     System.out.println("Please type 'create', 'edit', or 'delete'.");
                                 }

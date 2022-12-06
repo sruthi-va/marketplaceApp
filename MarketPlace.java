@@ -153,27 +153,31 @@ public class MarketPlace extends Thread {
                         try {
                             oos.writeObject(allStoresArray);
                             oos.flush();
-                             // receive which store to view
-                            line = reader.readLine();
-                            Store chosen = new Store("", "", null);
-                            for (Store st : allStores) {
-                                if (st.getStoreName().equals(line)) {
-                                    chosen = st;
-                                    oos.writeObject(st.listAllProducts());
-                                    oos.flush();
-                                    break;
+                            if (allStoresArray.length == 0) {
+                                System.out.println("no products");
+                            } else {
+                                // receive which store to view
+                                line = reader.readLine();
+                                Store chosen = new Store("", "", null);
+                                for (Store st : allStores) {
+                                    if (st.getStoreName().equals(line)) {
+                                        chosen = st;
+                                        oos.writeObject(st.listAllProducts());
+                                        oos.flush();
+                                        break;
+                                    }
+                                } 
+                                // receive product name
+                                line = reader.readLine();
+                                // find the obejct
+                                for (Product p : chosen.getProductList()) {
+                                    if (p.getProductName().equals(line)) {
+                                        oos.writeObject(p);
+                                        break;
+                                    }
                                 }
-                            } 
-                            // receive product name
-                            line = reader.readLine();
-                            // find the obejct
-                            for (Product p : chosen.getProductList()) {
-                                if (p.getProductName().equals(line)) {
-                                    oos.writeObject(p);
-                                    break;
-                                }
+                                whatToDoWithProductReply(customer, ois);
                             }
-                            whatToDoWithProductReply(customer, ois);
                         } catch (IOException e) {
                                 // TODO: Auto-generated catch block
                                 e.printStackTrace();
@@ -475,7 +479,6 @@ public class MarketPlace extends Thread {
                         }
                         break;
                     case "2. edit stores":
-                        boolean continuing = false;
                         if (sellers.get(sellerID).getStores().size() == 0) {
                             writer.write("no stores");
                             writer.println();
@@ -484,101 +487,94 @@ public class MarketPlace extends Thread {
                             writer.write("has stores");
                             writer.println();
                             writer.flush();
-                            do {
-                                try {
-                                    oos.writeObject(sellers.get(sellerID).getStores());
-                                    oos.flush();
-                                } catch (IOException e) {
-                                    throw new RuntimeException(e);
-                                }
+                            try {
+                                oos.writeObject(sellers.get(sellerID).getStores());
+                                oos.flush();
+                            } catch (IOException e) {
+                                throw new RuntimeException(e);
+                            }
 
-                                Store currentStore = null;
+                            Store currentStore = null;
+                            try {
+                                currentStore = (Store) ois.readObject();
+                                System.out.println(currentStore);
+                            } catch (IOException e) {
+                                throw new RuntimeException(e);
+                            } catch (ClassNotFoundException e) {
+                                throw new RuntimeException(e);
+                            }
+
+                            System.out.println(Arrays.toString(seller.getStores().toArray()));
+                            
+                            int currentStoreID = -1;
+                            for (int i = 0; i < seller.getStores().size(); i++) {
+                                if (seller.getStores().get(i).toString().equals(currentStore.toString())) {
+                                    currentStoreID = i;
+                                }
+                                System.out.println(seller.getStores().get(i).toString().equals(currentStore.toString()));
+                            }
+
+                            System.out.println(currentStoreID);
+
+                            String todo = null;
+                            try {
+                                todo = reader.readLine();
+                                System.out.println(todo);
+                            } catch (IOException e) {
+                                throw new RuntimeException(e);
+                            }
+                            System.out.println("started if statements");
+                            if (todo.equalsIgnoreCase("create product")) {
+                                Product toAdd = null;
                                 try {
-                                    currentStore = (Store) ois.readObject();
-                                    System.out.println(currentStore);
+                                    toAdd = (Product) ois.readObject();
+                                    System.out.println("read" + toAdd.toString());
                                 } catch (IOException e) {
                                     throw new RuntimeException(e);
                                 } catch (ClassNotFoundException e) {
                                     throw new RuntimeException(e);
                                 }
-
-                                System.out.println(Arrays.toString(seller.getStores().toArray()));
-                                
-                                int currentStoreID = -1;
-                                for (int i = 0; i < seller.getStores().size(); i++) {
-                                    if (seller.getStores().get(i).toString().equals(currentStore.toString())) {
-                                        currentStoreID = i;
-                                    }
-                                    System.out.println(seller.getStores().get(i).toString().equals(currentStore.toString()));
+                                currentStore.addProduct(toAdd);
+                                seller.setStore(currentStoreID, currentStore);
+                                synchronized(obj) {
+                                    sellers.set(sellerID, seller);
                                 }
-
-                                System.out.println(currentStoreID);
-
-                                boolean valid = false;
-                                while (!valid) {
-                                    String todo = null;
-                                    try {
-                                        todo = reader.readLine();
-                                        System.out.println(todo);
-                                    } catch (IOException e) {
-                                        throw new RuntimeException(e);
+                            } else if (todo.equalsIgnoreCase("edit product")) {
+                                try {
+                                    oos.writeObject(currentStore.getProductList());
+                                    Product toEdit = (Product) ois.readObject();
+                                    System.out.println("read ois " + toEdit.toString());
+                                    int currProductIndex = Integer.parseInt(reader.readLine());
+                                    System.out.println("read reader " + currProductIndex);
+                                    ArrayList<Product> products = currentStore.getProductList();
+                                    products.set(currProductIndex, toEdit);
+                                    currentStore.setProductList(products);
+                                    seller.setStore(currentStoreID, currentStore);
+                                    synchronized(obj) {
+                                        sellers.set(sellerID, seller);
                                     }
-                                    System.out.println("started if statements");
-                                    if (todo.equalsIgnoreCase("create product")) {
-                                        Product toAdd = null;
-                                        try {
-                                            toAdd = (Product) ois.readObject();
-                                            System.out.println("read" + toAdd.toString());
-                                        } catch (IOException e) {
-                                            throw new RuntimeException(e);
-                                        } catch (ClassNotFoundException e) {
-                                            throw new RuntimeException(e);
-                                        }
-                                        currentStore.addProduct(toAdd);
-                                        seller.setStore(currentStoreID, currentStore);
-                                        synchronized(obj) {
-                                            sellers.set(sellerID, seller);
-                                        }
-                                    } else if (todo.equalsIgnoreCase("edit product")) {
-                                        valid = true;
-                                        try {
-                                            oos.writeObject(currentStore.getProductList());
-                                            Product toEdit = (Product) ois.readObject();
-                                            System.out.println("read ois " + toEdit.toString());
-                                            int currProductIndex = Integer.parseInt(reader.readLine());
-                                            System.out.println("read reader " + currProductIndex);
-                                            ArrayList<Product> products = currentStore.getProductList();
-                                            products.set(currProductIndex, toEdit);
-                                            currentStore.setProductList(products);
-                                            seller.setStore(currentStoreID, currentStore);
-                                            synchronized(obj) {
-                                                sellers.set(sellerID, seller);
-                                            }
-                                        } catch (IOException e) {
-                                            throw new RuntimeException(e);
-                                        } catch (ClassNotFoundException e) {
-                                            throw new RuntimeException(e);
-                                        }
-                                    } else if (todo.equalsIgnoreCase("delete product")) {
-                                        valid = true;
-                                        try {
-                                            oos.writeObject(currentStore.getProductList());
-                                            int currProductIndex = Integer.parseInt(reader.readLine());
-                                            ArrayList<Product> products = currentStore.getProductList();
-                                            products.remove(currProductIndex);
-                                            currentStore.setProductList(products);
-                                            seller.setStore(currentStoreID, currentStore);
-                                            synchronized(obj) {
-                                                sellers.set(sellerID, seller);
-                                            }
-                                        } catch (IOException e) {
-                                            throw new RuntimeException(e);
-                                        }
-                                    } else {
-                                        System.out.println("Please type 'create', 'edit', or 'delete'.");
-                                    }
+                                } catch (IOException e) {
+                                    throw new RuntimeException(e);
+                                } catch (ClassNotFoundException e) {
+                                    throw new RuntimeException(e);
                                 }
-                            } while (continuing);
+                            } else if (todo.equalsIgnoreCase("delete product")) {
+                                try {
+                                    oos.writeObject(currentStore.getProductList());
+                                    int currProductIndex = Integer.parseInt(reader.readLine());
+                                    ArrayList<Product> products = currentStore.getProductList();
+                                    products.remove(currProductIndex);
+                                    currentStore.setProductList(products);
+                                    seller.setStore(currentStoreID, currentStore);
+                                    synchronized(obj) {
+                                        sellers.set(sellerID, seller);
+                                    }
+                                } catch (IOException e) {
+                                    throw new RuntimeException(e);
+                                }
+                            } else {
+                                System.out.println("Please type 'create', 'edit', or 'delete'.");
+                            }
                         }
                         break;
                     case "3. view sales":
