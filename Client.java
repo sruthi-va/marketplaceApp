@@ -570,6 +570,7 @@ public class Client {
                         if (reply.equals("5. view statistics")) {
                             boolean bool = true;
                             ArrayList<String> dashboard = new ArrayList<>();
+                            ArrayList<String> stores = new ArrayList<>();
                             String[] options = {"Number of products bought by each customer at a specific store", "Number of items sold for each product at a specific store", "Nothing"};
                             String[] sorts = {"Alphabetically(A-Z)", "Alphabetically(Z-A)", "Quantity(high-low)", "Quantity(low-high)", "Back"};
                             while (bool) {
@@ -581,19 +582,28 @@ public class Client {
                                 if (title != null) {
                                     if (title.equals("Number of products bought by each customer at a specific store") || title.equals("Number of items sold for each product at a specific store")) {
                                         writeAndFlush(title, writer);
-                                        String store = JOptionPane.showInputDialog(null, "Please enter one of your stores:",
-                                                "Seller Dashboard",
-                                                JOptionPane.PLAIN_MESSAGE);
-                                        if (store != null) {
-                                            writeAndFlush(store, writer);
-                                        } else {
-                                            writeAndFlush("false", writer);
+                                        for (int i = 0; i < stores.size();) {
+                                            stores.remove(i);
                                         }
-                                        String status = reader.readLine();
-                                        if (status.equals("true")) {
-                                            storeStatus = true;
+                                        String line = reader.readLine();
+                                        while (!line.isBlank()) {
+                                            stores.add(line);
+                                            line = reader.readLine();
+                                        }
+                                        String[] eachstore = stores.toArray(new String[0]);
+                                        String store = "";
+                                        if (!eachstore[0].equals("")) {
+                                            store = (String) JOptionPane.showInputDialog(null, "From which of your stores?",
+                                                    "Seller Dashboard",
+                                                    JOptionPane.QUESTION_MESSAGE, null, eachstore, null);
+                                            if (store != null) {
+                                                storeStatus = true;
+                                                writeAndFlush(store, writer);
+                                            } else {
+                                                writeAndFlush("", writer);
+                                            }
                                         } else {
-                                            JOptionPane.showMessageDialog(null, "You don't have a store under that name...", "Seller Dashboard",
+                                            JOptionPane.showMessageDialog(null, "You don't have any stores...", "Seller Dashboard",
                                                     JOptionPane.ERROR_MESSAGE);
                                         }
                                     } else if (title.equals("Nothing")) {

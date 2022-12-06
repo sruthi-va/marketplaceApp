@@ -562,78 +562,91 @@ public class MarketPlace extends Thread {
                                 throw new RuntimeException(e);
                             }
                             if (dash.equals("Number of products bought by each customer at a specific store")) {
-                                String store = null;
-                                try {
-                                    store = reader.readLine();
-                                } catch (IOException e){
-                                    throw new RuntimeException(e);
-                                }
-                                ArrayList<String> marketplaceinfo = Dashboard.readFile("marketplace.txt");
+                                ArrayList<String> marketplaceinfo = Dashboard.readFile("testsample1.txt");
                                 boolean status = false;
                                 for (int i = 0; i < marketplaceinfo.size(); i++) {
                                     String[] sellerinfo = marketplaceinfo.get(i).split(";");
                                     if (sellerinfo[0].equals(seller.getSellerName())) {
+                                        status = true;
                                         for (int j = 1; j < sellerinfo.length; j++) {
-                                            String[] storeinfo = sellerinfo[j].split("-");
-                                            if (storeinfo[0].equalsIgnoreCase(store)) {
-                                                status = true;
+                                            String[] productinfo = sellerinfo[j].split(",");
+                                            if (productinfo[0].contains("-")) {
+                                                String[] storeinfo = sellerinfo[j].split("-");
+                                                writeAndFlush(storeinfo[0], writer);
+                                            } else {
+                                                writeAndFlush(productinfo[0], writer);
                                             }
                                         }
+                                        writeAndFlush("", writer);
                                     }
                                 }
                                 if (status) {
-                                    writeAndFlush("true", writer);
-                                    dashboard = Dashboard.getSellerDashboard1(store, "customers.txt");
-                                    if (dashboard.size() > 1) {
-                                        for (int i = 0; i < dashboard.size(); i++) {
-                                            writeAndFlush(dashboard.get(i), writer);
+                                    String store = null;
+                                    try {
+                                        store = reader.readLine();
+                                    } catch (IOException e) {
+                                        throw new RuntimeException(e);
+                                    }
+                                    if (!store.equals("")) {
+                                        dashboard = Dashboard.getSellerDashboard1(store, "testsample2.txt");
+                                        if (dashboard.size() > 1) {
+                                            for (int i = 0; i < dashboard.size(); i++) {
+                                                writeAndFlush(dashboard.get(i), writer);
+                                            }
+                                            writeAndFlush("", writer);
+                                        } else {
+                                            writeAndFlush("No one has bought anything...", writer);
+                                            writeAndFlush("", writer);
+                                            again = false;
                                         }
-                                        writeAndFlush("", writer);
                                     } else {
-                                        writeAndFlush("No one has bought anything...", writer);
-                                        writeAndFlush("", writer);
                                         again = false;
                                     }
                                 } else {
-                                    writeAndFlush("false", writer);
                                     again = false;
                                 }
                             } else if (dash.equals("Number of items sold for each product at a specific store")) {
-                                String store = null;
-                                try {
-                                    store = reader.readLine();
-                                } catch (IOException e) {
-                                    throw new RuntimeException(e);
-                                }
-                                ArrayList<String> marketplaceinfo = Dashboard.readFile("marketplace.txt");
+                                ArrayList<String> marketplaceinfo = Dashboard.readFile("testsample1.txt");
                                 boolean status = false;
                                 for (int i = 0; i < marketplaceinfo.size(); i++) {
                                     String[] sellerinfo = marketplaceinfo.get(i).split(";");
                                     if (sellerinfo[0].equals(seller.getSellerName())) {
+                                        status = true;
                                         for (int j = 1; j < sellerinfo.length; j++) {
-                                            String[] storeinfo = sellerinfo[j].split("-");
-                                            if (storeinfo[0].equalsIgnoreCase(store)) {
-                                                status = true;
+                                            String[] productinfo = sellerinfo[j].split(",");
+                                            if (productinfo[0].contains("-")) {
+                                                String[] storeinfo = sellerinfo[j].split("-");
+                                                writeAndFlush(storeinfo[0], writer);
+                                            } else {
+                                                writeAndFlush(productinfo[0], writer);
                                             }
                                         }
+                                        writeAndFlush("", writer);
                                     }
                                 }
                                 if (status) {
-                                    writeAndFlush("true", writer);
-                                    dashboard = Dashboard.getSellerDashboard2(store, seller.getSellerName(), "customers.txt", "marketplace.txt");
-                                    if (dashboard.size() > 1) {
-                                        for (int i = 0; i < dashboard.size(); i++) {
-                                            writeAndFlush(dashboard.get(i), writer);
+                                    String store = "";
+                                    try {
+                                        store = reader.readLine();
+                                    } catch (IOException e) {
+                                        throw new RuntimeException(e);
+                                    }
+                                    if (!store.equals("")) {
+                                        dashboard = Dashboard.getSellerDashboard2(store, "Seller1", "testsample2.txt", "testsample1.txt");
+                                        if (dashboard.size() > 1) {
+                                            for (int i = 0; i < dashboard.size(); i++) {
+                                                writeAndFlush(dashboard.get(i), writer);
+                                            }
+                                            writeAndFlush("", writer);
+                                        } else {
+                                            writeAndFlush("This store has no products...", writer);
+                                            writeAndFlush("", writer);
+                                            again = false;
                                         }
-                                        writeAndFlush("", writer);
-
                                     } else {
-                                        writeAndFlush("This store has no products...", writer);
-                                        writeAndFlush("", writer);
                                         again = false;
                                     }
                                 } else {
-                                    writeAndFlush("false", writer);
                                     again = false;
                                 }
                             } else {
