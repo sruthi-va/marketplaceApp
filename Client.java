@@ -33,21 +33,17 @@ public class Client {
 
         while (run) {
             try {
-                BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
-                BufferedReader reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
                 ObjectOutputStream oos = new ObjectOutputStream(new DataOutputStream(socket.getOutputStream()));
                 ObjectInputStream ois = new ObjectInputStream(new DataInputStream(socket.getInputStream()));
                 int cancel = JOptionPane.showOptionDialog(null, "Welcome to bEtsy!",
                         "Welcome", JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE, icon, null,
                         null);
                 if (cancel == JOptionPane.CLOSED_OPTION) {
-                    writeAndFlush("exit", writer);
+                    writeAndFlush("exit", oos);
                     return;
                 } else {
-                    writeAndFlush("we good", writer);
+                    writeAndFlush("we good", oos);
                 }
-                ObjectOutputStream oos = new ObjectOutputStream(new DataOutputStream(socket.getOutputStream()));
-                ObjectInputStream ois = new ObjectInputStream(new DataInputStream(socket.getInputStream()));
                 choose = (String) JOptionPane.showInputDialog(null,
                         "Are you a customer or seller?","Choice?", JOptionPane.QUESTION_MESSAGE,
                         icon, userChoice, userChoice[0]);
@@ -207,10 +203,10 @@ public class Client {
 
                                 if (deleteItem == null) {
                                     runCustomer = true;
-                                    ooswriteObject(null);
+                                    oos.writeObject(null);
                                     oos.flush();
                                 } else {
-                                    ooswriteObject(deleteItem);
+                                    oos.writeObject(deleteItem);
                                     oos.flush();
                                     JOptionPane.showMessageDialog(null, "Item deleted!", "Shopping Cart",
                                         JOptionPane.INFORMATION_MESSAGE);
@@ -386,7 +382,7 @@ public class Client {
                                     null, stores.toArray(), stores.toArray()[0]);
 
                                 
-                                ooswriteObject(chosenStore);
+                                oos.writeObject(chosenStore);
                                 oos.flush();
 
 
@@ -431,7 +427,7 @@ public class Client {
                                     Product product = new Product(name, desc, Integer.parseInt(quant), 
                                         Double.parseDouble(price), chosenStore.getStoreName());
 
-                                    ooswriteObject(product);
+                                    oos.writeObject(product);
                                     oos.flush();
                                     System.out.println("write " + product.toString() + " in oos");
                                     JOptionPane.showMessageDialog(null, product.getProductName() + " added to store!", "Edit Store",
@@ -490,7 +486,7 @@ public class Client {
                                     Product product = new Product(name, desc, Integer.parseInt(quant), 
                                         Double.parseDouble(price), chosenStore.getStoreName());
 
-                                    ooswriteObject(product);
+                                    oos.writeObject(product);
                                     oos.flush();
                                     writeAndFlush("" + currProductIndex, oos);
                                     System.out.println("write " + product.toString() + " in oos");
@@ -672,7 +668,7 @@ public class Client {
                                             JOptionPane.ERROR_MESSAGE);
                                 } else {
                                     valid = true;
-                                    writeAndFlush(input, writer);
+                                    writeAndFlush(input, oos);
                                     if (reader.readLine().equals("is store")) {
                                         JOptionPane.showMessageDialog(null, "Stores deleted!", "Stores",
                                                 JOptionPane.INFORMATION_MESSAGE);
@@ -700,7 +696,7 @@ public class Client {
                                             JOptionPane.ERROR_MESSAGE);
                                 } else {
                                     valid = true;
-                                    writeAndFlush(input, writer);
+                                    writeAndFlush(input, oos);
                                     if (reader.readLine().equals("error")) {
                                         System.out.println("aur naur something's wrong with the file"); 
                                         JOptionPane.showMessageDialog(null, "aur naur something's wrong with the file", 
@@ -724,7 +720,7 @@ public class Client {
                                             JOptionPane.ERROR_MESSAGE);
                                 } else {
                                     valid = true;
-                                    writeAndFlush(input, writer);
+                                    writeAndFlush(input, oos);
                                     JOptionPane.showMessageDialog(null, "Exported!", "Stores",
                                         JOptionPane.ERROR_MESSAGE);
                                 }
@@ -764,7 +760,7 @@ public class Client {
             String searchWord = JOptionPane.showInputDialog(null,
                     "Enter Search", "Search Bar", JOptionPane.QUESTION_MESSAGE); // enter search
             if (searchWord != null) {
-                writeAndFlush(searchWord, writer);
+                writeAndFlush(searchWord, oos);
                 @SuppressWarnings("unchecked") HashSet<Object> results = (HashSet<Object>) ois.readObject();
                 ArrayList<String> resultString = new ArrayList<>();
                 for (Object p : results) {
@@ -807,14 +803,14 @@ public class Client {
                 String.format("%s. %d in stock.\nAdd %s to cart? Yes or no?", product.toString(), product.getQuantity(), product.getProductName()),
                 "MarketPlace", JOptionPane.YES_NO_OPTION);
             if (choice == 0) {
-                ooswriteObject(product);
+                oos.writeObject(product);
                 oos.flush();
                 // fix this
                 // customer.addToCart(userName, product); 
                 JOptionPane.showMessageDialog(null, "Item added to cart", "MarketPlace",
                         JOptionPane.INFORMATION_MESSAGE);
             } else{
-                ooswriteObject(null);
+                oos.writeObject(null);
                 oos.flush();
                 JOptionPane.showMessageDialog(null, "Sad", "MarketPlace",
                         JOptionPane.INFORMATION_MESSAGE);
@@ -826,7 +822,7 @@ public class Client {
     }
     private static void writeAndFlush(Object sendThing, ObjectOutputStream oos) {
         try {
-            ooswriteObject(sendThing);
+            oos.writeObject(sendThing);
             oos.flush();
         } catch (Exception e) {
             return;
