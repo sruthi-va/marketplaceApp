@@ -180,7 +180,7 @@ public class MarketPlace extends Thread {
                         break;
                     case "3. purchase": //server writes over string returned from purchasecart method
                         Product[] list = customer.getCustomerCart().getProducts(userpass[0]);
-                        list = this.updateProductQuantities(list);
+                        //list = this.updateProductQuantities(list);
                         if (list.length > 0) {
                             String output = customer.purchaseCart(list);
                             writeAndFlush(output, oos);

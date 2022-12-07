@@ -7,6 +7,7 @@ import java.awt.*;
 public class Client {
     public static ObjectOutputStream oos;
     public static ObjectInputStream ois;
+
     public static void main(String[] args) throws Exception {
         boolean run = true;
         boolean runCustomer = false;
@@ -22,13 +23,13 @@ public class Client {
         }
         String userName = "";
         String password = "";
-        String userChoice[] = { "Customer", "Seller" };
+        String userChoice[] = {"Customer", "Seller"};
         String choose = "";
 
         try {
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-        } catch (ClassNotFoundException | InstantiationException | 
-            IllegalAccessException | UnsupportedLookAndFeelException ex) {
+        } catch (ClassNotFoundException | InstantiationException |
+                 IllegalAccessException | UnsupportedLookAndFeelException ex) {
         }
 
         ImageIcon icon = new ImageIcon("betsy.png");
@@ -45,7 +46,7 @@ public class Client {
                     writeAndFlush("we good", oos);
                 }
                 choose = (String) JOptionPane.showInputDialog(null,
-                        "Are you a customer or seller?","Choice?", JOptionPane.QUESTION_MESSAGE,
+                        "Are you a customer or seller?", "Choice?", JOptionPane.QUESTION_MESSAGE,
                         icon, userChoice, userChoice[0]);
                 if (choose == null) {
                     run = false;
@@ -65,7 +66,7 @@ public class Client {
                         myPanel.add(new JLabel("Password:"));
                         myPanel.add(passField);
 
-                        int result = JOptionPane.showConfirmDialog(null, myPanel, 
+                        int result = JOptionPane.showConfirmDialog(null, myPanel,
                                 "Please Enter Username and Password", JOptionPane.OK_CANCEL_OPTION);
                         if (result == JOptionPane.OK_OPTION) {
                             userName = userField.getText();
@@ -73,28 +74,33 @@ public class Client {
                             System.out.println("username " + userField.getText());
                             System.out.println("password " + passField.getText());
                         }
+                        if (result == JOptionPane.CANCEL_OPTION) {
+                            System.out.println("line 77");
+                            run = false;
+                        }
+
                     } while (userName.isEmpty() || password.isEmpty());
-                    
+
                     if (userName == null || password == null) {
                         run = false;
-                    } 
+                    }
                     writeAndFlush(String.format("%s;;%s", userName, password), oos);
                     String isValid = (String) ois.readObject();
                     if (isValid.equals("true")) {
                         cancel = JOptionPane.showOptionDialog(null, "Successfully logged in!",
                                 "Success",
-                        JOptionPane.DEFAULT_OPTION,
-                        JOptionPane.INFORMATION_MESSAGE, icon, null, null);
+                                JOptionPane.DEFAULT_OPTION,
+                                JOptionPane.INFORMATION_MESSAGE, icon, null, null);
                         if (cancel == JOptionPane.CLOSED_OPTION) {
                             return;
                         }
                         break;
                     } else {
                         Object[] options1 = {"Create New Account", "Try Again"};
-                        cancel = JOptionPane.showOptionDialog(null, 
-                            "Not a valid username or password! Create a new account or try again?", 
-                            "Error", JOptionPane.YES_NO_OPTION, JOptionPane.INFORMATION_MESSAGE, icon, 
-                            options1, null);
+                        cancel = JOptionPane.showOptionDialog(null,
+                                "Not a valid username or password! Create a new account or try again?",
+                                "Error", JOptionPane.YES_NO_OPTION, JOptionPane.INFORMATION_MESSAGE, icon,
+                                options1, null);
                         if (cancel == JOptionPane.CLOSED_OPTION) {
                             System.out.println("closed");
                             writeAndFlush("quit", oos);
@@ -105,18 +111,18 @@ public class Client {
                             String validUsername = (String) ois.readObject();
                             System.out.println(validUsername);
                             if (validUsername.equals("false")) {
-                                cancel = JOptionPane.showOptionDialog(null, 
-                                    "Username already exists! Try logging in again.", "Error",
-                                    JOptionPane.DEFAULT_OPTION, JOptionPane.ERROR_MESSAGE, icon, 
-                                    null, null);
+                                cancel = JOptionPane.showOptionDialog(null,
+                                        "Username already exists! Try logging in again.", "Error",
+                                        JOptionPane.DEFAULT_OPTION, JOptionPane.ERROR_MESSAGE, icon,
+                                        null, null);
                                 if (cancel == JOptionPane.CLOSED_OPTION) {
                                     return;
                                 }
                             } else {
-                                cancel = JOptionPane.showOptionDialog(null, 
-                                    "New account created!", "Log In",
-                                    JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE, icon, 
-                                    null, null);
+                                cancel = JOptionPane.showOptionDialog(null,
+                                        "New account created!", "Log In",
+                                        JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE, icon,
+                                        null, null);
                                 if (cancel == JOptionPane.CLOSED_OPTION) {
                                     return;
                                 }
@@ -135,7 +141,7 @@ public class Client {
                 if (choose.equals("Customer")) {
                     runCustomer = true;
                     String results = (String) ois.readObject(); // DONE!! server return a string of the drop down options (1.
-                                                        // view store,2. search,3. purchase...) etc DONE!!
+                    // view store,2. search,3. purchase...) etc DONE!!
                     // separate by commas
                     System.out.println(results);
                     while (runCustomer) {
@@ -144,7 +150,7 @@ public class Client {
                                 "What is your choice?", "Choice?", JOptionPane.QUESTION_MESSAGE,
                                 icon, dropdown, dropdown[0]);
                         writeAndFlush(reply, oos); // DONE !! on server side, read in the line, and have ifs for the
-                                            // corresponding drop down choice DONE!!
+                        // corresponding drop down choice DONE!!
                         System.out.println("from  " + reply);
                         if (reply == null) {
                             reply = " ";
@@ -159,15 +165,15 @@ public class Client {
                                         "Which store do you want to view?",
                                         "View Stores?", JOptionPane.QUESTION_MESSAGE,
                                         icon, chooseStore, chooseStore[0]);
-                                        writeAndFlush(viewStore, oos);
+                                writeAndFlush(viewStore, oos);
                                 String[] storeProducts = (String[]) ois.readObject();
                                 if (storeProducts.length == 0) {
                                     JOptionPane.showMessageDialog(null, "This store doesn't have anything in stock :(", "Store's Product List",
-                                        JOptionPane.ERROR_MESSAGE);
+                                            JOptionPane.ERROR_MESSAGE);
                                 } else {
                                     String chooseProduct = (String) JOptionPane.showInputDialog(null,
-                                            "Click on a product.","Store's Product List",
-                                            JOptionPane.QUESTION_MESSAGE,icon, storeProducts, storeProducts[0]);
+                                            "Click on a product.", "Store's Product List",
+                                            JOptionPane.QUESTION_MESSAGE, icon, storeProducts, storeProducts[0]);
                                     if (chooseProduct == null) {
                                         writeAndFlush(null, oos);
                                         runCustomer = true;
@@ -180,12 +186,12 @@ public class Client {
                             case "2. search":
                                 searchGUI(socket, userName, ois, oos);
                                 break;
-                            case "3. purchase":  
+                            case "3. purchase":
                                 String purchaseResult = (String) ois.readObject();
                                 int display = JOptionPane.showOptionDialog(null,
-                                    purchaseResult, "Shopping Cart",
-                                    JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE, icon,
-                                    null, null);
+                                        purchaseResult, "Shopping Cart",
+                                        JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE, icon,
+                                        null, null);
                                 if (display == JOptionPane.CLOSED_OPTION) {
                                     return;
                                 }
@@ -196,11 +202,11 @@ public class Client {
                                 for (int i = 0; i < displayCart.length; i++) {
                                     names[i] = displayCart[i].getProductName();
                                 }
-                                
+
                                 Product deleteItem = (Product) JOptionPane.showInputDialog(null,
-                                    "Click on the product you want to remove to cart.",
-                                    "Your Shopping Cart", JOptionPane.QUESTION_MESSAGE,icon, displayCart,
-                                    displayCart[0]);
+                                        "Click on the product you want to remove to cart.",
+                                        "Your Shopping Cart", JOptionPane.QUESTION_MESSAGE, icon, displayCart,
+                                        displayCart[0]);
 
                                 System.out.println("worked");
 
@@ -210,7 +216,7 @@ public class Client {
                                 } else {
                                     writeAndFlush(deleteItem, oos);
                                     JOptionPane.showMessageDialog(null, "Item deleted!", "Shopping Cart",
-                                        JOptionPane.INFORMATION_MESSAGE);
+                                            JOptionPane.INFORMATION_MESSAGE);
                                 }
                                 break;
                             case "5. view cart":
@@ -218,7 +224,7 @@ public class Client {
                                 System.out.println(shoppingcart + " read");
                                 if (shoppingcart == "" || shoppingcart.isEmpty()) {
                                     shoppingcart = "your cart is empty!";
-                                } 
+                                }
                                 String thing = shoppingcart.replace(";;", "\n");
                                 JOptionPane.showMessageDialog(null, thing, "Shopping Cart",
                                         JOptionPane.INFORMATION_MESSAGE);
@@ -289,27 +295,27 @@ public class Client {
                                 }
                                 break;
                             case "7. export buy history to csv file":
-                            boolean valid = false;
-                            do { 
-                                String input = JOptionPane.showInputDialog(null, "What file do you want to export your stores to?",
-                                "Export buy history to CSV", JOptionPane.QUESTION_MESSAGE);
-                                if (input.equalsIgnoreCase("") || input.equals(null)) {
-                                    JOptionPane.showMessageDialog(null, "Not a file name.", "Export buy history",
-                                            JOptionPane.ERROR_MESSAGE);
-                                } else {
-                                    valid = true;
-                                    writeAndFlush(input, oos);
-                                }
-                            } while (!valid);
-
+                                boolean valid = false;
+                                do {
+                                    String input = JOptionPane.showInputDialog(null, "What file do you want to export your stores to?",
+                                            "Export buy history to CSV", JOptionPane.QUESTION_MESSAGE);
+                                    if (input.equalsIgnoreCase("") || input.equals(null)) {
+                                        JOptionPane.showMessageDialog(null, "Not a file name.", "Export buy history",
+                                                JOptionPane.ERROR_MESSAGE);
+                                    } else {
+                                        valid = true;
+                                        writeAndFlush(input, oos);
+                                    }
+                                } while (!valid);
+                                break;
                             case "8. delete account":
                                 JOptionPane.showMessageDialog(null, "Your account has been deleted.",
-                                        "bEtsy",JOptionPane.INFORMATION_MESSAGE);
+                                        "bEtsy", JOptionPane.INFORMATION_MESSAGE);
                                 runCustomer = false;
                                 return;
                             default:
                                 JOptionPane.showMessageDialog(null, "Goodbye!",
-                                        "bEtsy",JOptionPane.INFORMATION_MESSAGE);
+                                        "bEtsy", JOptionPane.INFORMATION_MESSAGE);
                                 runCustomer = false;
                                 run = false;
                                 return;
@@ -324,10 +330,10 @@ public class Client {
                         String[] dropdown = results.split(",", 0);
                         String reply = (String) JOptionPane.showInputDialog(null,
                                 "What is your choice?",
-                        "Choice?", JOptionPane.QUESTION_MESSAGE,
-                        icon, dropdown, dropdown[0]);
+                                "Choice?", JOptionPane.QUESTION_MESSAGE,
+                                icon, dropdown, dropdown[0]);
                         writeAndFlush(reply, oos); // DONE!! on server side, read in the line, and have ifs for the
-                                            // corresponding drop down choice DONE!!
+                        // corresponding drop down choice DONE!!
                         if (reply.equals("1. list your stores")) {
                             if (((String) ois.readObject()).equals("no stores")) {
                                 System.out.println("no stores??");
@@ -351,7 +357,7 @@ public class Client {
                                 }
                                 System.out.println(output);
                                 JOptionPane.showMessageDialog(null, output, "Stores",
-                                    JOptionPane.INFORMATION_MESSAGE);
+                                        JOptionPane.INFORMATION_MESSAGE);
                             }
                         }
 
@@ -374,20 +380,20 @@ public class Client {
                                     poop++;
                                 }
 
-                                Store chosenStore = (Store) JOptionPane.showInputDialog(null, "Which store do you want to view?", 
-                                    "View Store", JOptionPane.QUESTION_MESSAGE,
-                                    null, stores.toArray(), stores.toArray()[0]);
+                                Store chosenStore = (Store) JOptionPane.showInputDialog(null, "Which store do you want to view?",
+                                        "View Store", JOptionPane.QUESTION_MESSAGE,
+                                        null, stores.toArray(), stores.toArray()[0]);
 
                                 writeAndFlush(chosenStore, oos);
                                 //boolean valid = false;
                                 System.out.println("started loop");
                                 String[] strArr = {"create product", "edit product", "delete product"};
-                                String todo = (String) JOptionPane.showInputDialog(null, 
-                                    "What do you want to do?", "Edit Store", 
-                                    JOptionPane.QUESTION_MESSAGE, icon, strArr, dropdown[0]);
-                                    writeAndFlush(todo, oos);
-                                System.out.println("sent " + todo); 
-                                
+                                String todo = (String) JOptionPane.showInputDialog(null,
+                                        "What do you want to do?", "Edit Store",
+                                        JOptionPane.QUESTION_MESSAGE, icon, strArr, dropdown[0]);
+                                writeAndFlush(todo, oos);
+                                System.out.println("sent " + todo);
+
                                 if (todo.equalsIgnoreCase("create product")) {
                                     //valid = true;
 
@@ -395,7 +401,7 @@ public class Client {
                                     JTextField prodDesc = new JTextField(15);
                                     JTextField prodQuant = new JTextField(15);
                                     JTextField prodPrice = new JTextField(15);
-            
+
                                     JPanel myPanel = new JPanel();
                                     myPanel.setLayout(new GridLayout(4, 2));
                                     myPanel.add(new JLabel("Product Name:"));
@@ -406,23 +412,23 @@ public class Client {
                                     myPanel.add(prodQuant);
                                     myPanel.add(new JLabel("Product Price:"));
                                     myPanel.add(prodPrice);
-            
-                                    int result = JOptionPane.showConfirmDialog(null, myPanel, 
+
+                                    int result = JOptionPane.showConfirmDialog(null, myPanel,
                                             "Enter Product Details", JOptionPane.OK_CANCEL_OPTION);
-                                            // nopthing uses result? is this unfinished?
+                                    // nopthing uses result? is this unfinished?
                                     String name = prodName.getText();
                                     String desc = prodDesc.getText();
                                     String quant = prodQuant.getText();
                                     String price = prodPrice.getText();
-                                        
+
                                     System.out.printf("%s, %s, %s, %s\n", name, desc, quant, price);
 
-                                    Product product = new Product(name, desc, Integer.parseInt(quant), 
-                                        Double.parseDouble(price), chosenStore.getStoreName());
+                                    Product product = new Product(name, desc, Integer.parseInt(quant),
+                                            Double.parseDouble(price), chosenStore.getStoreName());
                                     writeAndFlush(product, oos);
                                     System.out.println("write " + product.toString() + " in oos");
                                     JOptionPane.showMessageDialog(null, product.getProductName() + " added to store!", "Edit Store",
-                                        JOptionPane.INFORMATION_MESSAGE);
+                                            JOptionPane.INFORMATION_MESSAGE);
                                 } else if (todo.equalsIgnoreCase("edit product")) {
                                     //valid = true;
                                     @SuppressWarnings("unchecked") ArrayList<Product> products = (ArrayList<Product>) ois.readObject();
@@ -435,13 +441,13 @@ public class Client {
                                         i++;
                                     }
 
-                                    String chosenName = (String) JOptionPane.showInputDialog(null, "What product do you want to edit?", 
-                                        "Edit Product", JOptionPane.QUESTION_MESSAGE, 
-                                        null, names, names[0]);
+                                    String chosenName = (String) JOptionPane.showInputDialog(null, "What product do you want to edit?",
+                                            "Edit Product", JOptionPane.QUESTION_MESSAGE,
+                                            null, names, names[0]);
 
                                     i = 0;
                                     for (Product p : products) {
-                                        if (p.getProductName().equals(chosenName)) { 
+                                        if (p.getProductName().equals(chosenName)) {
                                             currProduct = p;
                                             currProductIndex = i;
                                         }
@@ -452,7 +458,7 @@ public class Client {
                                     JTextField prodDesc = new JTextField(15);
                                     JTextField prodQuant = new JTextField(15);
                                     JTextField prodPrice = new JTextField(15);
-            
+
                                     JPanel myPanel = new JPanel();
                                     myPanel.setLayout(new GridLayout(4, 2));
                                     myPanel.add(new JLabel("Product Name:"));
@@ -463,25 +469,25 @@ public class Client {
                                     myPanel.add(prodQuant);
                                     myPanel.add(new JLabel("Product Price:"));
                                     myPanel.add(prodPrice);
-            
-                                    int result = JOptionPane.showConfirmDialog(null, myPanel, 
+
+                                    int result = JOptionPane.showConfirmDialog(null, myPanel,
                                             "Enter Product Details", JOptionPane.OK_CANCEL_OPTION);
-                                            // same thing nothing ends up using this result?
+                                    // same thing nothing ends up using this result?
                                     String name = prodName.getText();
                                     String desc = prodDesc.getText();
                                     String quant = prodQuant.getText();
                                     String price = prodPrice.getText();
-                                        
+
                                     System.out.printf("%s, %s, %s, %s\n", name, desc, quant, price);
 
-                                    Product product = new Product(name, desc, Integer.parseInt(quant), 
-                                        Double.parseDouble(price), chosenStore.getStoreName());
+                                    Product product = new Product(name, desc, Integer.parseInt(quant),
+                                            Double.parseDouble(price), chosenStore.getStoreName());
 
                                     writeAndFlush(product, oos);
                                     writeAndFlush("" + currProductIndex, oos);
                                     System.out.println("write " + product.toString() + " in oos");
                                     JOptionPane.showMessageDialog(null, product.getProductName() + " edited!", "Edit Store",
-                                        JOptionPane.INFORMATION_MESSAGE);
+                                            JOptionPane.INFORMATION_MESSAGE);
                                 } else if (todo.equalsIgnoreCase("delete product")) {
                                     @SuppressWarnings("unchecked") ArrayList<Product> products = (ArrayList<Product>) ois.readObject();
                                     String[] names = new String[products.size()];
@@ -492,13 +498,13 @@ public class Client {
                                         i++;
                                     }
 
-                                    String chosenName = (String) JOptionPane.showInputDialog(null, "What product do you want to edit?", 
-                                        "Edit Product", JOptionPane.QUESTION_MESSAGE, 
-                                        null, names, names[0]);
+                                    String chosenName = (String) JOptionPane.showInputDialog(null, "What product do you want to edit?",
+                                            "Edit Product", JOptionPane.QUESTION_MESSAGE,
+                                            null, names, names[0]);
 
                                     i = 0;
                                     for (Product p : products) {
-                                        if (p.getProductName().equals(chosenName)) { 
+                                        if (p.getProductName().equals(chosenName)) {
                                             currProductIndex = i;
                                         }
                                         i++;
@@ -506,7 +512,7 @@ public class Client {
 
                                     writeAndFlush("" + currProductIndex, oos);
                                     JOptionPane.showMessageDialog(null, chosenName + " deleted!", "Edit Store",
-                                        JOptionPane.INFORMATION_MESSAGE);
+                                            JOptionPane.INFORMATION_MESSAGE);
                                 } else {
                                     System.out.println("Please type 'create', 'edit', or 'delete'.");
                                 }
@@ -514,21 +520,21 @@ public class Client {
                         }
 
                         if (reply.equals("3. view sales")) {
-                            if (((String)ois.readObject()).equals("no stores")) {
+                            if (((String) ois.readObject()).equals("no stores")) {
                                 JOptionPane.showMessageDialog(null, "There are no stores", "Stores",
                                         JOptionPane.ERROR_MESSAGE);
-                            } else { 
+                            } else {
                                 System.out.println("Type a store name to see it's sales, or 'all' to see all of your " +
-                                    "store sales"); 
-                                String input = JOptionPane.showInputDialog(null, 
-                                    "Type a store name to see its sales, or 'all' to see all of your store sales",
-                                    "View Sales", JOptionPane.QUESTION_MESSAGE);
-                                    writeAndFlush(input, oos);
-                                
+                                        "store sales");
+                                String input = JOptionPane.showInputDialog(null,
+                                        "Type a store name to see its sales, or 'all' to see all of your store sales",
+                                        "View Sales", JOptionPane.QUESTION_MESSAGE);
+                                writeAndFlush(input, oos);
+
 
                                 String sellerHistory = (String) ois.readObject();
-                                JOptionPane.showMessageDialog(null, sellerHistory, "View Sales", 
-                                    JOptionPane.INFORMATION_MESSAGE);
+                                JOptionPane.showMessageDialog(null, sellerHistory, "View Sales",
+                                        JOptionPane.INFORMATION_MESSAGE);
 
                             }
                         }
@@ -536,18 +542,18 @@ public class Client {
                         if (reply.equals("4. create store")) {
                             boolean repeat = true;
                             while (repeat) {
-                                System.out.println("What would you like this store to be named?"); 
-                                String storeName = JOptionPane.showInputDialog(null, 
-                                    "What would you like this store to be named?",
-                                    "Create Store", JOptionPane.QUESTION_MESSAGE);
+                                System.out.println("What would you like this store to be named?");
+                                String storeName = JOptionPane.showInputDialog(null,
+                                        "What would you like this store to be named?",
+                                        "Create Store", JOptionPane.QUESTION_MESSAGE);
                                 if (storeName.equalsIgnoreCase("") || storeName.equals(null)) {
                                     JOptionPane.showMessageDialog(null, "Please enter a valid name", "Create Store",
-                                        JOptionPane.ERROR_MESSAGE);
+                                            JOptionPane.ERROR_MESSAGE);
                                 } else {
                                     repeat = false;
                                     writeAndFlush(storeName, oos);
-                                    JOptionPane.showMessageDialog(null, "Store Created", "Create Store", 
-                                        JOptionPane.INFORMATION_MESSAGE);
+                                    JOptionPane.showMessageDialog(null, "Store Created", "Create Store",
+                                            JOptionPane.INFORMATION_MESSAGE);
                                 }
                             }
                         }
@@ -567,7 +573,7 @@ public class Client {
                                 if (title != null) {
                                     if (title.equals("Number of products bought by each customer at a specific store") || title.equals("Number of items sold for each product at a specific store")) {
                                         writeAndFlush(title, oos);
-                                        for (int i = 0; i < stores.size();) {
+                                        for (int i = 0; i < stores.size(); ) {
                                             stores.remove(i);
                                         }
                                         String line = (String) ois.readObject();
@@ -652,49 +658,49 @@ public class Client {
                             boolean valid = false;
                             do {
                                 String input = JOptionPane.showInputDialog(null, "Which store?",
-                                "Delete Store", JOptionPane.QUESTION_MESSAGE);
+                                        "Delete Store", JOptionPane.QUESTION_MESSAGE);
                                 if (input.equalsIgnoreCase("") || input.equals(null)) {
                                     JOptionPane.showMessageDialog(null, "Not a store", "Stores",
                                             JOptionPane.ERROR_MESSAGE);
                                 } else {
                                     valid = true;
                                     writeAndFlush(input, oos);
-                                    if (((String)ois.readObject()).equals("is store")) {
+                                    if (((String) ois.readObject()).equals("is store")) {
                                         JOptionPane.showMessageDialog(null, "Stores deleted!", "Stores",
                                                 JOptionPane.INFORMATION_MESSAGE);
                                     } else {
                                         JOptionPane.showMessageDialog(null, "Still not a store", "Stores",
                                                 JOptionPane.ERROR_MESSAGE);
                                     }
-                                } 
+                                }
                             } while (!valid);
                         }
 
                         if (reply.equals("7. view customer shopping carts")) {
-                            String output = ((String)ois.readObject()).replace(";;", "\n");
+                            String output = ((String) ois.readObject()).replace(";;", "\n");
                             JOptionPane.showMessageDialog(null, output, "Customer Carts",
-                                JOptionPane.INFORMATION_MESSAGE);
+                                    JOptionPane.INFORMATION_MESSAGE);
                         }
 
                         if (reply.equals("8. import stores from a CSV")) {
                             boolean valid = false;
                             do {
                                 String input = JOptionPane.showInputDialog(null, "What file do you want to import?",
-                                "Import Stores from CSV", JOptionPane.QUESTION_MESSAGE);
+                                        "Import Stores from CSV", JOptionPane.QUESTION_MESSAGE);
                                 if (input.equalsIgnoreCase("") || input.equals(null)) {
                                     JOptionPane.showMessageDialog(null, "Not a name", "Stores",
                                             JOptionPane.ERROR_MESSAGE);
                                 } else {
                                     valid = true;
                                     writeAndFlush(input, oos);
-                                    if (((String)ois.readObject()).equals("error")) {
-                                        System.out.println("aur naur something's wrong with the file"); 
-                                        JOptionPane.showMessageDialog(null, "aur naur something's wrong with the file", 
-                                            "Import Stores from CSV", JOptionPane.ERROR_MESSAGE);
+                                    if (((String) ois.readObject()).equals("error")) {
+                                        System.out.println("aur naur something's wrong with the file");
+                                        JOptionPane.showMessageDialog(null, "aur naur something's wrong with the file",
+                                                "Import Stores from CSV", JOptionPane.ERROR_MESSAGE);
                                     } else {
                                         System.out.println("we good");
-                                        JOptionPane.showMessageDialog(null, "we good", 
-                                            "Import Stores from CSV", JOptionPane.INFORMATION_MESSAGE);
+                                        JOptionPane.showMessageDialog(null, "we good",
+                                                "Import Stores from CSV", JOptionPane.INFORMATION_MESSAGE);
                                     }
                                 }
                             } while (!valid);
@@ -702,9 +708,9 @@ public class Client {
 
                         if (reply.equals("9. export stores as a CSV")) {
                             boolean valid = false;
-                            do { 
+                            do {
                                 String input = JOptionPane.showInputDialog(null, "What file do you want to export your stores to?",
-                                "Export Stores to CSV", JOptionPane.QUESTION_MESSAGE);
+                                        "Export Stores to CSV", JOptionPane.QUESTION_MESSAGE);
                                 if (input.equalsIgnoreCase("") || input.equals(null)) {
                                     JOptionPane.showMessageDialog(null, "Not a file name", "Stores",
                                             JOptionPane.ERROR_MESSAGE);
@@ -712,14 +718,14 @@ public class Client {
                                     valid = true;
                                     writeAndFlush(input, oos);
                                     JOptionPane.showMessageDialog(null, "Exported!", "Stores",
-                                        JOptionPane.ERROR_MESSAGE);
+                                            JOptionPane.ERROR_MESSAGE);
                                 }
                             } while (!valid);
                         }
 
                         if (reply.equals("10. delete account")) {
-                            JOptionPane.showMessageDialog(null, "Your account has been deleted.", 
-                                "bEtsy", JOptionPane.INFORMATION_MESSAGE);
+                            JOptionPane.showMessageDialog(null, "Your account has been deleted.",
+                                    "bEtsy", JOptionPane.INFORMATION_MESSAGE);
                             runSeller = false;
                         }
 
@@ -727,7 +733,7 @@ public class Client {
                             runSeller = false;
                             run = false;
                             JOptionPane.showMessageDialog(null, "Thanks for visiting bEtsy!", "Goodbye",
-                                JOptionPane.INFORMATION_MESSAGE);
+                                    JOptionPane.INFORMATION_MESSAGE);
                         }
                     }
                 }
@@ -740,8 +746,8 @@ public class Client {
         }
     }
 
-    public static void searchGUI(Socket socket,  
-        String userName, ObjectInputStream ois, ObjectOutputStream oos) {
+    public static void searchGUI(Socket socket,
+                                 String userName, ObjectInputStream ois, ObjectOutputStream oos) {
         try {
             String chosenProduct;
             String searchWord = JOptionPane.showInputDialog(null,
@@ -776,31 +782,33 @@ public class Client {
             e.printStackTrace();
         }
     }
+
     /**
      * What to do with selected product
      *
-     * @param, scanner A scanner so that the method can acess the user interface
      * @return none
+     * @param, scanner A scanner so that the method can acess the user interface
      */
     public static void whatToDoWithProduct(Product product, String userName, ObjectOutputStream oos) {
         try {
-            int choice = JOptionPane.showConfirmDialog(null, 
-                String.format("%s. %d in stock.\nAdd %s to cart? Yes or no?", product.toString(), product.getQuantity(), product.getProductName()),
-                "MarketPlace", JOptionPane.YES_NO_OPTION);
+            int choice = JOptionPane.showConfirmDialog(null,
+                    String.format("%s. %d in stock.\nAdd %s to cart? Yes or no?", product.toString(), product.getQuantity(), product.getProductName()),
+                    "MarketPlace", JOptionPane.YES_NO_OPTION);
             if (choice == 0) {
                 writeAndFlush(product, oos);
                 JOptionPane.showMessageDialog(null, "Item added to cart", "MarketPlace",
                         JOptionPane.INFORMATION_MESSAGE);
-            } else{
+            } else {
                 writeAndFlush(null, oos);
                 JOptionPane.showMessageDialog(null, "Sad", "MarketPlace",
                         JOptionPane.INFORMATION_MESSAGE);
             }
         } catch (Exception e) {
-                e.printStackTrace();
-                return;
+            e.printStackTrace();
+            return;
         }
     }
+
     private static void writeAndFlush(Object sendThing, ObjectOutputStream oos) {
         try {
             oos.writeObject(sendThing);
