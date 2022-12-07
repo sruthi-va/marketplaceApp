@@ -74,9 +74,10 @@ public class Client {
                             System.out.println("username " + userField.getText());
                             System.out.println("password " + passField.getText());
                         }
-                        if (result == JOptionPane.CANCEL_OPTION) {
+                        if (result == JOptionPane.CANCEL_OPTION || result == JOptionPane.CLOSED_OPTION) {
                             System.out.println("line 77");
                             run = false;
+                            break;
                         }
 
                     } while (userName.isEmpty() || password.isEmpty());
