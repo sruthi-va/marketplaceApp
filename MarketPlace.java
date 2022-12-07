@@ -120,6 +120,7 @@ public class MarketPlace extends Thread {
             "6. view statistics,7. export buy history to csv file,8. delete account,9. logout", oos);
             System.out.println("here");
             do {
+                removeSellerDuplicates();
                 try {
                     line = (String) ois.readObject();
                 } catch (Exception e3) {
@@ -131,6 +132,7 @@ public class MarketPlace extends Thread {
                     case "1. view store":
                         Store store = null; // where is this used?
                         ArrayList<Store> allStores = new ArrayList<>();
+                        removeSellerDuplicates();
                         for (int i = 0; i < sellers.size(); i++) {
                             for (int j = 0; j < sellers.get(i).getStores().size(); j++) {
                                 allStores.add(sellers.get(i).getStores().get(j));
@@ -319,7 +321,7 @@ public class MarketPlace extends Thread {
                 } catch (Exception e) {
                     // throw new RuntimeException(e);
                 }
-                
+                removeSellerDuplicates();
                 ArrayList<String> usernames = readFile("sellers.txt");
                 boolean usernameFound = false;
                 boolean loggedIn = false;
@@ -533,6 +535,11 @@ public class MarketPlace extends Thread {
                             // e1.printStackTrace();
                         }
                         seller.createStore(seller.getSellerName(), storeName);
+                        try {
+                            BufferedReader br = new BufferedReader(new FileReader("marketplace.txt"));
+                        } catch (FileNotFoundException e) {
+                            throw new RuntimeException(e);
+                        }
                         synchronized(obj) {
                             sellers.set(sellerID, seller);
                         }
@@ -1058,6 +1065,16 @@ public class MarketPlace extends Thread {
             oos.flush();
         } catch (Exception e) {
             return;
+        }
+    }
+
+    public void removeSellerDuplicates() {
+        for (int i = 0; i < sellers.size(); i++) {
+            for (int j = 0; j < sellers.size(); j++) {
+                if ((i!=j) && (sellers.get(i).getSellerName().equals(sellers.get(j).getSellerName()))) {
+                    sellers.remove(j);
+                }
+            }
         }
     }
 }
