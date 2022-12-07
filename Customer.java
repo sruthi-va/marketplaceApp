@@ -1,5 +1,6 @@
 import java.io.*;
 import java.util.ArrayList;
+
 /**
  * This class contains all the methods for customers.
  * It includes a method to add products into their shopping cart,
@@ -15,6 +16,7 @@ public class Customer {
     private String password;
     private ShoppingCart customerCart = new ShoppingCart();
     private ArrayList<String> buyHistory = new ArrayList<>();
+    private ArrayList<String> exportBuyHistory = new ArrayList<>();
 
 
     //tests
@@ -101,11 +103,12 @@ public class Customer {
         String output = "";
         for (int i = 0; i < products.length; i++) {
             if (products[i].getQuantity() < 1) {
-                output = String.format("%s is out of stock! The item was left in your cart.\n", 
-                    products[i].getProductName());
+                output = String.format("%s is out of stock! The item was left in your cart.\n",
+                        products[i].getProductName());
             } else {
                 String temp = products[i].getProductName() + "-" + products[i].getStoreName();
                 buyHistory.add(temp);
+                exportBuyHistory.add(temp);
                 customerCart.removeItem(username, products[i]);
                 output = "Cart has been bought!";
             }
@@ -203,10 +206,33 @@ public class Customer {
         try {
             File f = new File(fileToWrite);
             f.createNewFile();
-            FileOutputStream fos = new FileOutputStream(f, false);
+            FileOutputStream fos = new FileOutputStream(f, true);
             PrintWriter pw = new PrintWriter(fos);
 
-            pw.println(this.buyHistory);
+            String userLine = "";
+            File file = new File("customers.txt");
+            FileReader fr = new FileReader(file);
+            BufferedReader bfr = new BufferedReader(fr);
+            String line = bfr.readLine();
+            while (line != null) {
+                if (line.contains(this.username)) {
+                    userLine = line;
+                    line = bfr.readLine();
+                } else {
+                    line = bfr.readLine();
+                }
+            }
+
+            bfr.close();
+
+            String[] customerInfo = userLine.split(",", 0);
+
+            String output = customerInfo[2];
+            for (int i = 3; i < customerInfo.length; i++) {
+                output = output + "," + customerInfo[i];
+            }
+
+            pw.println(output);
             pw.close();
             return true;
         } catch (Exception e) {
