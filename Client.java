@@ -187,13 +187,19 @@ public class Client {
                                 searchGUI(socket, userName, ois, oos);
                                 break;
                             case "3. purchase":
-                                String purchaseResult = (String) ois.readObject();
-                                int display = JOptionPane.showOptionDialog(null,
+                                String empty = (String) ois.readObject();
+                                if (empty.equals("has stuff")) {
+                                    String purchaseResult = (String) ois.readObject();
+                                    int display = JOptionPane.showOptionDialog(null,
                                         purchaseResult, "Shopping Cart",
                                         JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE, icon,
                                         null, null);
-                                if (display == JOptionPane.CLOSED_OPTION) {
-                                    return;
+                                    if (display == JOptionPane.CLOSED_OPTION) {
+                                        return;
+                                    }
+                                } else {
+                                    JOptionPane.showMessageDialog(null, "Your cart is empty!", "Shopping Cart",
+                                        JOptionPane.INFORMATION_MESSAGE);
                                 }
                                 break;
                             case "4. edit cart":
@@ -227,7 +233,7 @@ public class Client {
                                 }
                                 String thing = shoppingcart.replace(";;", "\n");
                                 JOptionPane.showMessageDialog(null, thing, "Shopping Cart",
-                                        JOptionPane.INFORMATION_MESSAGE);
+                                    JOptionPane.INFORMATION_MESSAGE);
                                 break;
                             case "6. view statistics":
                                 boolean bool = true;

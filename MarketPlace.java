@@ -187,9 +187,12 @@ public class MarketPlace extends Thread {
                         Product[] list = customer.getCustomerCart().getProducts(userpass[0]);
                         //list = this.updateProductQuantities(list);
                         if (list.length > 0) {
+                            writeAndFlush("has stuff", oos);
                             String output = customer.purchaseCart(list);
                             writeAndFlush(output, oos);
                             this.decrementQuantity(list);
+                        } else {
+                            writeAndFlush("no stuff", oos);
                         }
                         break;
                     case "4. edit cart":
@@ -307,6 +310,7 @@ public class MarketPlace extends Thread {
                     customer.deleteAccount(customer.getUsername());
                     return;
                     case "9. logout":
+                        MarketPlace.writeFile();
                         return;
                     default:
                         return;
@@ -761,7 +765,7 @@ public class MarketPlace extends Thread {
                             // e.printStackTrace();
                         }
                         break;
-                    case "10.delete account":
+                    case "10. delete account":
                         synchronized(obj) {
                             sellers.remove(sellerID);
                         }           
