@@ -1,6 +1,6 @@
 customer1@gmail.com,thisismypassword
-poop,pee,Antihero-Midnights,Hellevator-Hellevator,So far away-D2,Betty-Folklore,straight poop-poop store,straight poop-poop store,Hellevator-Hellevator,License-Drivers License,straight poop-poop store,License-Drivers License,License-Drivers License,License-Drivers License,straight poop-poop store,Hellevator-Hellevator
-yourmom,1212,Daechwita-D2,License-Drivers License,License-Drivers License,License-Drivers License,Hellevator-Hellevator,Hellevator-Hellevator
+poop,pee,Antihero-Midnights,Hellevator-Hellevator,So far away-D2,Betty-Folklore,straight poop-poop store,straight poop-poop store,Hellevator-Hellevator,License-Drivers License
+yourmom,1212,Daechwita-D2,License-Drivers License,License-Drivers License,License-Drivers License,Hellevator-Hellevator,Hellevator-Hellevator,License-Drivers License
 jenny,catsarecool
 jennifer,lmaoo,Betty-Folklore,Antihero-Midnights,Antihero-Midnights,License-Drivers License
 asd,fgh

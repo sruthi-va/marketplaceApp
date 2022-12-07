@@ -103,14 +103,14 @@ public class Customer {
         String output = "";
         for (int i = 0; i < products.length; i++) {
             if (products[i].getQuantity() < 1) {
-                output = String.format("%s is out of stock! The item was left in your cart.\n",
-                        products[i].getProductName());
+                output += String.format("%s is out of stock! The item was left in your cart.\n",
+                    products[i].getProductName());
             } else {
                 String temp = products[i].getProductName() + "-" + products[i].getStoreName();
                 buyHistory.add(temp);
                 exportBuyHistory.add(temp);
                 customerCart.removeItem(username, products[i]);
-                output = "Cart has been bought!";
+                output += products[i].getProductName() + " has been bought!\n";
             }
         }
 

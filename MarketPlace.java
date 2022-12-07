@@ -12,12 +12,13 @@ import java.util.*;
  * @author Catherine Park, Zander Carpenter, Jennifer Wang, Sruthi Vadakuppa, Vanshika Balaji
  * @version Nov 4, 2022
  */
-public class MarketPlace extends Thread {
+public class MarketPlace implements Runnable {
     private static ArrayList<Seller> sellers = new ArrayList<>();
-    private static Socket socket;
-    public static Object obj = new Object();
-    public static ObjectOutputStream oos;
-    public static ObjectInputStream ois;
+    private static boolean sellersInitialized = false;
+    private Socket socket;
+    private static Object obj = new Object();
+    private ObjectOutputStream oos;
+    private ObjectInputStream ois;
 
     public void run() {
         String welcome = null;
@@ -135,12 +136,6 @@ public class MarketPlace extends Thread {
                         for (Seller s : sellers) {
                             allStores.addAll(s.getStores());
                         }
-                        // removeSellerDuplicates();
-                        // for (int i = 0; i < sellers.size(); i++) {
-                        //     for (int j = 0; j < sellers.get(i).getStores().size(); j++) {
-                        //         allStores.add(sellers.get(i).getStores().get(j));
-                        //     }
-                        // }
                         String[] allStoresArray = new String[allStores.size()];
                         for (int i = 0; i < allStores.size(); i++) {
                             allStoresArray[i] = allStores.get(i).getStoreName();
@@ -788,7 +783,7 @@ public class MarketPlace extends Thread {
         ServerSocket serverSocket = new ServerSocket(6969);
         System.out.println("waiting for users to connect");
         while (true) {
-            socket = serverSocket.accept();
+            Socket socket = serverSocket.accept();
             System.out.println("got a connection");
             MarketPlace server = new MarketPlace(socket);
             new Thread(server).start();
@@ -803,7 +798,12 @@ public class MarketPlace extends Thread {
      */
     public MarketPlace(Socket socket) {
         this.socket = socket;
-        parseFile();
+        if (!sellersInitialized) {
+            parseFile();
+            synchronized(obj) {
+                sellersInitialized = true;
+            }
+        }
     }
 
     public static Store getStoreIndex(int index) {
@@ -1005,6 +1005,7 @@ public class MarketPlace extends Thread {
     }
 
     public void decrementQuantity(Product[] products) {
+        //ArrayList<Product> output = new ArrayList<>();
         for (int j = 0; j < products.length; j++) {
             int x = 0;
             int y = 0;
@@ -1019,11 +1020,13 @@ public class MarketPlace extends Thread {
                         ArrayList<Product> currProductList = currStore.getProductList();
                         if (currProductList.get(z).equals(products[j])) {
                             currProductList.remove(currStore.getProductList().get(z));
-                            currProductList.add(z, new Product(products[j].getProductName(),
-                                    products[j].getDescription(),
-                                    products[j].getQuantity() - 1, products[j].getPrice(),
-                                    products[j].getStoreName()));
+                            Product thing = new Product(products[j].getProductName(),
+                                products[j].getDescription(),
+                                products[j].getQuantity() - 1, products[j].getPrice(),
+                                products[j].getStoreName());
+                            currProductList.add(z, thing);
                             currStore.setProductList(currProductList);
+                            //output.add(thing);
                         }
                     }
                     currSeller.setStore(y, currStore);
@@ -1033,6 +1036,7 @@ public class MarketPlace extends Thread {
 
             }
         }
+        //return output;
     }
 
     public Product[] updateProductQuantities(Product[] products) {
