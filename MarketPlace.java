@@ -14,19 +14,24 @@ import java.util.*;
  */
 public class MarketPlace extends Thread {
     private static ArrayList<Seller> sellers = new ArrayList<>();
-    private Socket socket;
+    private static Socket socket;
     public static Object obj = new Object();
+    public static ObjectOutputStream oos;
+    public static ObjectInputStream ois;
+    // public static MyObjectOutputStream oos;
 
     public void run() {
-        ObjectOutputStream oos;
-        ObjectInputStream ois;
-        try {
-            oos = new ObjectOutputStream(new DataOutputStream(socket.getOutputStream()));
-            ois = new ObjectInputStream(new DataInputStream(socket.getInputStream()));
+        // ObjectOutputStream oos;
+        // ObjectInputStream ois;
+        // MyObjectOutputStream oos;
 
-        } catch (Exception e1) {
-            return;
-        }
+        // try {
+        //     oos = new ObjectOutputStream(new DataOutputStream(socket.getOutputStream()));
+        //     ois = new ObjectInputStream(new DataInputStream(socket.getInputStream()));
+        //     // oos = new MyObjectOutputStream(socket.getOutputStream());
+        // } catch (Exception e1) {
+        //     return;
+        // }
 
         String welcome = null;
         try {
@@ -180,7 +185,6 @@ public class MarketPlace extends Thread {
                                 }
                             }
                         } catch (Exception e) {
-                                // TODO: Auto-generated catch block
                                 e.printStackTrace();
                         }
                         break;
@@ -316,7 +320,7 @@ public class MarketPlace extends Thread {
                     default:
                         return;
                 } 
-                refreshStream(ois, oos);
+                // refreshStream(ois, oos);
             } while (true);
         } else if (id == 2) {
             int sellerID = -1;
@@ -400,7 +404,7 @@ public class MarketPlace extends Thread {
                     }
                     break;
                 }
-                refreshStream(ois, oos);
+                // refreshStream(ois, oos);
             }
 
             ShoppingCart cart = new ShoppingCart();
@@ -765,12 +769,8 @@ public class MarketPlace extends Thread {
                         break;
                     case "10.delete account":
                         synchronized(obj) {
-                            sellers.remove(sellerID); // TODO does this delete all their stores from the file? it
-                                                        // should right
-                        }                               // yeah it won't write this seller's stuff to the file
-                                                        // but their history will still exist
-                                                        // that's probably fine right
-                                           
+                            sellers.remove(sellerID);
+                        }           
                         System.out.println("Account deleted, stores ejected, rejected and taken care of. Goodbye.");
                         return;
                     case "11. log out":
@@ -784,7 +784,7 @@ public class MarketPlace extends Thread {
                         System.out.println("Please enter a valid command");
                         break;
                 }
-                refreshStream(ois, oos);
+                // refreshStream(ois, oos);
                 // MarketPlace.ObjectOutputStream.reset();
             } while (true);
         }
@@ -793,11 +793,20 @@ public class MarketPlace extends Thread {
     public static void main(String[] args) throws Exception {
         ServerSocket serverSocket = new ServerSocket(6969);
         System.out.println("waiting for users to connect");
+        socket = serverSocket.accept();
+        System.out.println("got a connection");
+        try {
+            oos = new ObjectOutputStream(new DataOutputStream(socket.getOutputStream()));
+            ois = new ObjectInputStream(new DataInputStream(socket.getInputStream()));
+            // oos = new MyObjectOutputStream(socket.getOutputStream());
+        } catch (Exception e1) {
+            e1.printStackTrace();
+        }
         while (true) {
-            Socket socket = serverSocket.accept();
-            System.out.println("got a connection");
             MarketPlace server = new MarketPlace(socket);
             new Thread(server).start();
+            socket = serverSocket.accept();
+            System.out.println("got a connection");
         }
         // serverSocket.close();
     }
@@ -1075,12 +1084,14 @@ public class MarketPlace extends Thread {
             return;
         }
     }
-    private void refreshStream(ObjectInputStream ois, ObjectOutputStream oos) {
-        try {
-            ois.close();
-            oos.close();
-        } catch (Exception e) {
-            return;
-        }
-    }
+    
+    // void refreshStream(ObjectInputStream ois, ObjectOutputStream oos) {
+    //     try {
+    //         Object outputStream = new Object();
+    //         outputStream.ObjectOutputStream.reset();
+    //         ObjectInputStream.reset();
+    //     } catch (Exception e) {
+    //         return;
+    //     }
+    // }
 }

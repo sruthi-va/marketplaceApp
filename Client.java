@@ -1,18 +1,21 @@
 import javax.swing.*;
-
 import java.io.*;
 import java.net.*;
 import java.util.*;
 import java.awt.*;
 
 public class Client {
-    public static void main(String[] args) throws IOException {
+    public static ObjectOutputStream oos;
+    public static ObjectInputStream ois;
+    public static void main(String[] args) throws Exception {
         boolean run = true;
         boolean runCustomer = false;
         boolean runSeller = false;
         Socket socket;
         try {
             socket = new Socket("localhost", 6969);
+            oos = new ObjectOutputStream(new DataOutputStream(socket.getOutputStream()));
+            ois = new ObjectInputStream(new DataInputStream(socket.getInputStream()));
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null, "Cannot connect to server! :(", "Marketplace", JOptionPane.ERROR_MESSAGE);
             return;
@@ -32,8 +35,6 @@ public class Client {
 
         while (run) {
             try {
-                ObjectOutputStream oos = new ObjectOutputStream(new DataOutputStream(socket.getOutputStream()));
-                ObjectInputStream ois = new ObjectInputStream(new DataInputStream(socket.getInputStream()));
                 int cancel = JOptionPane.showOptionDialog(null, "Welcome to bEtsy!",
                         "Welcome", JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE, icon, null,
                         null);
@@ -145,6 +146,9 @@ public class Client {
                         writeAndFlush(reply, oos); // DONE !! on server side, read in the line, and have ifs for the
                                             // corresponding drop down choice DONE!!
                         System.out.println("from  " + reply);
+                        if (reply == null) {
+                            reply = " ";
+                        }
                         switch (reply) {
                             case "1. view store":
                                 String[] chooseStore = (String[]) ois.readObject();
@@ -305,18 +309,15 @@ public class Client {
                                         "bEtsy",JOptionPane.INFORMATION_MESSAGE);
                                 runCustomer = false;
                                 return;
-                            case "9. logout":
+                            default:
                                 JOptionPane.showMessageDialog(null, "Goodbye!",
                                         "bEtsy",JOptionPane.INFORMATION_MESSAGE);
                                 runCustomer = false;
                                 run = false;
                                 return;
-                            default:
-                                JOptionPane.showMessageDialog(null, "Enter a valid command :c","bEtsy",JOptionPane.ERROR_MESSAGE);
-                                return;
                         }
                     }
-                    refreshStream(ois, oos);
+                    // refreshStream(ois, oos);
                 }
                 if (choose.equals("Seller")) {
                     runSeller = true;
@@ -738,10 +739,10 @@ public class Client {
                             JOptionPane.showMessageDialog(null, "Thanks for visiting bEtsy!", "Goodbye",
                                 JOptionPane.INFORMATION_MESSAGE);
                         }
-                        refreshStream(ois, oos);
+                        // refreshStream(ois, oos);
                     }
                 }
-            refreshStream(ois, oos);
+            // refreshStream(ois, oos);
             } catch (Exception e) {
                 e.printStackTrace();
                 JOptionPane.showMessageDialog(null, "Thanks for visiting bEtsy!", "Goodbye",
@@ -760,16 +761,17 @@ public class Client {
             if (searchWord != null) {
                 writeAndFlush(searchWord, oos);
                 @SuppressWarnings("unchecked") HashSet<Object> results = (HashSet<Object>) ois.readObject();
-                ArrayList<String> resultString = new ArrayList<>();
-                for (Object p : results) {
-                    Product curr = (Product) p;
-                    resultString.add(curr.getProductName());
-                }
+                
                 if (results.isEmpty()) {
                     JOptionPane.showMessageDialog(null,
                             "Error: There's nothing on this bro :((", "Search Bar", JOptionPane.ERROR_MESSAGE);
                     return;
                 } else {
+                    ArrayList<String> resultString = new ArrayList<>();
+                    for (Object p : results) {
+                        Product curr = (Product) p;
+                        resultString.add(curr.getProductName());
+                    }
                     chosenProduct = (String) JOptionPane.showInputDialog(null,
                             "Select Desired Product", "MarketPlace",
                             JOptionPane.PLAIN_MESSAGE, null, resultString.toArray(new String[0]),
@@ -778,6 +780,8 @@ public class Client {
                         writeAndFlush(chosenProduct, oos);
                         Product product = (Product) ois.readObject();
                         whatToDoWithProduct(product, userName, oos);
+                    } else {
+                        writeAndFlush(null, oos);
                     }
                 }
             } else {
@@ -826,12 +830,12 @@ public class Client {
             return;
         }
     }
-    private static void refreshStream(ObjectInputStream ois, ObjectOutputStream oos) {
-        try {
-            ois.close();
-            oos.close();
-        } catch (Exception e) {
-            return;
-        }
-    }
+    // private static void refreshStream(ObjectInputStream ois, ObjectOutputStream oos) {
+    //     try {
+    //         ObjectOutputStream.reset();
+    //         ObjectInputStream.reset();
+    //     } catch (Exception e) {
+    //         return;
+    //     }
+    // }
 }
