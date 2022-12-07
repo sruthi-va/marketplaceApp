@@ -47,7 +47,7 @@ public class MarketPlace implements Runnable {
 
         if (cOrS.equals("Customer")) {
             id = 1;
-        } else if (cOrS.equals("no")){
+        } else if (cOrS.equals(null)){
             return;
         }
 
@@ -290,12 +290,11 @@ public class MarketPlace implements Runnable {
                         }
                         break;
                     case "7. export buy history to csv file":
-                    System.out.println("Enter the name of the file you want your buy history to be exported to.");
                         try {
                             if (customer.customerExportCSV((String) ois.readObject())) {
-                                System.out.println("Exported!");
+                                writeAndFlush("Exported!", oos);
                             } else {
-                                System.out.println("there was a problem!");
+                                writeAndFlush("There was a problem!", oos);
                             }
                         } catch (Exception e) {
                             // e.printStackTrace();
@@ -786,7 +785,12 @@ public class MarketPlace implements Runnable {
             Socket socket = serverSocket.accept();
             System.out.println("got a connection");
             MarketPlace server = new MarketPlace(socket);
-            new Thread(server).start();
+            try {
+                new Thread(server).start();
+            } catch (Exception e) {
+                int poop = 0;
+            }
+            
         }
     }
 

@@ -16,7 +16,15 @@ java MarketPlace.java
 - Vanshika B - Submitted Vocareum workspace.
 
 ## A detailed description of each class; includes the functionality included in the class, the testing done to verify it works properly, and its relationship to other classes in the project.
-
+- MarketPlace.java
+- Client.java
+- Customer.java
+- Dashboard.java
+- MyObjectOutputStream.java
+- Product.java
+- Seller.java
+- ShoppingCart.java
+- 
 - MarketPlace.java
   - Acts as the main interface that interacts with the user, calling the methods from all other classes to combine their functionality. Through easy to understand prompts, an user can easily navigate the marketplace and have access to roles unique to their identity as a customer or a seller. For instance, only customers can add products to their cart and buy it, while sellers can make stores or new products and view how well their store is doing by viewing statistics calculated by the dashboard. Extensive testing was performed by our team as each member tested the all the actions that can be preformed by customer/seller, checking to see if it resulted in the right output, and making sure the marketplace could handle any mishaps such as a false command and a null answer.
 - Product.java
