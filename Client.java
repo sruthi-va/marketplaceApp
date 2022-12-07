@@ -206,11 +206,9 @@ public class Client {
 
                                 if (deleteItem == null) {
                                     runCustomer = true;
-                                    oos.writeObject(null);
-                                    oos.flush();
+                                    writeAndFlush(null, oos);
                                 } else {
-                                    oos.writeObject(deleteItem);
-                                    oos.flush();
+                                    writeAndFlush(deleteItem, oos);
                                     JOptionPane.showMessageDialog(null, "Item deleted!", "Shopping Cart",
                                         JOptionPane.INFORMATION_MESSAGE);
                                 }
@@ -317,7 +315,6 @@ public class Client {
                                 return;
                         }
                     }
-                    // refreshStream(ois, oos);
                 }
                 if (choose.equals("Seller")) {
                     runSeller = true;
@@ -381,11 +378,7 @@ public class Client {
                                     "View Store", JOptionPane.QUESTION_MESSAGE,
                                     null, stores.toArray(), stores.toArray()[0]);
 
-                                
-                                oos.writeObject(chosenStore);
-                                oos.flush();
-
-
+                                writeAndFlush(chosenStore, oos);
                                 //boolean valid = false;
                                 System.out.println("started loop");
                                 String[] strArr = {"create product", "edit product", "delete product"};
@@ -426,9 +419,7 @@ public class Client {
 
                                     Product product = new Product(name, desc, Integer.parseInt(quant), 
                                         Double.parseDouble(price), chosenStore.getStoreName());
-
-                                    oos.writeObject(product);
-                                    oos.flush();
+                                    writeAndFlush(product, oos);
                                     System.out.println("write " + product.toString() + " in oos");
                                     JOptionPane.showMessageDialog(null, product.getProductName() + " added to store!", "Edit Store",
                                         JOptionPane.INFORMATION_MESSAGE);
@@ -486,8 +477,7 @@ public class Client {
                                     Product product = new Product(name, desc, Integer.parseInt(quant), 
                                         Double.parseDouble(price), chosenStore.getStoreName());
 
-                                    oos.writeObject(product);
-                                    oos.flush();
+                                    writeAndFlush(product, oos);
                                     writeAndFlush("" + currProductIndex, oos);
                                     System.out.println("write " + product.toString() + " in oos");
                                     JOptionPane.showMessageDialog(null, product.getProductName() + " edited!", "Edit Store",
@@ -739,10 +729,8 @@ public class Client {
                             JOptionPane.showMessageDialog(null, "Thanks for visiting bEtsy!", "Goodbye",
                                 JOptionPane.INFORMATION_MESSAGE);
                         }
-                        // refreshStream(ois, oos);
                     }
                 }
-            // refreshStream(ois, oos);
             } catch (Exception e) {
                 e.printStackTrace();
                 JOptionPane.showMessageDialog(null, "Thanks for visiting bEtsy!", "Goodbye",
@@ -758,10 +746,9 @@ public class Client {
             String chosenProduct;
             String searchWord = JOptionPane.showInputDialog(null,
                     "Enter Search", "Search Bar", JOptionPane.QUESTION_MESSAGE); // enter search
+            writeAndFlush(searchWord, oos);
             if (searchWord != null) {
-                writeAndFlush(searchWord, oos);
                 @SuppressWarnings("unchecked") HashSet<Object> results = (HashSet<Object>) ois.readObject();
-                
                 if (results.isEmpty()) {
                     JOptionPane.showMessageDialog(null,
                             "Error: There's nothing on this bro :((", "Search Bar", JOptionPane.ERROR_MESSAGE);
@@ -776,17 +763,13 @@ public class Client {
                             "Select Desired Product", "MarketPlace",
                             JOptionPane.PLAIN_MESSAGE, null, resultString.toArray(new String[0]),
                             null);
+                    writeAndFlush(chosenProduct, oos);
                     if (chosenProduct != null) {
-                        writeAndFlush(chosenProduct, oos);
                         Product product = (Product) ois.readObject();
                         whatToDoWithProduct(product, userName, oos);
-                    } else {
-                        writeAndFlush(null, oos);
                     }
                 }
             } else {
-                JOptionPane.showMessageDialog(null,
-                        "Error: Empty search", "Search Bar", JOptionPane.ERROR_MESSAGE);
                 return;
             }
         } catch (Exception e) {
@@ -805,15 +788,11 @@ public class Client {
                 String.format("%s. %d in stock.\nAdd %s to cart? Yes or no?", product.toString(), product.getQuantity(), product.getProductName()),
                 "MarketPlace", JOptionPane.YES_NO_OPTION);
             if (choice == 0) {
-                oos.writeObject(product);
-                oos.flush();
-                // fix this
-                // customer.addToCart(userName, product); 
+                writeAndFlush(product, oos);
                 JOptionPane.showMessageDialog(null, "Item added to cart", "MarketPlace",
                         JOptionPane.INFORMATION_MESSAGE);
             } else{
-                oos.writeObject(null);
-                oos.flush();
+                writeAndFlush(null, oos);
                 JOptionPane.showMessageDialog(null, "Sad", "MarketPlace",
                         JOptionPane.INFORMATION_MESSAGE);
             }
@@ -830,12 +809,4 @@ public class Client {
             return;
         }
     }
-    // private static void refreshStream(ObjectInputStream ois, ObjectOutputStream oos) {
-    //     try {
-    //         ObjectOutputStream.reset();
-    //         ObjectInputStream.reset();
-    //     } catch (Exception e) {
-    //         return;
-    //     }
-    // }
 }

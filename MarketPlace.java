@@ -18,21 +18,8 @@ public class MarketPlace extends Thread {
     public static Object obj = new Object();
     public static ObjectOutputStream oos;
     public static ObjectInputStream ois;
-    // public static MyObjectOutputStream oos;
 
     public void run() {
-        // ObjectOutputStream oos;
-        // ObjectInputStream ois;
-        // MyObjectOutputStream oos;
-
-        // try {
-        //     oos = new ObjectOutputStream(new DataOutputStream(socket.getOutputStream()));
-        //     ois = new ObjectInputStream(new DataInputStream(socket.getInputStream()));
-        //     // oos = new MyObjectOutputStream(socket.getOutputStream());
-        // } catch (Exception e1) {
-        //     return;
-        // }
-
         String welcome = null;
         try {
             welcome = (String) ois.readObject();
@@ -152,8 +139,7 @@ public class MarketPlace extends Thread {
                             allStoresArray[i] = allStores.get(i).getStoreName();
                         }
                         try {
-                            oos.writeObject(allStoresArray);
-                            oos.flush();
+                            writeAndFlush(allStoresArray, oos);
                             if (allStoresArray.length == 0) {
                                 System.out.println("no stores");
                             } else {
@@ -163,8 +149,7 @@ public class MarketPlace extends Thread {
                                 for (Store st : allStores) {
                                     if (st.getStoreName().equals(line)) {
                                         chosen = st;
-                                        oos.writeObject(st.listAllProducts());
-                                        oos.flush();
+                                        writeAndFlush(st.listAllProducts(), oos);
                                         break;
                                     }
                                 } 
@@ -203,8 +188,7 @@ public class MarketPlace extends Thread {
                     case "4. edit cart":
                         Product[] cart = customer.getCustomerCart().getProducts(userpass[0]);
                         try {
-                            oos.writeObject(cart);
-                            oos.flush();
+                            writeAndFlush(cart, oos);
                         } catch (Exception e2) {
                             e2.printStackTrace();
                         }
@@ -429,8 +413,7 @@ public class MarketPlace extends Thread {
                             writeAndFlush("has stores", oos);
                             System.out.println("has stores??");
                             try {
-                                oos.writeObject(seller.getStores());
-                                oos.flush();
+                                writeAndFlush(seller.getStores(), oos);
                                 System.out.println("sent stores");
                             } catch (Exception e) {
                                 throw new RuntimeException(e);
@@ -443,8 +426,7 @@ public class MarketPlace extends Thread {
                         } else {
                             writeAndFlush("has stores", oos);
                             try {
-                                oos.writeObject(sellers.get(sellerID).getStores());
-                                oos.flush();
+                                writeAndFlush(sellers.get(sellerID).getStores(), oos);
                             } catch (Exception e) {
                                 throw new RuntimeException(e);
                             }
@@ -890,30 +872,34 @@ public class MarketPlace extends Thread {
         try {
             // ObjectOutputStream oos = new ObjectOutputStream(new DataOutputStream(socket.getOutputStream()));
             String keyword = (String) ois.readObject();
-            HashSet<Object> searchResult = new HashSet<Object>();
-            for (Seller seller : sellers) {
-                for (Store store : seller.getStores()) {
-                    for (Product product : store.getProductList()) {
-                        if (product.getProductName().toLowerCase().contains(keyword.toLowerCase())
-                                || product.getDescription().toLowerCase().equalsIgnoreCase(keyword.toLowerCase())) {
-                            searchResult.add(product);
+            if (keyword != null) {
+                HashSet<Object> searchResult = new HashSet<Object>();
+                for (Seller seller : sellers) {
+                    for (Store store : seller.getStores()) {
+                        for (Product product : store.getProductList()) {
+                            if (product.getProductName().toLowerCase().contains(keyword.toLowerCase())
+                                    || product.getDescription().toLowerCase().equalsIgnoreCase(keyword.toLowerCase())) {
+                                searchResult.add(product);
+                            }
                         }
                     }
                 }
-            }
-            oos.writeObject(searchResult);
-            oos.flush();
-            keyword = (String) ois.readObject(); // get index
-            if (keyword != null) {
-                for (Object p : searchResult) {
-                    curr = (Product) p;
-                    if (curr.getProductName().equals(keyword)) {
-                        oos.writeObject(curr); // send product
-                        oos.flush();
-                        break;
+                writeAndFlush(searchResult, oos);
+                if (!searchResult.isEmpty()) {
+                    keyword = (String) ois.readObject(); // get index
+                    if (keyword != null) {
+                        for (Object p : searchResult) {
+                            curr = (Product) p;
+                            if (curr.getProductName().equals(keyword)) {
+                                writeAndFlush(curr, oos); // send product
+                                break;
+                            }
+                        }
+                        whatToDoWithProductReply(customer, ois); // receive product
                     }
                 }
-                whatToDoWithProductReply(customer, ois);
+            } else {
+                return;
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -1084,14 +1070,4 @@ public class MarketPlace extends Thread {
             return;
         }
     }
-    
-    // void refreshStream(ObjectInputStream ois, ObjectOutputStream oos) {
-    //     try {
-    //         Object outputStream = new Object();
-    //         outputStream.ObjectOutputStream.reset();
-    //         ObjectInputStream.reset();
-    //     } catch (Exception e) {
-    //         return;
-    //     }
-    // }
 }
