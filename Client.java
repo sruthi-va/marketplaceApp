@@ -26,7 +26,6 @@ public class Client {
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
         } catch (ClassNotFoundException | InstantiationException | 
             IllegalAccessException | UnsupportedLookAndFeelException ex) {
-            int i = 0;
         }
 
         ImageIcon icon = new ImageIcon("betsy.png");
@@ -79,7 +78,7 @@ public class Client {
                         run = false;
                     } 
                     writeAndFlush(String.format("%s;;%s", userName, password), oos);
-                    String isValid = reader.readLine();
+                    String isValid = (String) ois.readObject();
                     if (isValid.equals("true")) {
                         cancel = JOptionPane.showOptionDialog(null, "Successfully logged in!",
                                 "Success",
@@ -102,7 +101,7 @@ public class Client {
                         } else if (cancel == JOptionPane.YES_OPTION) {
                             System.out.println("newAccount");
                             writeAndFlush("newAccount", oos);
-                            String validUsername = reader.readLine();
+                            String validUsername = (String) ois.readObject();
                             System.out.println(validUsername);
                             if (validUsername.equals("false")) {
                                 cancel = JOptionPane.showOptionDialog(null, 
@@ -134,7 +133,7 @@ public class Client {
                 System.out.println(choose);
                 if (choose.equals("Customer")) {
                     runCustomer = true;
-                    String results = reader.readLine(); // DONE!! server return a string of the drop down options (1.
+                    String results = (String) ois.readObject(); // DONE!! server return a string of the drop down options (1.
                                                         // view store,2. search,3. purchase...) etc DONE!!
                     // separate by commas
                     System.out.println(results);
@@ -175,10 +174,10 @@ public class Client {
                                 }
                                 break;
                             case "2. search":
-                                searchGUI(socket, writer, reader, userName, ois, oos);
+                                searchGUI(socket, userName, ois, oos);
                                 break;
                             case "3. purchase":  
-                                String purchaseResult = reader.readLine();
+                                String purchaseResult = (String) ois.readObject();
                                 int display = JOptionPane.showOptionDialog(null,
                                     purchaseResult, "Shopping Cart",
                                     JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE, icon,
@@ -213,7 +212,7 @@ public class Client {
                                 }
                                 break;
                             case "5. view cart":
-                                String shoppingcart = reader.readLine();
+                                String shoppingcart = (String) ois.readObject();
                                 System.out.println(shoppingcart + " read");
                                 if (shoppingcart == "" || shoppingcart.isEmpty()) {
                                     shoppingcart = "your cart is empty!";
@@ -244,10 +243,10 @@ public class Client {
                                     for (int i = 0; i < dashboard.size(); ) {
                                         dashboard.remove(i);
                                     }
-                                    String line = reader.readLine();
+                                    String line = (String) ois.readObject();
                                     while (!line.isBlank()) {
                                         dashboard.add(line);
-                                        line = reader.readLine();
+                                        line = (String) ois.readObject();
                                     }
                                     if (dashboard.isEmpty()) {
                                         bool = false;
@@ -276,10 +275,10 @@ public class Client {
                                         for (int i = 0; i < dashboard.size(); ) {
                                             dashboard.remove(i);
                                         }
-                                        String line2 = reader.readLine();
+                                        String line2 = (String) ois.readObject();
                                         while (!line2.isBlank()) {
                                             dashboard.add(line2);
-                                            line2 = reader.readLine();
+                                            line2 = (String) ois.readObject();
                                         }
                                         if (dashboard.size() == 1) {
                                             again = false;
@@ -321,7 +320,7 @@ public class Client {
                 }
                 if (choose.equals("Seller")) {
                     runSeller = true;
-                    String results = reader.readLine(); // DONE!! server return a string of the drop down options
+                    String results = (String) ois.readObject(); // DONE!! server return a string of the drop down options
                     // (1. view store,2. search,3. purchase...) etc DONE!!
                     while (runSeller) {
                         String[] dropdown = results.split(",", 0);
@@ -332,7 +331,7 @@ public class Client {
                         writeAndFlush(reply, oos); // DONE!! on server side, read in the line, and have ifs for the
                                             // corresponding drop down choice DONE!!
                         if (reply.equals("1. list your stores")) {
-                            if (reader.readLine().equals("no stores")) {
+                            if (((String) ois.readObject()).equals("no stores")) {
                                 System.out.println("no stores??");
                                 JOptionPane.showMessageDialog(null, "There are no stores", "Stores",
                                         JOptionPane.ERROR_MESSAGE);
@@ -359,12 +358,12 @@ public class Client {
                         }
 
                         if (reply.equals("2. edit stores")) {
-                            if (reader.readLine().equals("no stores")) {
+                            if (((String) ois.readObject()).equals("no stores")) {
                                 JOptionPane.showMessageDialog(null, "There are no stores", "Stores",
                                         JOptionPane.ERROR_MESSAGE);
                             } else {
                                 @SuppressWarnings("unchecked") ArrayList<Store> stores = (ArrayList<Store>) ois.readObject();
-                                String output = "";
+                                String output = ""; // what is this used for?
 
                                 int poop = 1;
                                 for (Store s : stores) {
@@ -416,7 +415,7 @@ public class Client {
             
                                     int result = JOptionPane.showConfirmDialog(null, myPanel, 
                                             "Enter Product Details", JOptionPane.OK_CANCEL_OPTION);
-                                            
+                                            // nopthing uses result? is this unfinished?
                                     String name = prodName.getText();
                                     String desc = prodDesc.getText();
                                     String quant = prodQuant.getText();
@@ -436,7 +435,7 @@ public class Client {
                                     //valid = true;
                                     @SuppressWarnings("unchecked") ArrayList<Product> products = (ArrayList<Product>) ois.readObject();
                                     String[] names = new String[products.size()];
-                                    Product currProduct;
+                                    Product currProduct; // where is this used?
                                     int currProductIndex = -1;
                                     int i = 0;
                                     for (Product p : products) {
@@ -475,7 +474,7 @@ public class Client {
             
                                     int result = JOptionPane.showConfirmDialog(null, myPanel, 
                                             "Enter Product Details", JOptionPane.OK_CANCEL_OPTION);
-                                            
+                                            // same thing nothing ends up using this result?
                                     String name = prodName.getText();
                                     String desc = prodDesc.getText();
                                     String quant = prodQuant.getText();
@@ -514,7 +513,7 @@ public class Client {
                                         i++;
                                     }
 
-                                    riteAndFlush("" + currProductIndex, oos);
+                                    writeAndFlush("" + currProductIndex, oos);
                                     JOptionPane.showMessageDialog(null, chosenName + " deleted!", "Edit Store",
                                         JOptionPane.INFORMATION_MESSAGE);
                                 } else {
@@ -524,7 +523,7 @@ public class Client {
                         }
 
                         if (reply.equals("3. view sales")) {
-                            if (reader.readLine().equals("no stores")) {
+                            if (((String)ois.readObject()).equals("no stores")) {
                                 JOptionPane.showMessageDialog(null, "There are no stores", "Stores",
                                         JOptionPane.ERROR_MESSAGE);
                             } else { 
@@ -536,7 +535,7 @@ public class Client {
                                     writeAndFlush(input, oos);
                                 
 
-                                String sellerHistory = reader.readLine();
+                                String sellerHistory = (String) ois.readObject();
                                 JOptionPane.showMessageDialog(null, sellerHistory, "View Sales", 
                                     JOptionPane.INFORMATION_MESSAGE);
 
@@ -580,10 +579,10 @@ public class Client {
                                         for (int i = 0; i < stores.size();) {
                                             stores.remove(i);
                                         }
-                                        String line = reader.readLine();
+                                        String line = (String) ois.readObject();
                                         while (!line.isBlank()) {
                                             stores.add(line);
-                                            line = reader.readLine();
+                                            line = (String) ois.readObject();
                                         }
                                         String[] eachstore = stores.toArray(new String[0]);
                                         String store = "";
@@ -614,10 +613,10 @@ public class Client {
                                     for (int i = 0; i < dashboard.size(); ) {
                                         dashboard.remove(i);
                                     }
-                                    String line = reader.readLine();
+                                    String line = (String) ois.readObject();
                                     while (!line.isBlank()) {
                                         dashboard.add(line);
-                                        line = reader.readLine();
+                                        line = (String) ois.readObject();
                                     }
                                     if (dashboard.isEmpty()) {
                                         bool = false;
@@ -645,10 +644,10 @@ public class Client {
                                         for (int i = 0; i < dashboard.size(); ) {
                                             dashboard.remove(i);
                                         }
-                                        String line2 = reader.readLine();
+                                        String line2 = (String) ois.readObject();
                                         while (!line2.isBlank()) {
                                             dashboard.add(line2);
-                                            line2 = reader.readLine();
+                                            line2 = (String) ois.readObject();
                                         }
                                         if (dashboard.size() == 1) {
                                             again = false;
@@ -669,7 +668,7 @@ public class Client {
                                 } else {
                                     valid = true;
                                     writeAndFlush(input, oos);
-                                    if (reader.readLine().equals("is store")) {
+                                    if (((String)ois.readObject()).equals("is store")) {
                                         JOptionPane.showMessageDialog(null, "Stores deleted!", "Stores",
                                                 JOptionPane.INFORMATION_MESSAGE);
                                     } else {
@@ -681,7 +680,7 @@ public class Client {
                         }
 
                         if (reply.equals("7. view customer shopping carts")) {
-                            String output = reader.readLine().replace(";;", "\n");
+                            String output = ((String)ois.readObject()).replace(";;", "\n");
                             JOptionPane.showMessageDialog(null, output, "Customer Carts",
                                 JOptionPane.INFORMATION_MESSAGE);
                         }
@@ -697,7 +696,7 @@ public class Client {
                                 } else {
                                     valid = true;
                                     writeAndFlush(input, oos);
-                                    if (reader.readLine().equals("error")) {
+                                    if (((String)ois.readObject()).equals("error")) {
                                         System.out.println("aur naur something's wrong with the file"); 
                                         JOptionPane.showMessageDialog(null, "aur naur something's wrong with the file", 
                                             "Import Stores from CSV", JOptionPane.ERROR_MESSAGE);
@@ -752,11 +751,10 @@ public class Client {
         }
     }
 
-    public static void searchGUI(Socket socket, BufferedWriter writer, BufferedReader reader, 
+    public static void searchGUI(Socket socket,  
         String userName, ObjectInputStream ois, ObjectOutputStream oos) {
         try {
             String chosenProduct;
-            int continueQues = 0;
             String searchWord = JOptionPane.showInputDialog(null,
                     "Enter Search", "Search Bar", JOptionPane.QUESTION_MESSAGE); // enter search
             if (searchWord != null) {
