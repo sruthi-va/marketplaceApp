@@ -979,7 +979,7 @@ public class MarketPlace extends Thread {
      * @return none
      * @param, none
      */
-    public static void writeFile() {
+    public synchronized static void writeFile() {
         try (BufferedWriter bw = new BufferedWriter(new FileWriter(new File("marketplace.txt"),
                 false))) {
             for (Seller seller : sellers) {
