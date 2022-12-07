@@ -3,3 +3,8 @@ Olivia Rodrigo;Drivers License-License,I got my drivers license last week,1,0.0,
 Agust D;D2-So far away,dream,8,0.0,D2-Daechwita,losers,8,0.0,D2;Agust D-Give it to me,just give it to me,5,0.0,Agust D
 Stray kids;Hellevator-Hellevator,Im on a hellavator,1,0.0,Hellevator
 poop;poop store-straight poop,shit,2,2.0,poop store;another poop store
+Taylor Swift;Midnights-Antihero,Everybody is a sexy baby,11,10.0,Midnights-Bejeweled,Familiarity breeds contempt,11,50.0,Midnights;Folklore-Betty,I know i miss you,12,0.0,Folklore
+Olivia Rodrigo;Drivers License-License,I got my drivers license last week,1,0.0,Drivers License
+Agust D;D2-So far away,dream,8,0.0,D2-Daechwita,losers,8,0.0,D2;Agust D-Give it to me,just give it to me,5,0.0,Agust D
+Stray kids;Hellevator-Hellevator,Im on a hellavator,1,0.0,Hellevator
+poop;poop store-straight poop,shit,2,2.0,poop store;another poop store

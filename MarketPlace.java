@@ -22,9 +22,11 @@ public class MarketPlace extends Thread {
     public void run() {
         String welcome = null;
         try {
+            oos = new ObjectOutputStream(new DataOutputStream(socket.getOutputStream()));
+            ois = new ObjectInputStream(new DataInputStream(socket.getInputStream()));
             welcome = (String) ois.readObject();
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            // throw new RuntimeException(e);
         }
         if (welcome.equals("exit")) {
             return;
@@ -39,7 +41,7 @@ public class MarketPlace extends Thread {
             cOrS = (String) ois.readObject();
             System.out.println(cOrS);
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            // e.printStackTrace();
         }
 
         if (cOrS.equals("Customer")) {
@@ -57,7 +59,7 @@ public class MarketPlace extends Thread {
                     userpass = ((String)ois.readObject()).split(";;");
                     System.out.println("from server: " + userpass[0] + " " + userpass[1]);
                 } catch (Exception e) {
-                    throw new RuntimeException(e);
+                    // throw new RuntimeException(e);
                 }
                 
                 ArrayList<String> usernames = readFile("customers.txt");
@@ -106,7 +108,7 @@ public class MarketPlace extends Thread {
                             break;
                         }
                     } catch (Exception e) {
-                        throw new RuntimeException(e);
+                        // throw new RuntimeException(e);
                     }
                 } else {
                     customer = new Customer(userpass[0], userpass[1]);
@@ -121,7 +123,7 @@ public class MarketPlace extends Thread {
                 try {
                     line = (String) ois.readObject();
                 } catch (Exception e3) {
-                    e3.printStackTrace();
+                    // e3.printStackTrace();
                     return;
                 }
                 System.out.println("from server: " + line);
@@ -170,7 +172,7 @@ public class MarketPlace extends Thread {
                                 }
                             }
                         } catch (Exception e) {
-                                e.printStackTrace();
+                                // e.printStackTrace();
                         }
                         break;
                     case "2. search":
@@ -190,13 +192,13 @@ public class MarketPlace extends Thread {
                         try {
                             writeAndFlush(cart, oos);
                         } catch (Exception e2) {
-                            e2.printStackTrace();
+                            // e2.printStackTrace();
                         }
                         Product item = null;
                         try {
                             item = (Product) ois.readObject();
                         } catch (Exception e1) {
-                            e1.printStackTrace();
+                            // e1.printStackTrace();
                         }
                         if (item != null) {
                             customer.deleteFromCart(customer.getUsername(), item);
@@ -222,7 +224,7 @@ public class MarketPlace extends Thread {
                             try {
                                 dash = (String) ois.readObject();
                             } catch (Exception e) {
-                                throw new RuntimeException(e);
+                                // throw new RuntimeException(e);
                             }
                             if (dash.equals("Number of products sold by each store")) {
                                 dashboard = Dashboard.getCustomerDashboard1("customers.txt",
@@ -260,7 +262,7 @@ public class MarketPlace extends Thread {
                                 try {
                                     sort = (String) ois.readObject();
                                 } catch (Exception e) {
-                                    throw new RuntimeException(e);
+                                    // throw new RuntimeException(e);
                                 }
                                 if (sort.equals("Alphabetically(A-Z)")) {
                                     dashboard = Dashboard.sortAlphabetically(dashboard, true);
@@ -293,7 +295,7 @@ public class MarketPlace extends Thread {
                                 System.out.println("there was a problem!");
                             }
                         } catch (Exception e) {
-                            e.printStackTrace();
+                            // e.printStackTrace();
                         }
                         break;
                     case "8. delete account":
@@ -315,7 +317,7 @@ public class MarketPlace extends Thread {
                     userpass = ((String)ois.readObject()).split(";;");
                     System.out.println("from client: " + userpass[0] + " " + userpass[1]);
                 } catch (Exception e) {
-                    throw new RuntimeException(e);
+                    // throw new RuntimeException(e);
                 }
                 
                 ArrayList<String> usernames = readFile("sellers.txt");
@@ -368,7 +370,7 @@ public class MarketPlace extends Thread {
                             break;
                         }
                     } catch (Exception e) {
-                        throw new RuntimeException(e);
+                        // throw new RuntimeException(e);
                     }
                 } else {
                     seller = new Seller(new ArrayList<>(), userpass[0]);
@@ -401,7 +403,7 @@ public class MarketPlace extends Thread {
                 try { 
                     line = (String) ois.readObject();
                 } catch (Exception e2) {
-                    e2.printStackTrace();
+                    // e2.printStackTrace();
                 }
                 System.out.println(line);
                 switch (line) {
@@ -416,7 +418,7 @@ public class MarketPlace extends Thread {
                                 writeAndFlush(seller.getStores(), oos);
                                 System.out.println("sent stores");
                             } catch (Exception e) {
-                                throw new RuntimeException(e);
+                                // throw new RuntimeException(e);
                             }
                         }
                         break;
@@ -428,7 +430,7 @@ public class MarketPlace extends Thread {
                             try {
                                 writeAndFlush(sellers.get(sellerID).getStores(), oos);
                             } catch (Exception e) {
-                                throw new RuntimeException(e);
+                                // throw new RuntimeException(e);
                             }
 
                             Store currentStore = null;
@@ -436,7 +438,7 @@ public class MarketPlace extends Thread {
                                 currentStore = (Store) ois.readObject();
                                 System.out.println(currentStore);
                             } catch (Exception e) {
-                                throw new RuntimeException(e);
+                                // throw new RuntimeException(e);
                             }
                             System.out.println(Arrays.toString(seller.getStores().toArray()));
                             
@@ -455,7 +457,7 @@ public class MarketPlace extends Thread {
                                 todo = (String) ois.readObject();
                                 System.out.println(todo);
                             } catch (Exception e) {
-                                throw new RuntimeException(e);
+                                // throw new RuntimeException(e);
                             }
                             System.out.println("started if statements");
                             if (todo.equalsIgnoreCase("create product")) {
@@ -464,7 +466,7 @@ public class MarketPlace extends Thread {
                                     toAdd = (Product) ois.readObject();
                                     System.out.println("read" + toAdd.toString());
                                 } catch (Exception e) {
-                                    throw new RuntimeException(e);
+                                    // throw new RuntimeException(e);
                                 }
                                 currentStore.addProduct(toAdd);
                                 seller.setStore(currentStoreID, currentStore);
@@ -486,7 +488,7 @@ public class MarketPlace extends Thread {
                                         sellers.set(sellerID, seller);
                                     }
                                 } catch (Exception e) {
-                                    throw new RuntimeException(e);
+                                    // throw new RuntimeException(e);
                                 }
                             } else if (todo.equalsIgnoreCase("delete product")) {
                                 try {
@@ -500,7 +502,7 @@ public class MarketPlace extends Thread {
                                         sellers.set(sellerID, seller);
                                     }
                                 } catch (Exception e) {
-                                    throw new RuntimeException(e);
+                                    // throw new RuntimeException(e);
                                 }
                             } else {
                                 System.out.println("Please type 'create', 'edit', or 'delete'.");
@@ -519,7 +521,7 @@ public class MarketPlace extends Thread {
                                 String storeName = (String) ois.readObject();
                                 writeAndFlush(seller.viewSales(storeName), oos);
                             } catch (Exception e) {
-                                e.printStackTrace();
+                                // e.printStackTrace();
                             }
                         }
                         break;
@@ -528,7 +530,7 @@ public class MarketPlace extends Thread {
                         try {
                             storeName = (String) ois.readObject();
                         } catch (Exception e1) {
-                            e1.printStackTrace();
+                            // e1.printStackTrace();
                         }
                         seller.createStore(seller.getSellerName(), storeName);
                         synchronized(obj) {
@@ -544,7 +546,7 @@ public class MarketPlace extends Thread {
                             try {
                                 dash = (String) ois.readObject();
                             } catch (Exception e) {
-                                throw new RuntimeException(e);
+                                // throw new RuntimeException(e);
                             }
                             if (dash.equals("Number of products bought by each customer at a specific store")) {
                                 ArrayList<String> marketplaceinfo = Dashboard.readFile("marketplace.txt");
@@ -570,7 +572,7 @@ public class MarketPlace extends Thread {
                                     try {
                                         store = (String) ois.readObject();
                                     } catch (Exception e) {
-                                        throw new RuntimeException(e);
+                                        // throw new RuntimeException(e);
                                     }
                                     if (!store.equals("")) {
                                         dashboard = Dashboard.getSellerDashboard1(store, "customers.txt");
@@ -614,7 +616,7 @@ public class MarketPlace extends Thread {
                                     try {
                                         store = (String) ois.readObject();
                                     } catch (Exception e) {
-                                        throw new RuntimeException(e);
+                                        // throw new RuntimeException(e);
                                     }
                                     if (!store.equals("")) {
                                         dashboard = Dashboard.getSellerDashboard2(store, seller.getSellerName(), "customers.txt", "marketplace.txt");
@@ -644,7 +646,7 @@ public class MarketPlace extends Thread {
                                 try {
                                     sort = (String) ois.readObject();
                                 } catch (Exception e) {
-                                    throw new RuntimeException(e);
+                                    // throw new RuntimeException(e);
                                 }
                                 if (sort.equals("Alphabetically(A-Z)")) {
                                     dashboard = Dashboard.sortAlphabetically(dashboard, true);
@@ -678,7 +680,7 @@ public class MarketPlace extends Thread {
                             try {
                                 deleteStore = (String) ois.readObject();
                             } catch (Exception e) {
-                                e.printStackTrace();
+                                // e.printStackTrace();
                             }
                             Store storeInQuestion = null;
                             ArrayList<Store> currStores = sellers.get(sellerID).getStores();
@@ -718,13 +720,13 @@ public class MarketPlace extends Thread {
                         try {
                             fileImport = (String) ois.readObject();
                         } catch (Exception e1) {
-                            e1.printStackTrace();
+                            // e1.printStackTrace();
                         }
                         ArrayList<Store> importedStores;
                         try {
                             importedStores = seller.importCSV(fileImport);
                         } catch (Exception e) {
-                            writeAndFlush("error", oos);
+                            // writeAndFlush("error", oos);
                             break;
                         } 
                         writeAndFlush("no error", oos);
@@ -746,7 +748,7 @@ public class MarketPlace extends Thread {
                                 System.out.println("there was a problem!");
                             }
                         } catch (Exception e) {
-                            e.printStackTrace();
+                            // e.printStackTrace();
                         }
                         break;
                     case "10.delete account":
@@ -766,8 +768,6 @@ public class MarketPlace extends Thread {
                         System.out.println("Please enter a valid command");
                         break;
                 }
-                // refreshStream(ois, oos);
-                // MarketPlace.ObjectOutputStream.reset();
             } while (true);
         }
     }
@@ -775,22 +775,12 @@ public class MarketPlace extends Thread {
     public static void main(String[] args) throws Exception {
         ServerSocket serverSocket = new ServerSocket(6969);
         System.out.println("waiting for users to connect");
-        socket = serverSocket.accept();
-        System.out.println("got a connection");
-        try {
-            oos = new ObjectOutputStream(new DataOutputStream(socket.getOutputStream()));
-            ois = new ObjectInputStream(new DataInputStream(socket.getInputStream()));
-            // oos = new MyObjectOutputStream(socket.getOutputStream());
-        } catch (Exception e1) {
-            e1.printStackTrace();
-        }
         while (true) {
-            MarketPlace server = new MarketPlace(socket);
-            new Thread(server).start();
             socket = serverSocket.accept();
             System.out.println("got a connection");
+            MarketPlace server = new MarketPlace(socket);
+            new Thread(server).start();
         }
-        // serverSocket.close();
     }
 
     /**
@@ -857,7 +847,7 @@ public class MarketPlace extends Thread {
             }
         } catch (Exception e) {
             System.out.println("File has problems!");
-            e.printStackTrace();
+            // e.printStackTrace();
         }
     }
 
@@ -902,7 +892,7 @@ public class MarketPlace extends Thread {
                 return;
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            // e.printStackTrace();
             return;
         }
     }
@@ -913,7 +903,7 @@ public class MarketPlace extends Thread {
                 customer.addToCart(customer.getUsername(), inQuestion);
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            // e.printStackTrace();
         }
     }
 
@@ -944,7 +934,7 @@ public class MarketPlace extends Thread {
             }
             bfr.close();
         } catch (Exception e) {
-            e.printStackTrace();
+            // e.printStackTrace();
         }
 
         return tempList;
@@ -967,7 +957,7 @@ public class MarketPlace extends Thread {
 
             pw.close();
         } catch (Exception e) {
-            e.printStackTrace();
+            // e.printStackTrace();
         }
     }
 
@@ -998,7 +988,7 @@ public class MarketPlace extends Thread {
             }
             bw.close();
         } catch (Exception e) {
-            e.printStackTrace();
+            // e.printStackTrace();
         }
     }
 
