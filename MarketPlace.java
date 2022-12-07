@@ -120,7 +120,7 @@ public class MarketPlace extends Thread {
             "6. view statistics,7. export buy history to csv file,8. delete account,9. logout", oos);
             System.out.println("here");
             do {
-                removeSellerDuplicates();
+                // removeSellerDuplicates();
                 try {
                     line = (String) ois.readObject();
                 } catch (Exception e3) {
@@ -132,12 +132,15 @@ public class MarketPlace extends Thread {
                     case "1. view store":
                         Store store = null; // where is this used?
                         ArrayList<Store> allStores = new ArrayList<>();
-                        removeSellerDuplicates();
-                        for (int i = 0; i < sellers.size(); i++) {
-                            for (int j = 0; j < sellers.get(i).getStores().size(); j++) {
-                                allStores.add(sellers.get(i).getStores().get(j));
-                            }
+                        for (Seller s : sellers) {
+                            allStores.addAll(s.getStores());
                         }
+                        // removeSellerDuplicates();
+                        // for (int i = 0; i < sellers.size(); i++) {
+                        //     for (int j = 0; j < sellers.get(i).getStores().size(); j++) {
+                        //         allStores.add(sellers.get(i).getStores().get(j));
+                        //     }
+                        // }
                         String[] allStoresArray = new String[allStores.size()];
                         for (int i = 0; i < allStores.size(); i++) {
                             allStoresArray[i] = allStores.get(i).getStoreName();
@@ -321,7 +324,7 @@ public class MarketPlace extends Thread {
                 } catch (Exception e) {
                     // throw new RuntimeException(e);
                 }
-                removeSellerDuplicates();
+                // removeSellerDuplicates();
                 ArrayList<String> usernames = readFile("sellers.txt");
                 boolean usernameFound = false;
                 boolean loggedIn = false;
@@ -763,17 +766,15 @@ public class MarketPlace extends Thread {
                             sellers.remove(sellerID);
                         }           
                         System.out.println("Account deleted, stores ejected, rejected and taken care of. Goodbye.");
+                        MarketPlace.writeFile();
                         return;
-                    case "11. log out":
+                    default:
                         synchronized(obj) {
                             sellers.set(sellerID, seller);
                         }
                         System.out.println("Goodbye!");
                         MarketPlace.writeFile();
                         return;
-                    default:
-                        System.out.println("Please enter a valid command");
-                        break;
                 }
             } while (true);
         }
