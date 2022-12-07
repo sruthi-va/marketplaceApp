@@ -1073,6 +1073,7 @@ public class MarketPlace extends Thread {
             for (int j = 0; j < sellers.size(); j++) {
                 if ((i!=j) && (sellers.get(i).getSellerName().equals(sellers.get(j).getSellerName()))) {
                     sellers.remove(j);
+                    System.out.println("Duplicate seller removed!");
                 }
             }
         }
