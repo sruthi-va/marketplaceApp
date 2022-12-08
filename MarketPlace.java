@@ -539,14 +539,10 @@ public class MarketPlace implements Runnable {
                             // e1.printStackTrace();
                         }
                         seller.createStore(seller.getSellerName(), storeName);
-                        try {
-                            BufferedReader br = new BufferedReader(new FileReader("marketplace.txt"));
-                        } catch (FileNotFoundException e) {
-                            throw new RuntimeException(e);
-                        }
                         synchronized(obj) {
                             sellers.set(sellerID, seller);
                         }
+                        writeFile();
                         break;
                     case "5. view statistics":
                         boolean bool = true;

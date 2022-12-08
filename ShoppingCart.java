@@ -11,7 +11,7 @@ import java.util.Arrays;
  * @version Nov 13, 2022
  */
 public class ShoppingCart {
-    private ArrayList < ArrayList < Object >> cart = new ArrayList < > ();
+    private ArrayList<ArrayList<Object>> cart = new ArrayList<>();
 
     // testing
     public static void main(String[] args) {
@@ -26,7 +26,8 @@ public class ShoppingCart {
         cart.addItem("someoneRandom", testProduct);
         cart.addItem("someoneRandom", new Product("thing,someStore,4.5,description"));
         String addCartOutput = Arrays.toString(cart.getProducts("someoneRandom"));
-        String addCartExpected = "[testProduct from store testStore for 0.50: testDesc, thing from store someStore for 4.50: description]";
+        String addCartExpected = "[testProduct from store testStore for 0.50: testDesc," +
+                "thing from store someStore for 4.50: description]";
         System.out.println(addCartOutput);
         System.out.println(addCartExpected);
         System.out.println(addCartExpected.equals(addCartOutput));
@@ -47,7 +48,7 @@ public class ShoppingCart {
     }
 
     public ShoppingCart() {
-        ArrayList < String > tempList = new ArrayList < > ();
+        ArrayList<String> tempList = new ArrayList<>();
 
         FileReader fr;
         BufferedReader bfr;
@@ -70,15 +71,15 @@ public class ShoppingCart {
         }
 
         for (int i = 0; i < tempList.size(); i++) {
-            ArrayList < Object > temp = new ArrayList < > ();
+            ArrayList<Object> temp = new ArrayList<>();
             String[] t = tempList.get(i).split(",");
             temp.add(t[0]);
             for (int j = 1; j < t.length - 3; j += 4) {
                 String[] product = {
-                    t[j],
-                    t[j + 1],
-                    t[j + 2],
-                    t[j + 3]
+                        t[j],
+                        t[j + 1],
+                        t[j + 2],
+                        t[j + 3]
                 };
                 temp.add(new Product(String.join(",", product)));
             }
@@ -87,7 +88,7 @@ public class ShoppingCart {
         }
     }
 
-    public ArrayList < ArrayList < Object >> getAllCarts() {
+    public ArrayList<ArrayList<Object>> getAllCarts() {
         return this.cart;
     }
 
@@ -100,7 +101,7 @@ public class ShoppingCart {
     public boolean removeItem(String username, Product product) {
         int index = findUsername(username);
         if (index != -1) {
-            ArrayList < Object > user = cart.get(index);
+            ArrayList<Object> user = cart.get(index);
             for (int i = 1; i < user.size(); i++) {
                 Product curr = (Product) user.get(i);
                 if (curr.equals(product)) {
@@ -122,12 +123,12 @@ public class ShoppingCart {
     public void addItem(String username, Product product) {
         int index = findUsername(username);
         if (index != -1) {
-            ArrayList < Object > user = cart.get(index);
+            ArrayList<Object> user = cart.get(index);
             user.add(product);
             cart.remove(index);
             cart.add(index, user);
         } else {
-            ArrayList < Object > user = new ArrayList < > ();
+            ArrayList<Object> user = new ArrayList<>();
             user.add(username);
             user.add(product);
             cart.add(user);
@@ -155,7 +156,7 @@ public class ShoppingCart {
         if (index == -1) {
             return new Product[0];
         } else {
-            ArrayList < Object > user = cart.get(index);
+            ArrayList<Object> user = cart.get(index);
             Product[] product = new Product[user.size() - 1];
             for (int i = 1; i < user.size(); i++) {
                 product[i - 1] = (Product) user.get(i);
@@ -175,7 +176,7 @@ public class ShoppingCart {
             PrintWriter pw = new PrintWriter(fos);
 
             for (int i = 0; i < this.cart.size(); i++) {
-                ArrayList < Object > curr = this.cart.get(i);
+                ArrayList<Object> curr = this.cart.get(i);
                 pw.print((String) curr.get(0) + ",");
                 for (int j = 1; j < curr.size(); j++) {
                     pw.print(((Product) curr.get(j)).writeToString());
