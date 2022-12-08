@@ -61,7 +61,8 @@ public class testMain {
                 "4: D2 by user Agust D\n" +
                 "5: Agust D by user Agust D\n" +
                 "6: Hellevator by user Stray kids\n" +
-        "Do you want to: 1. view store, 2. search, 3. purchase, 4. edit cart, 5. view cart, 6. view statistics, 7. delete account, or 8. logout?\n" +
+        "Do you want to: 1. view store, 2. search, 3. purchase, 4. edit cart,
+        5. view cart, 6. view statistics, 7. delete account, or 8. logout?\n" +
                 "(Type 1-8)\n";
 
         receiveInput(input);
