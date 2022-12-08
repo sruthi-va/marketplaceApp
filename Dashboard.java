@@ -14,8 +14,8 @@ public class Dashboard {
     /**
      * Reads a file and returns an arraylist of the contents
      */
-    public static ArrayList < String > readFile(String filename) {
-        ArrayList < String > list = new ArrayList < > ();
+    public static ArrayList<String> readFile(String filename) {
+        ArrayList<String> list = new ArrayList<>();
         File f = new File(filename);
         try {
             FileReader fr = new FileReader(f);
@@ -35,7 +35,7 @@ public class Dashboard {
     /**
      * Prints out a given arraylist line by line
      */
-    public static void printDashboard(ArrayList < String > list) {
+    public static void printDashboard(ArrayList<String> list) {
         for (int i = 0; i < list.size(); i++) {
             System.out.println(list.get(i));
         }
@@ -45,9 +45,9 @@ public class Dashboard {
      * For the seller dashboard: returns an arraylist of customers by number of products
      * when given the store name
      */
-    public static ArrayList < String > getSellerDashboard1(String store, String purchasehistoryfile) {
-        ArrayList < String > purchasehistory = readFile(purchasehistoryfile);
-        ArrayList < String > dashboard = new ArrayList < > ();
+    public static ArrayList<String> getSellerDashboard1(String store, String purchasehistoryfile) {
+        ArrayList<String> purchasehistory = readFile(purchasehistoryfile);
+        ArrayList<String> dashboard = new ArrayList<>();
         dashboard.add("NUMBER OF ITEMS BOUGHT BY CUSTOMERS AT " + store.toUpperCase());
         for (int i = 0; i < purchasehistory.size(); i++) {
             int quantity = 0;
@@ -73,11 +73,11 @@ public class Dashboard {
      * For the seller dashboard: returns an arraylist of store products by number of sales
      * when given the store name and the seller name
      */
-    public static ArrayList < String > getSellerDashboard2(String store, String sellerName, String purchasehistoryfile,
-        String sellerinfofile) {
-        ArrayList < String > purchasehistory = readFile(purchasehistoryfile);
-        ArrayList < String > sellinginfo = readFile(sellerinfofile);
-        ArrayList < String > dashboard = new ArrayList < > ();
+    public static ArrayList<String> getSellerDashboard2(String store, String sellerName, String purchasehistoryfile,
+                                                        String sellerinfofile) {
+        ArrayList<String> purchasehistory = readFile(purchasehistoryfile);
+        ArrayList<String> sellinginfo = readFile(sellerinfofile);
+        ArrayList<String> dashboard = new ArrayList<>();
         dashboard.add("NUMBER OF SALES BY " + store.toUpperCase() + " PRODUCTS");
         for (int i = 0; i < sellinginfo.size(); i++) {
             String[] splitlist = sellinginfo.get(i).split(";", -1);
@@ -111,10 +111,10 @@ public class Dashboard {
      * For the customer dashboard: returns an arraylist of number of products
      * sold by each store
      */
-    public static ArrayList < String > getCustomerDashboard1(String purchasehistoryfile, String sellerinfofile) {
-        ArrayList < String > sellinginfo = readFile(sellerinfofile);
-        ArrayList < String > purchasehistory = readFile(purchasehistoryfile);
-        ArrayList < String > dashboard = new ArrayList < > ();
+    public static ArrayList<String> getCustomerDashboard1(String purchasehistoryfile, String sellerinfofile) {
+        ArrayList<String> sellinginfo = readFile(sellerinfofile);
+        ArrayList<String> purchasehistory = readFile(purchasehistoryfile);
+        ArrayList<String> dashboard = new ArrayList<>();
         dashboard.add("NUMBER OF PRODUCTS EACH STORE HAS SOLD");
         for (int i = 0; i < sellinginfo.size(); i++) {
             String[] splitlist = sellinginfo.get(i).split(";", -1);
@@ -144,9 +144,9 @@ public class Dashboard {
      * For the customer dashboard: returns an arraylist of the customer's purchased items
      * by store given the customer name
      */
-    public static ArrayList < String > getCustomerDashboard2(String customerName, String purchasehistoryfile) {
-        ArrayList < String > purchasehistory = readFile(purchasehistoryfile);
-        ArrayList < String > dashboard = new ArrayList < > ();
+    public static ArrayList<String> getCustomerDashboard2(String customerName, String purchasehistoryfile) {
+        ArrayList<String> purchasehistory = readFile(purchasehistoryfile);
+        ArrayList<String> dashboard = new ArrayList<>();
         dashboard.add("YOUR PURCHASED ITEMS BY STORE");
         for (int i = 0; i < purchasehistory.size(); i++) {
             String[] splitlist = purchasehistory.get(i).split(",", -1);
@@ -172,7 +172,7 @@ public class Dashboard {
                                 for (int m = 2; m < l; m++) {
                                     String[] productstore4 = splitlist[m].split("-");
                                     if (productstore4[0].equals(productstore3[0])) {
-                                        //bool = false;
+                                        bool = false;
                                     }
                                 }
                                 if (bool) {
@@ -193,7 +193,7 @@ public class Dashboard {
      * Sorts the given arraylist alphabetically by the first character. Also needs
      * a boolean, true sorts from A-Z and false sorts from Z-A
      */
-    public static ArrayList < String > sortAlphabetically(ArrayList < String > list, boolean direction) {
+    public static ArrayList<String> sortAlphabetically(ArrayList<String> list, boolean direction) {
         int character = 0;
         boolean again = false;
         if (direction) {
@@ -204,12 +204,12 @@ public class Dashboard {
                         again = false;
                         if (((int) list.get(i).toLowerCase().charAt(character) >
                                 (int) list.get(j).toLowerCase().charAt(character) &&
-                                list.get(i).charAt(character) != ':') || (list.get(j).charAt(character) == ':')) {
+                                list.get(i).charAt(character) != ':') || (list.get(j).charAt(character) == ':'))  {
                             String temp = list.get(i);
                             list.set(i, list.get(j));
                             list.set(j, temp);
                         } else if ((int) list.get(i).toLowerCase().charAt(character) ==
-                            (int) list.get(j).toLowerCase().charAt(character)) {
+                                (int) list.get(j).toLowerCase().charAt(character)) {
                             again = true;
                             character++;
                         }
@@ -224,12 +224,12 @@ public class Dashboard {
                         again = false;
                         if (((int) list.get(i).toLowerCase().charAt(character) <
                                 (int) list.get(j).toLowerCase().charAt(character) &&
-                                list.get(j).charAt(character) != ':') || (list.get(i).charAt(character) == ':')) {
+                                list.get(j).charAt(character) != ':') || (list.get(i).charAt(character) == ':') ) {
                             String temp = list.get(i);
                             list.set(i, list.get(j));
                             list.set(j, temp);
                         } else if ((int) list.get(i).toLowerCase().charAt(character) ==
-                            (int) list.get(j).toLowerCase().charAt(character)) {
+                                (int) list.get(j).toLowerCase().charAt(character)) {
                             again = true;
                             character++;
                         }
@@ -244,7 +244,7 @@ public class Dashboard {
      * Sorts the given arraylist by quantity. Also needs a boolean, true
      * sorts from high-low and false sorts from low-high
      */
-    public static ArrayList < String > sortQuantity(ArrayList < String > list, boolean direction) {
+    public static ArrayList<String> sortQuantity(ArrayList<String> list, boolean direction) {
         if (direction) {
             for (int i = 1; i < list.size(); i++) {
                 if (list.size() > 2) {
@@ -281,7 +281,7 @@ public class Dashboard {
             for (int i = 1; i < list.size(); i++) {
                 if (list.size() > 2) {
                     boolean bool = true;
-                    String[] test = list.get(i).split(": ", -1);
+                    String[] test = list.get(i).split(" ", -1);
                     String[] test2 = test[1].split(" ", -1);
                     try {
                         Integer.parseInt(test2[0]);
@@ -319,8 +319,8 @@ public class Dashboard {
      */
     public static void main(String[] args) {
         // test for getSellerDashboard1 method
-        ArrayList < String > seller1Output = getSellerDashboard1("target", "testsample2.txt");
-        ArrayList < String > expectedSeller1Output = new ArrayList < > ();
+        ArrayList<String> seller1Output = getSellerDashboard1("target", "testsample2.txt");
+        ArrayList<String> expectedSeller1Output = new ArrayList<>();
         expectedSeller1Output.add("NUMBER OF ITEMS BOUGHT BY CUSTOMERS AT TARGET");
         expectedSeller1Output.add("username: 2 items bought");
         expectedSeller1Output.add("username2: 1 item bought");
@@ -340,9 +340,9 @@ public class Dashboard {
         }
 
         // test for getSellerDashboard2 method
-        ArrayList < String > seller2Output = getSellerDashboard2("target", "Seller2",
-            "testsample2.txt", "testsample1.txt");
-        ArrayList < String > expectedSeller2Output = new ArrayList < > ();
+        ArrayList<String> seller2Output = getSellerDashboard2("target", "Seller2",
+                "testsample2.txt", "testsample1.txt");
+        ArrayList<String> expectedSeller2Output = new ArrayList<>();
         expectedSeller2Output.add("NUMBER OF SALES BY TARGET PRODUCTS");
         expectedSeller2Output.add("grape: 1 sold");
         expectedSeller2Output.add("orange: 2 sold");
@@ -362,9 +362,9 @@ public class Dashboard {
         }
 
         // test for getCustomerDashboard1 method
-        ArrayList < String > customer1Output = getCustomerDashboard1("testsample2.txt",
-            "testsample1.txt");
-        ArrayList < String > expectedCustomer1Output = new ArrayList < > ();
+        ArrayList<String> customer1Output = getCustomerDashboard1("testsample2.txt",
+                "testsample1.txt");
+        ArrayList<String> expectedCustomer1Output = new ArrayList<>();
         expectedCustomer1Output.add("NUMBER OF PRODUCTS EACH STORE HAS SOLD");
         expectedCustomer1Output.add("walmart: 2 products sold");
         expectedCustomer1Output.add("aldi: 1 product sold");
@@ -385,9 +385,9 @@ public class Dashboard {
         }
 
         // test for getCustomerDashboard2 method
-        ArrayList < String > customer2Output = getCustomerDashboard2("username",
-            "testsample2.txt");
-        ArrayList < String > expectedCustomer2Output = new ArrayList < > ();
+        ArrayList<String> customer2Output = getCustomerDashboard2("username",
+                "testsample2.txt");
+        ArrayList<String> expectedCustomer2Output = new ArrayList<>();
         expectedCustomer2Output.add("YOUR PURCHASED ITEMS BY STORE");
         expectedCustomer2Output.add("walmart: apple");
         expectedCustomer2Output.add("target: grape,orange");
@@ -407,9 +407,9 @@ public class Dashboard {
         }
 
         // test for sortAlphabetically method
-        ArrayList < String > alphaOutput = sortAlphabetically(getCustomerDashboard1("testsample2.txt",
-            "testsample1.txt"), true);
-        ArrayList < String > expectedAlphaOutput = new ArrayList < > ();
+        ArrayList<String> alphaOutput = sortAlphabetically(getCustomerDashboard1("testsample2.txt",
+                "testsample1.txt"), true);
+        ArrayList<String> expectedAlphaOutput = new ArrayList<>();
         expectedAlphaOutput.add("PRODUCTS SOLD BY STORE");
         expectedAlphaOutput.add("aldi: 1 product sold");
         expectedAlphaOutput.add("target: 3 products sold");
@@ -430,9 +430,9 @@ public class Dashboard {
         }
 
         // test for sortQuantity method
-        ArrayList < String > quantityOutput = sortQuantity(getCustomerDashboard1("testsample2.txt",
-            "testsample1.txt"), true);
-        ArrayList < String > expectedQuantityOutput = new ArrayList < > ();
+        ArrayList<String> quantityOutput = sortQuantity(getCustomerDashboard1("testsample2.txt",
+                "testsample1.txt"), true);
+        ArrayList<String> expectedQuantityOutput = new ArrayList<>();
         expectedQuantityOutput.add("PRODUCTS SOLD BY STORE");
         expectedQuantityOutput.add("target: 3 products sold");
         expectedQuantityOutput.add("walmart: 2 products sold");
