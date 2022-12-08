@@ -4,9 +4,13 @@
 Run server:
 ```
 javac Product.java Store.java Seller.java Customer.java ShoppingCart.java Dashboard.java MarketPlace.java
-java MarketPlace.java
+java MarketPlace
 ```
-
+Run client:
+```
+javac Client.java
+java Client
+```
 
 ## A list of who submitted which parts of the assignment on Brightspace and Vocareum
 - Zander C
@@ -17,14 +21,23 @@ java MarketPlace.java
 
 ## A detailed description of each class; includes the functionality included in the class, the testing done to verify it works properly, and its relationship to other classes in the project.
 - MarketPlace.java
+  - Is server that processes inputs from the client, calling the methods from all other classes to combine their functionality.
+   Extensive testing was performed by our team as each member tested the all the actions that can be preformed by customer/seller, checking to see if it resulted in the right output, and making sure the marketplace could handle any mishaps such as a null answer received from the client.
 - Client.java
+  - Acts as the main interface that interacts with the user through the use of simple GUIs. Through easy to understand prompts, an user can easily navigate the marketplace and have access to roles unique to their identity as a customer or a seller. For instance, only customers can add products to their cart and buy it, while sellers can make stores or new products and view how well their store is doing by viewing statistics calculated by the dashboard. Extensive testing was performed by our team as each member tested the all the actions that can be preformed by customer/seller, checking to see if it displayed the right options.
 - Customer.java
 - Dashboard.java
 - MyObjectOutputStream.java
+  - Altered Object Output Stream so that it does not write headings when used repetedly.
 - Product.java
+  - Product object that holds product's name, description, price, store. Checks if other objects are equivalent to a current product.
 - Seller.java
+  - Has methods to process seller input, create/edit/delete stores/products, allows import/export to/from csv files. This class can list out all stores that a seller owns, and allows them to create, edit, or delete a store. This class also connects with the marketplace to update on which stores and products are available to buy.
 - ShoppingCart.java
-- 
+- Store.java
+  - Store object that holds seller name and array of products in store. Allows seller to create or delete products within a specific store, and lists out all products that the store has.
+- testMain.java
+
 - MarketPlace.java
   - Acts as the main interface that interacts with the user, calling the methods from all other classes to combine their functionality. Through easy to understand prompts, an user can easily navigate the marketplace and have access to roles unique to their identity as a customer or a seller. For instance, only customers can add products to their cart and buy it, while sellers can make stores or new products and view how well their store is doing by viewing statistics calculated by the dashboard. Extensive testing was performed by our team as each member tested the all the actions that can be preformed by customer/seller, checking to see if it resulted in the right output, and making sure the marketplace could handle any mishaps such as a false command and a null answer.
 - Product.java
