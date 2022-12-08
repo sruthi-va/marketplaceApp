@@ -1,7 +1,6 @@
 import javax.swing.*;
 import java.io.*;
 import java.net.*;
-import java.security.InvalidParameterException;
 import java.util.*;
 import java.awt.*;
 
@@ -270,8 +269,7 @@ public class Client {
                                         again = false;
                                     } else if (dashboard.size() == 1) {
                                         JOptionPane.showMessageDialog(null, dashboard.get(0),
-                                                "Customer Dashboard",
-                                                JOptionPane.ERROR_MESSAGE);
+                                                "Customer Dashboard", JOptionPane.INFORMATION_MESSAGE);
                                         again = false;
                                     }
                                     while (again) {
@@ -695,13 +693,8 @@ public class Client {
 
                         if (reply.equals("7. view customer shopping carts")) {
                             String output = ((String) ois.readObject()).replace(";;", "\n");
-                            if (output.equals("Exported!")) {
-                                    JOptionPane.showMessageDialog(null, output, "Customer Carts",
-                                    JOptionPane.INFORMATION_MESSAGE);
-                            } else {
-                                    JOptionPane.showMessageDialog(null, output, "Customer Carts",
-                                    JOptionPane.ERROR_MESSAGE);
-                            }
+                            JOptionPane.showMessageDialog(null, output, "Customer Carts",
+                                JOptionPane.INFORMATION_MESSAGE);
                             
                         }
 

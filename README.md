@@ -28,7 +28,7 @@ java Client
 - Customer.java
 - Dashboard.java
 - MyObjectOutputStream.java
-  - Altered Object Output Stream so that it does not write headings when used repetedly.
+  - Created custom Object Output Stream so that it does not write headings when used repetedly.
 - Product.java
   - Product object that holds product's name, description, price, store. Checks if other objects are equivalent to a current product.
 - Seller.java
@@ -38,8 +38,8 @@ java Client
   - Store object that holds seller name and array of products in store. Allows seller to create or delete products within a specific store, and lists out all products that the store has.
 - testMain.java
 
-- MarketPlace.java
-  - Acts as the main interface that interacts with the user, calling the methods from all other classes to combine their functionality. Through easy to understand prompts, an user can easily navigate the marketplace and have access to roles unique to their identity as a customer or a seller. For instance, only customers can add products to their cart and buy it, while sellers can make stores or new products and view how well their store is doing by viewing statistics calculated by the dashboard. Extensive testing was performed by our team as each member tested the all the actions that can be preformed by customer/seller, checking to see if it resulted in the right output, and making sure the marketplace could handle any mishaps such as a false command and a null answer.
+
+
 - Product.java
   - Product object that holds product's name, description, price, store. Checks if other objects are equivalent to a current product.
 - Store.java
