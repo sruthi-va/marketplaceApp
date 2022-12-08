@@ -11,9 +11,9 @@ import java.util.Arrays;
  * @version Nov 13, 2022
  */
 public class ShoppingCart {
-    private ArrayList<ArrayList<Object>> cart = new ArrayList<>();
+    private ArrayList < ArrayList < Object >> cart = new ArrayList < > ();
 
-     // testing
+    // testing
     public static void main(String[] args) {
         ShoppingCart cart = new ShoppingCart();
         String emptyListOutput = Arrays.toString(cart.getProducts("someoneRandom"));
@@ -47,7 +47,7 @@ public class ShoppingCart {
     }
 
     public ShoppingCart() {
-        ArrayList<String> tempList = new ArrayList<>();
+        ArrayList < String > tempList = new ArrayList < > ();
 
         FileReader fr;
         BufferedReader bfr;
@@ -56,8 +56,8 @@ public class ShoppingCart {
         String line;
 
         try {
-            fr = new FileReader(f); 
-            bfr = new BufferedReader(fr); 
+            fr = new FileReader(f);
+            bfr = new BufferedReader(fr);
 
             line = bfr.readLine();
             while (line != null) {
@@ -70,11 +70,16 @@ public class ShoppingCart {
         }
 
         for (int i = 0; i < tempList.size(); i++) {
-            ArrayList<Object> temp = new ArrayList<>();
+            ArrayList < Object > temp = new ArrayList < > ();
             String[] t = tempList.get(i).split(",");
             temp.add(t[0]);
             for (int j = 1; j < t.length - 3; j += 4) {
-                String[] product = {t[j], t[j + 1], t[j + 2], t[j + 3]};
+                String[] product = {
+                    t[j],
+                    t[j + 1],
+                    t[j + 2],
+                    t[j + 3]
+                };
                 temp.add(new Product(String.join(",", product)));
             }
 
@@ -82,7 +87,7 @@ public class ShoppingCart {
         }
     }
 
-    public ArrayList<ArrayList<Object>> getAllCarts() {
+    public ArrayList < ArrayList < Object >> getAllCarts() {
         return this.cart;
     }
 
@@ -95,7 +100,7 @@ public class ShoppingCart {
     public boolean removeItem(String username, Product product) {
         int index = findUsername(username);
         if (index != -1) {
-            ArrayList<Object> user = cart.get(index);
+            ArrayList < Object > user = cart.get(index);
             for (int i = 1; i < user.size(); i++) {
                 Product curr = (Product) user.get(i);
                 if (curr.equals(product)) {
@@ -117,12 +122,12 @@ public class ShoppingCart {
     public void addItem(String username, Product product) {
         int index = findUsername(username);
         if (index != -1) {
-            ArrayList<Object> user = cart.get(index);
+            ArrayList < Object > user = cart.get(index);
             user.add(product);
             cart.remove(index);
             cart.add(index, user);
         } else {
-            ArrayList<Object> user = new ArrayList<>();
+            ArrayList < Object > user = new ArrayList < > ();
             user.add(username);
             user.add(product);
             cart.add(user);
@@ -131,7 +136,7 @@ public class ShoppingCart {
 
     /**
      * @return true if user was successfully found and removed
-     */ 
+     */
     public boolean deleteUser(String username) {
         int index = findUsername(username);
         if (index != -1) {
@@ -150,10 +155,10 @@ public class ShoppingCart {
         if (index == -1) {
             return new Product[0];
         } else {
-            ArrayList<Object> user = cart.get(index);
+            ArrayList < Object > user = cart.get(index);
             Product[] product = new Product[user.size() - 1];
             for (int i = 1; i < user.size(); i++) {
-                product[i-1] = (Product) user.get(i);
+                product[i - 1] = (Product) user.get(i);
             }
             return product;
         }
@@ -166,18 +171,18 @@ public class ShoppingCart {
     public void writeFile() {
         try {
             File f = new File("shoppingcart.txt");
-            FileOutputStream fos = new FileOutputStream(f,false); 
+            FileOutputStream fos = new FileOutputStream(f, false);
             PrintWriter pw = new PrintWriter(fos);
-            
-            for (int i = 0; i < this.cart.size(); i++){
-                ArrayList<Object> curr = this.cart.get(i);
+
+            for (int i = 0; i < this.cart.size(); i++) {
+                ArrayList < Object > curr = this.cart.get(i);
                 pw.print((String) curr.get(0) + ",");
                 for (int j = 1; j < curr.size(); j++) {
                     pw.print(((Product) curr.get(j)).writeToString());
                 }
                 pw.print("\n");
             }
-            
+
             pw.close();
         } catch (Exception e) {
             e.printStackTrace();

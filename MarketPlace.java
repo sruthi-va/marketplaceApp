@@ -4,16 +4,18 @@ import java.util.*;
 
 /**
  * A program that runs the actual marketplace,
- * where sellers and customers can interact with stores and do certain actions according to their respective roles and
+ * where sellers and customers can interact with stores and do certain actions
+ * according to their respective roles and
  * permissions.
  * <p>
  * Purdue University -- CS18000 -- Fall 2022 -- Proj 5
  *
- * @author Catherine Park, Zander Carpenter, Jennifer Wang, Sruthi Vadakuppa, Vanshika Balaji
+ * @author Catherine Park, Zander Carpenter, Jennifer Wang, Sruthi Vadakuppa,
+ *         Vanshika Balaji
  * @version Nov 4, 2022
  */
 public class MarketPlace implements Runnable {
-    private static ArrayList<Seller> sellers = new ArrayList<>();
+    private static ArrayList < Seller > sellers = new ArrayList < > ();
     private static boolean sellersInitialized = false;
     private Socket socket;
     private static Object obj = new Object();
@@ -47,7 +49,7 @@ public class MarketPlace implements Runnable {
 
         if (cOrS.equals("Customer")) {
             id = 1;
-        } else if (cOrS.equals(null)){
+        } else if (cOrS.equals(null)) {
             return;
         }
 
@@ -57,13 +59,13 @@ public class MarketPlace implements Runnable {
             while (true) {
                 System.out.println("Starting loop");
                 try {
-                    userpass = ((String)ois.readObject()).split(";;");
+                    userpass = ((String) ois.readObject()).split(";;");
                     System.out.println("from server: " + userpass[0] + " " + userpass[1]);
                 } catch (Exception e) {
                     // throw new RuntimeException(e);
                 }
-                
-                ArrayList<String> usernames = readFile("customers.txt");
+
+                ArrayList < String > usernames = readFile("customers.txt");
                 boolean usernameFound = false;
                 boolean loggedIn = false;
                 for (int i = 0; i < usernames.size(); i++) {
@@ -79,7 +81,7 @@ public class MarketPlace implements Runnable {
                         break;
                     }
                 }
-                
+
                 if (!usernameFound) {
                     writeAndFlush("false", oos);
                 }
@@ -116,9 +118,9 @@ public class MarketPlace implements Runnable {
                     break;
                 }
             }
-            
-            writeAndFlush("1. view store,2. search,3. purchase,4. edit cart,5. view cart," + 
-            "6. view statistics,7. export buy history to csv file,8. delete account,9. logout", oos);
+
+            writeAndFlush("1. view store,2. search,3. purchase,4. edit cart,5. view cart," +
+                "6. view statistics,7. export buy history to csv file,8. delete account,9. logout", oos);
             System.out.println("here");
             do {
                 // removeSellerDuplicates();
@@ -132,8 +134,8 @@ public class MarketPlace implements Runnable {
                 switch (line) {
                     case "1. view store":
                         Store store = null; // where is this used?
-                        ArrayList<Store> allStores = new ArrayList<>();
-                        for (Seller s : sellers) {
+                        ArrayList < Store > allStores = new ArrayList < > ();
+                        for (Seller s: sellers) {
                             allStores.addAll(s.getStores());
                         }
                         String[] allStoresArray = new String[allStores.size()];
@@ -148,13 +150,13 @@ public class MarketPlace implements Runnable {
                                 // receive which store to view
                                 line = (String) ois.readObject();
                                 Store chosen = new Store("", "", null);
-                                for (Store st : allStores) {
+                                for (Store st: allStores) {
                                     if (st.getStoreName().equals(line)) {
                                         chosen = st;
                                         writeAndFlush(st.listAllProducts(), oos);
                                         break;
                                     }
-                                } 
+                                }
 
                                 if (chosen.getProductList().size() == 0) {
                                     System.out.println("no stores");
@@ -162,7 +164,7 @@ public class MarketPlace implements Runnable {
                                     // receive product name
                                     line = (String) ois.readObject();
                                     // find the obejct
-                                    for (Product p : chosen.getProductList()) {
+                                    for (Product p: chosen.getProductList()) {
                                         if (p.getProductName().equals(line)) {
                                             oos.writeObject(p);
                                             break;
@@ -172,15 +174,15 @@ public class MarketPlace implements Runnable {
                                 }
                             }
                         } catch (Exception e) {
-                                // e.printStackTrace();
+                            // e.printStackTrace();
                         }
                         break;
                     case "2. search":
                         search(oos, ois, customer);
                         break;
-                    case "3. purchase": //server writes over string returned from purchasecart method
+                    case "3. purchase": // server writes over string returned from purchasecart method
                         Product[] list = customer.getCustomerCart().getProducts(userpass[0]);
-                        //list = this.updateProductQuantities(list);
+                        // list = this.updateProductQuantities(list);
                         if (list.length > 0) {
                             writeAndFlush("has stuff", oos);
                             String output = customer.purchaseCart(list);
@@ -211,7 +213,7 @@ public class MarketPlace implements Runnable {
                         Product[] toPrint = customer.getCustomerCart().getProducts(customer.getUsername());
                         System.out.println(Arrays.toString(toPrint));
                         String cartString = "";
-                        for (Product pr : toPrint) {
+                        for (Product pr: toPrint) {
                             cartString += pr.toString();
                             cartString += ";;";
                         }
@@ -220,7 +222,7 @@ public class MarketPlace implements Runnable {
                         break;
                     case "6. view statistics":
                         boolean bool = true;
-                        ArrayList<String> dashboard = new ArrayList<>();
+                        ArrayList < String > dashboard = new ArrayList < > ();
                         while (bool) {
                             boolean again = true;
                             String dash = null;
@@ -231,7 +233,7 @@ public class MarketPlace implements Runnable {
                             }
                             if (dash.equals("Number of products sold by each store")) {
                                 dashboard = Dashboard.getCustomerDashboard1("customers.txt",
-                                        "marketplace.txt");
+                                    "marketplace.txt");
                                 if (dashboard.size() > 1) {
                                     for (int i = 0; i < dashboard.size(); i++) {
                                         writeAndFlush(dashboard.get(i), oos);
@@ -244,7 +246,7 @@ public class MarketPlace implements Runnable {
                                 }
                             } else if (dash.equals("Your purchased items by store")) {
                                 dashboard = Dashboard.getCustomerDashboard2(customer.getUsername(),
-                                        "customers.txt");
+                                    "customers.txt");
                                 if (dashboard.size() > 1) {
                                     for (int i = 0; i < dashboard.size(); i++) {
                                         writeAndFlush(dashboard.get(i), oos);
@@ -301,14 +303,14 @@ public class MarketPlace implements Runnable {
                         }
                         break;
                     case "8. delete account":
-                    customer.deleteAccount(customer.getUsername());
-                    return;
+                        customer.deleteAccount(customer.getUsername());
+                        return;
                     case "9. logout":
                         MarketPlace.writeFile();
                         return;
                     default:
                         return;
-                } 
+                }
                 // refreshStream(ois, oos);
             } while (true);
         } else if (id == 2) {
@@ -317,13 +319,13 @@ public class MarketPlace implements Runnable {
             while (true) {
                 System.out.println("Starting loop");
                 try {
-                    userpass = ((String)ois.readObject()).split(";;");
+                    userpass = ((String) ois.readObject()).split(";;");
                     System.out.println("from client: " + userpass[0] + " " + userpass[1]);
                 } catch (Exception e) {
                     // throw new RuntimeException(e);
                 }
                 // removeSellerDuplicates();
-                ArrayList<String> usernames = readFile("sellers.txt");
+                ArrayList < String > usernames = readFile("sellers.txt");
                 boolean usernameFound = false;
                 boolean loggedIn = false;
                 for (int i = 0; i < usernames.size(); i++) {
@@ -339,7 +341,7 @@ public class MarketPlace implements Runnable {
                         break;
                     }
                 }
-                
+
                 if (!usernameFound) {
                     writeAndFlush("false", oos);
                 }
@@ -353,7 +355,7 @@ public class MarketPlace implements Runnable {
                                 System.out.println("username doesn't already exist");
                                 synchronized(obj) {
                                     addUserPass("sellers.txt", userpass[0], userpass[1]);
-                                    seller = new Seller(new ArrayList<>(), userpass[0]);
+                                    seller = new Seller(new ArrayList < > (), userpass[0]);
                                     sellers.add(seller);
                                     sellerID = sellers.indexOf(seller);
                                 }
@@ -367,7 +369,7 @@ public class MarketPlace implements Runnable {
                         } else if (input.equals("tryAgain")) {
                             continue;
                         } else {
-                            seller = new Seller(new ArrayList<>(), userpass[0]);
+                            seller = new Seller(new ArrayList < > (), userpass[0]);
                             sellers.add(seller);
                             sellerID = sellers.indexOf(seller);
                             break;
@@ -376,7 +378,7 @@ public class MarketPlace implements Runnable {
                         // throw new RuntimeException(e);
                     }
                 } else {
-                    seller = new Seller(new ArrayList<>(), userpass[0]);
+                    seller = new Seller(new ArrayList < > (), userpass[0]);
                     boolean found = false;
                     for (int i = 0; i < sellers.size(); i++) {
                         if (seller.getSellerName().equals(sellers.get(i).getSellerName())) {
@@ -403,7 +405,7 @@ public class MarketPlace implements Runnable {
                 "9. export stores as a CSV,10. delete account,11. log out", oos);
 
             do {
-                try { 
+                try {
                     line = (String) ois.readObject();
                 } catch (Exception e2) {
                     // e2.printStackTrace();
@@ -444,13 +446,14 @@ public class MarketPlace implements Runnable {
                                 // throw new RuntimeException(e);
                             }
                             System.out.println(Arrays.toString(seller.getStores().toArray()));
-                            
+
                             int currentStoreID = -1;
                             for (int i = 0; i < seller.getStores().size(); i++) {
                                 if (seller.getStores().get(i).toString().equals(currentStore.toString())) {
                                     currentStoreID = i;
                                 }
-                                System.out.println(seller.getStores().get(i).toString().equals(currentStore.toString()));
+                                System.out
+                                    .println(seller.getStores().get(i).toString().equals(currentStore.toString()));
                             }
 
                             System.out.println(currentStoreID);
@@ -483,7 +486,7 @@ public class MarketPlace implements Runnable {
                                     System.out.println("read ois " + toEdit.toString());
                                     int currProductIndex = (Integer) ois.readObject();
                                     System.out.println("read reader " + currProductIndex);
-                                    ArrayList<Product> products = currentStore.getProductList();
+                                    ArrayList < Product > products = currentStore.getProductList();
                                     products.set(currProductIndex, toEdit);
                                     currentStore.setProductList(products);
                                     seller.setStore(currentStoreID, currentStore);
@@ -497,7 +500,7 @@ public class MarketPlace implements Runnable {
                                 try {
                                     oos.writeObject(currentStore.getProductList());
                                     int currProductIndex = (Integer) ois.readObject();
-                                    ArrayList<Product> products = currentStore.getProductList();
+                                    ArrayList < Product > products = currentStore.getProductList();
                                     products.remove(currProductIndex);
                                     currentStore.setProductList(products);
                                     seller.setStore(currentStoreID, currentStore);
@@ -520,7 +523,7 @@ public class MarketPlace implements Runnable {
                             writeAndFlush("has stores", oos);
                             try {
                                 System.out.println("Type a store name to see it's sales, or 'all' to see all of your " +
-                                        "store sales");
+                                    "store sales");
                                 String storeName = (String) ois.readObject();
                                 writeAndFlush(seller.viewSales(storeName), oos);
                             } catch (Exception e) {
@@ -547,7 +550,7 @@ public class MarketPlace implements Runnable {
                         break;
                     case "5. view statistics":
                         boolean bool = true;
-                        ArrayList<String> dashboard = new ArrayList<>();
+                        ArrayList < String > dashboard = new ArrayList < > ();
                         while (bool) {
                             boolean again = true;
                             String dash = null;
@@ -557,7 +560,7 @@ public class MarketPlace implements Runnable {
                                 // throw new RuntimeException(e);
                             }
                             if (dash.equals("Number of products bought by each customer at a specific store")) {
-                                ArrayList<String> marketplaceinfo = Dashboard.readFile("marketplace.txt");
+                                ArrayList < String > marketplaceinfo = Dashboard.readFile("marketplace.txt");
                                 boolean status = false;
                                 for (int i = 0; i < marketplaceinfo.size(); i++) {
                                     String[] sellerinfo = marketplaceinfo.get(i).split(";");
@@ -601,7 +604,7 @@ public class MarketPlace implements Runnable {
                                     again = false;
                                 }
                             } else if (dash.equals("Number of items sold for each product at a specific store")) {
-                                ArrayList<String> marketplaceinfo = Dashboard.readFile("marketplace.txt");
+                                ArrayList < String > marketplaceinfo = Dashboard.readFile("marketplace.txt");
                                 boolean status = false;
                                 for (int i = 0; i < marketplaceinfo.size(); i++) {
                                     String[] sellerinfo = marketplaceinfo.get(i).split(";");
@@ -627,7 +630,8 @@ public class MarketPlace implements Runnable {
                                         // throw new RuntimeException(e);
                                     }
                                     if (!store.equals("")) {
-                                        dashboard = Dashboard.getSellerDashboard2(store, seller.getSellerName(), "customers.txt", "marketplace.txt");
+                                        dashboard = Dashboard.getSellerDashboard2(store, seller.getSellerName(),
+                                            "customers.txt", "marketplace.txt");
                                         if (dashboard.size() > 1) {
                                             for (int i = 0; i < dashboard.size(); i++) {
                                                 writeAndFlush(dashboard.get(i), oos);
@@ -691,7 +695,7 @@ public class MarketPlace implements Runnable {
                                 // e.printStackTrace();
                             }
                             Store storeInQuestion = null;
-                            ArrayList<Store> currStores = sellers.get(sellerID).getStores();
+                            ArrayList < Store > currStores = sellers.get(sellerID).getStores();
                             for (int i = 0; i < currStores.size(); i++) {
                                 if (currStores.get(i).getStoreName().equals(deleteStore)) {
                                     storeInQuestion = currStores.get(i);
@@ -703,7 +707,7 @@ public class MarketPlace implements Runnable {
                                 break;
                             }
                             writeAndFlush("is store", oos);
-                        
+
                             currStores.remove(storeInQuestion);
                             seller.setStores(currStores);
                             synchronized(obj) {
@@ -713,7 +717,7 @@ public class MarketPlace implements Runnable {
                         }
                         break;
                     case "7. view customer shopping carts":
-                        ArrayList<ArrayList<Object>> cusCart = cart.getAllCarts();
+                        ArrayList < ArrayList < Object >> cusCart = cart.getAllCarts();
                         String output = "";
                         for (int i = 0; i < cusCart.size(); i++) {
                             output += (String) cusCart.get(i).get(0) + ": ;;";
@@ -730,15 +734,15 @@ public class MarketPlace implements Runnable {
                         } catch (Exception e1) {
                             // e1.printStackTrace();
                         }
-                        ArrayList<Store> importedStores;
+                        ArrayList < Store > importedStores;
                         try {
                             importedStores = seller.importCSV(fileImport);
                         } catch (Exception e) {
                             // writeAndFlush("error", oos);
                             break;
-                        } 
+                        }
                         writeAndFlush("no error", oos);
-                        
+
                         for (int i = 0; i < importedStores.size(); i++) {
                             seller.addStore(importedStores.get(i));
                         }
@@ -762,7 +766,7 @@ public class MarketPlace implements Runnable {
                     case "10. delete account":
                         synchronized(obj) {
                             sellers.remove(sellerID);
-                        }           
+                        }
                         System.out.println("Account deleted, stores ejected, rejected and taken care of. Goodbye.");
                         MarketPlace.writeFile();
                         return;
@@ -790,7 +794,7 @@ public class MarketPlace implements Runnable {
             } catch (Exception e) {
                 int poop = 0;
             }
-            
+
         }
     }
 
@@ -798,7 +802,7 @@ public class MarketPlace implements Runnable {
      * Constructor; runs parseFile to parse the file
      *
      * @return none
-     * @param, none
+     *         @param, none
      */
     public MarketPlace(Socket socket) {
         this.socket = socket;
@@ -812,8 +816,8 @@ public class MarketPlace implements Runnable {
 
     public static Store getStoreIndex(int index) {
         int i = 1;
-        for (Seller s : sellers) {
-            for (Store st : s.getStores()) {
+        for (Seller s: sellers) {
+            for (Store st: s.getStores()) {
                 if (index == i) {
                     return st;
                 }
@@ -828,10 +832,11 @@ public class MarketPlace implements Runnable {
     }
 
     /**
-     * Parses file by splitting the line in the marketplace file into their respective products, stores, and sellers
+     * Parses file by splitting the line in the marketplace file into their
+     * respective products, stores, and sellers
      *
      * @return none
-     * @param, none
+     *         @param, none
      */
     public void parseFile() {
         // ArrayList<Seller> thisSellers = new ArrayList<Seller>();
@@ -839,22 +844,22 @@ public class MarketPlace implements Runnable {
             String line = br.readLine();
             while (line != null) {
                 String[] ownerAndStores = line.split(";");
-                ArrayList<Store> thisStores = new ArrayList<Store>();
+                ArrayList < Store > thisStores = new ArrayList < Store > ();
                 for (int i = 1; i < ownerAndStores.length; i++) {
                     String[] storesAndProducts = ownerAndStores[i].split("-");
-                    ArrayList<Product> thisProducts = new ArrayList<Product>();
+                    ArrayList < Product > thisProducts = new ArrayList < Product > ();
                     for (int j = 1; j < storesAndProducts.length; j++) {
                         String[] productsAndDesc = storesAndProducts[j].split(",");
 
                         if (productsAndDesc.length != 5) {
-                            //System.out.print(productsAndDesc.length);
+                            // System.out.print(productsAndDesc.length);
                             System.out.println("Product format is not right! something is missing!");
                         }
-                        //System.out.println(storesAndProducts[j]);
+                        // System.out.println(storesAndProducts[j]);
                         // System.out.println(Arrays.toString(productsAndDesc));
                         thisProducts.add(new Product(productsAndDesc[0], productsAndDesc[1],
-                                Integer.parseInt(productsAndDesc[2]), Double.parseDouble(productsAndDesc[3]),
-                                productsAndDesc[4]));
+                            Integer.parseInt(productsAndDesc[2]), Double.parseDouble(productsAndDesc[3]),
+                            productsAndDesc[4]));
                     }
                     thisStores.add(new Store(ownerAndStores[0], storesAndProducts[0], thisProducts));
                 }
@@ -868,23 +873,26 @@ public class MarketPlace implements Runnable {
     }
 
     /**
-     * Returns an object array of the search results aka all the products that match the description
+     * Returns an object array of the search results aka all the products that match
+     * the description
      *
      * @param, keyword A String word that the customer inputs to search for
+     * 
      * @return An HashSet type Object
      */
     public void search(ObjectOutputStream oos, ObjectInputStream ois, Customer customer) {
         Product curr;
         try {
-            // ObjectOutputStream oos = new ObjectOutputStream(new DataOutputStream(socket.getOutputStream()));
+            // ObjectOutputStream oos = new ObjectOutputStream(new
+            // DataOutputStream(socket.getOutputStream()));
             String keyword = (String) ois.readObject();
             if (keyword != null) {
-                HashSet<Object> searchResult = new HashSet<Object>();
-                for (Seller seller : sellers) {
-                    for (Store store : seller.getStores()) {
-                        for (Product product : store.getProductList()) {
-                            if (product.getProductName().toLowerCase().contains(keyword.toLowerCase())
-                                    || product.getDescription().toLowerCase().equalsIgnoreCase(keyword.toLowerCase())) {
+                HashSet < Object > searchResult = new HashSet < Object > ();
+                for (Seller seller: sellers) {
+                    for (Store store: seller.getStores()) {
+                        for (Product product: store.getProductList()) {
+                            if (product.getProductName().toLowerCase().contains(keyword.toLowerCase()) ||
+                                product.getDescription().toLowerCase().equalsIgnoreCase(keyword.toLowerCase())) {
                                 searchResult.add(product);
                             }
                         }
@@ -894,7 +902,7 @@ public class MarketPlace implements Runnable {
                 if (!searchResult.isEmpty()) {
                     keyword = (String) ois.readObject(); // get index
                     if (keyword != null) {
-                        for (Object p : searchResult) {
+                        for (Object p: searchResult) {
                             curr = (Product) p;
                             if (curr.getProductName().equals(keyword)) {
                                 writeAndFlush(curr, oos); // send product
@@ -912,6 +920,7 @@ public class MarketPlace implements Runnable {
             return;
         }
     }
+
     public void whatToDoWithProductReply(Customer customer, ObjectInputStream ois) {
         try {
             Product inQuestion = (Product) ois.readObject();
@@ -923,15 +932,14 @@ public class MarketPlace implements Runnable {
         }
     }
 
-
     /**
      * Returns an ArrayList of strings that contains the lines from the file
      *
      * @return An ArrayList of Strings
-     * @param, fileName A string of the file to be read
+     *         @param, fileName A string of the file to be read
      */
-    private static ArrayList<String> readFile(String filename) {
-        ArrayList<String> tempList = new ArrayList<>();
+    private static ArrayList < String > readFile(String filename) {
+        ArrayList < String > tempList = new ArrayList < > ();
 
         FileReader fr;
         BufferedReader bfr;
@@ -961,7 +969,7 @@ public class MarketPlace implements Runnable {
      *
      * @param user String of the user's username
      * @param pass String of the user's password
-     * @param, fileName A String of the file to add the user's info to
+     *             @param, fileName A String of the file to add the user's info to
      */
     private static void addUserPass(String filename, String user, String pass) {
         try {
@@ -978,25 +986,26 @@ public class MarketPlace implements Runnable {
     }
 
     /**
-     * Writes to the marketplace file of their respective products, stores, and sellers
+     * Writes to the marketplace file of their respective products, stores, and
+     * sellers
      *
      * @return none
-     * @param, none
+     *         @param, none
      */
     public synchronized static void writeFile() {
         try (BufferedWriter bw = new BufferedWriter(new FileWriter(new File("marketplace.txt"),
-                false))) {
-            for (Seller seller : sellers) {
+            false))) {
+            for (Seller seller: sellers) {
                 String lineString = "";
                 lineString += seller.getSellerName();
-                for (Store store : seller.getStores()) {
+                for (Store store: seller.getStores()) {
                     lineString += ";" + store.getStoreName();
-                    for (Product product : store.getProductList()) {
+                    for (Product product: store.getProductList()) {
                         lineString += "-" + product.getProductName() +
-                                "," + product.getDescription() +
-                                "," + product.getQuantity() +
-                                "," + product.getPrice() +
-                                "," + store.getStoreName();
+                            "," + product.getDescription() +
+                            "," + product.getQuantity() +
+                            "," + product.getPrice() +
+                            "," + store.getStoreName();
                     }
                 }
                 bw.write(lineString);
@@ -1009,7 +1018,7 @@ public class MarketPlace implements Runnable {
     }
 
     public void decrementQuantity(Product[] products) {
-        //ArrayList<Product> output = new ArrayList<>();
+        // ArrayList<Product> output = new ArrayList<>();
         for (int j = 0; j < products.length; j++) {
             int x = 0;
             int y = 0;
@@ -1021,7 +1030,7 @@ public class MarketPlace implements Runnable {
                 for (y = 0; y < currSeller.getStores().size(); y++) {
                     currStore = currSeller.getStores().get(y);
                     for (z = 0; z < currStore.getProductList().size(); z++) {
-                        ArrayList<Product> currProductList = currStore.getProductList();
+                        ArrayList < Product > currProductList = currStore.getProductList();
                         if (currProductList.get(z).equals(products[j])) {
                             currProductList.remove(currStore.getProductList().get(z));
                             Product thing = new Product(products[j].getProductName(),
@@ -1030,7 +1039,7 @@ public class MarketPlace implements Runnable {
                                 products[j].getStoreName());
                             currProductList.add(z, thing);
                             currStore.setProductList(currProductList);
-                            //output.add(thing);
+                            // output.add(thing);
                         }
                     }
                     currSeller.setStore(y, currStore);
@@ -1040,12 +1049,12 @@ public class MarketPlace implements Runnable {
 
             }
         }
-        //return output;
+        // return output;
     }
 
     public Product[] updateProductQuantities(Product[] products) {
         Product[] outputArray = new Product[products.length];
-        ArrayList<Product> output = new ArrayList<>();
+        ArrayList < Product > output = new ArrayList < > ();
         for (int j = 0; j < products.length; j++) {
             int x = 0;
             int y = 0;
@@ -1057,7 +1066,7 @@ public class MarketPlace implements Runnable {
                 for (y = 0; y < currSeller.getStores().size(); y++) {
                     currStore = currSeller.getStores().get(y);
                     for (z = 0; z < currStore.getProductList().size(); z++) {
-                        ArrayList<Product> currProductList = currStore.getProductList();
+                        ArrayList < Product > currProductList = currStore.getProductList();
                         if (currProductList.get(z).equals(products[j])) {
                             output.add(currProductList.get(z));
                         }
@@ -1072,6 +1081,7 @@ public class MarketPlace implements Runnable {
 
         return outputArray;
     }
+
     private void writeAndFlush(Object sendThing, ObjectOutputStream oos) {
         try {
             oos.writeObject(sendThing);
@@ -1084,7 +1094,7 @@ public class MarketPlace implements Runnable {
     public void removeSellerDuplicates() {
         for (int i = 0; i < sellers.size(); i++) {
             for (int j = 0; j < sellers.size(); j++) {
-                if ((i!=j) && (sellers.get(i).getSellerName().equals(sellers.get(j).getSellerName()))) {
+                if ((i != j) && (sellers.get(i).getSellerName().equals(sellers.get(j).getSellerName()))) {
                     sellers.remove(j);
                     System.out.println("Duplicate seller removed!");
                 }
