@@ -37,7 +37,7 @@ public class Product implements Serializable {
     /**
      * to make it easier to convert strings from shoppingcart to product objects
      * @param toParse in format "product,store,desc"
-     */ 
+     */
     public Product(String toParse) {
         String[] cut = toParse.split(",");
         this.productName = cut[0];

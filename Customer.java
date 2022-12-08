@@ -15,8 +15,8 @@ public class Customer {
     private String username;
     private String password;
     private ShoppingCart customerCart = new ShoppingCart();
-    private ArrayList<String> buyHistory = new ArrayList<>();
-    private ArrayList<String> exportBuyHistory = new ArrayList<>();
+    private ArrayList < String > buyHistory = new ArrayList < > ();
+    private ArrayList < String > exportBuyHistory = new ArrayList < > ();
 
 
     //tests
@@ -117,7 +117,7 @@ public class Customer {
         //updates customer file
         try {
             String userLine = "";
-            ArrayList<String> updateFile = new ArrayList<>();
+            ArrayList < String > updateFile = new ArrayList < > ();
             File f = new File("customers.txt");
             FileReader fr = new FileReader(f);
             BufferedReader bfr = new BufferedReader(fr);
@@ -167,7 +167,7 @@ public class Customer {
 
     //deletes user's account and removes their info from the customer file
     public void deleteAccount(String customerUser) {
-        ArrayList<String> updateAccounts = new ArrayList<>();
+        ArrayList < String > updateAccounts = new ArrayList < > ();
         try {
             File f = new File("customers.txt");
             FileReader fr = new FileReader(f);
