@@ -154,12 +154,8 @@ public class Customer {
             buyHistory.clear();
             pw.close();
 
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
         } catch (Exception e) {
-            e.printStackTrace();
+            // e.printStackTrace();
         }
         return output;
 
@@ -192,12 +188,7 @@ public class Customer {
 
             pw.close();
 
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
         } catch (Exception e) {
-            e.printStackTrace();
         }
 
     }
@@ -236,7 +227,7 @@ public class Customer {
             pw.close();
             return true;
         } catch (Exception e) {
-            e.printStackTrace();
+            // e.printStackTrace();
             return false;
         }
 
