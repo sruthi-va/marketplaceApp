@@ -12,16 +12,16 @@ import java.util.ArrayList;
  * @version November 13, 2022
  */
 public class Seller {
-    private ArrayList < Store > stores;
+    private ArrayList<Store> stores;
     private String sellerName;
 
     //seller tests
     public static void main(String[] args) throws IOException {
         String sellerName = "seller123";
-        ArrayList < Store > myStores = new ArrayList < > ();
+        ArrayList<Store> myStores = new ArrayList<>();
         Seller newS = new Seller(myStores, sellerName);
         String storeName = "Grocery Store";
-        ArrayList < Product > myProducts = new ArrayList < > ();
+        ArrayList<Product> myProducts = new ArrayList<>();
         myProducts.add(new Product("Apple", "A red, yummy fruit", 50, 1.99, "Grocery Store"));
         Store testStore = new Store(sellerName, storeName, myProducts);
 
@@ -48,7 +48,7 @@ public class Seller {
     }
 
     // constructor for seller
-    public Seller(ArrayList < Store > stores, String sellerName) {
+    public Seller(ArrayList<Store> stores, String sellerName) {
         this.stores = stores;
         this.sellerName = sellerName;
     }
@@ -101,8 +101,9 @@ public class Seller {
                             }
                         }
                         if (quantity > 0) {
-                            output += String.format("%s bought %s %d time(s), you made %f from this sale.\n", customer, item, quantity,
-                                (quantity * price));
+                            output += String.format("%s bought %s %d time(s), you made %f from this sale.\n",
+                                    customer, item, quantity,
+                                    (quantity * price));
                             bought++;
                         }
                     }
@@ -153,8 +154,9 @@ public class Seller {
                             }
                         }
                         if (quantity > 0) {
-                            output += String.format("%s bought %s %d time(s), you made %f from this sale.\n", customer, item, quantity,
-                                (quantity * price));
+                            output += String.format("%s bought %s %d time(s), you" +
+                                            "made %f from this sale.\n", customer, item, quantity,
+                                    (quantity * price));
                             bought++;
                         }
                     }
@@ -172,8 +174,8 @@ public class Seller {
     }
 
     // create a new store, given a seller's name and store name
-    public Store createStore(String sellerName, String storeName) {
-        Store newStore = new Store(sellerName, storeName, new ArrayList < Product > ());
+    public Store createStore(String currentSellerName, String storeName) {
+        Store newStore = new Store(currentSellerName, storeName, new ArrayList<Product>());
         stores.add(newStore);
         return newStore;
     }
@@ -182,11 +184,11 @@ public class Seller {
         stores.add(storeToAdd);
     }
 
-    public ArrayList < Store > getStores() {
+    public ArrayList<Store> getStores() {
         return stores;
     }
 
-    public void setStores(ArrayList < Store > stores) {
+    public void setStores(ArrayList<Store> stores) {
         this.stores = stores;
     }
 
@@ -223,9 +225,9 @@ public class Seller {
      * @throws IOException
      */
     // imports csv file and parses store information from it
-    public ArrayList < Store > importCSV(String filename) throws IOException, InvalidParameterException {
-        ArrayList < Store > output = new ArrayList < > ();
-        ArrayList < String > tempList = new ArrayList < > ();
+    public ArrayList<Store> importCSV(String filename) throws IOException, InvalidParameterException {
+        ArrayList<Store> output = new ArrayList<>();
+        ArrayList<String> tempList = new ArrayList<>();
 
         FileReader fr;
         BufferedReader bfr;
@@ -245,10 +247,11 @@ public class Seller {
 
         try {
             for (int j = 0; j < tempList.size(); j++) {
-                ArrayList < Product > products = new ArrayList < > ();
+                ArrayList<Product> products = new ArrayList<>();
                 String[] thisLine = tempList.get(j).split(",");
                 for (int i = 1; i < thisLine.length - 2; i += 3) {
-                    products.add(new Product(thisLine[i], thisLine[i + 2], 1, Double.parseDouble(thisLine[i + 1]), thisLine[0]));
+                    products.add(new Product(thisLine[i], thisLine[i + 2], 1,
+                            Double.parseDouble(thisLine[i + 1]), thisLine[0]));
                 }
                 output.add(new Store(this.sellerName, thisLine[0], products));
             }
@@ -271,10 +274,11 @@ public class Seller {
             pw.println(this.sellerName);
 
             for (int i = 0; i < stores.size(); i++) {
-                ArrayList < Product > products = this.stores.get(i).getProductList();
+                ArrayList<Product> products = this.stores.get(i).getProductList();
                 pw.print(this.stores.get(i).getStoreName() + ",");
                 for (int j = 0; j < products.size(); j++) {
-                    pw.printf("%s,%f,%s,", products.get(i).getProductName(), products.get(i).getPrice(), products.get(i).getDescription());
+                    pw.printf("%s,%f,%s,", products.get(i).getProductName(),
+                            products.get(i).getPrice(), products.get(i).getDescription());
                 }
                 pw.println();
             }
