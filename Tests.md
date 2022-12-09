@@ -80,4 +80,18 @@ Steps:
     User enters file name that they want to export to {ex, buyhistoryfile}
     
  Expected result: If the user clicks on their file (ex. buyhistoryfile), they should see Antihero-Midnights
+
+Test 7: User log in
+
+Steps:
+
+    User launches application.
+    User clicks OK on the welcome page.
+    User chooses either customer or seller.
+    User enters an existing username and password into login page.
+    User selects the "Log in" button. 
+
+Expected result: Application verifies the user's username and password and loads their homepage automatically. 
+
+Test Status: Passed.
     

@@ -337,7 +337,7 @@ public class Client {
                                         valid = true;
                                         writeAndFlush(input, oos);
                                         String print = (String) ois.readObject();
-                                        if (print.equals("Export!")) {
+                                        if (print.equals("Exported!")) {
                                             JOptionPane.showMessageDialog(null, print,
                                                     "bEtsy", JOptionPane.INFORMATION_MESSAGE);
                                         } else {

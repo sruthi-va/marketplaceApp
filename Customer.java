@@ -218,7 +218,9 @@ public class Customer {
             bfr.close();
 
             String[] customerInfo = userLine.split(",", 0);
-
+            if (customerInfo.length < 2) {
+                return false;
+            } else {
             String output = customerInfo[2];
             for (int i = 3; i < customerInfo.length; i++) {
                 output = output + "," + customerInfo[i];
@@ -227,6 +229,9 @@ public class Customer {
             pw.println(output);
             pw.close();
             return true;
+            }
+ 
+        
         } catch (Exception e) {
             // e.printStackTrace();
             return false;
