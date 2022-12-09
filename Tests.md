@@ -32,18 +32,42 @@ Expected result: Application creates a new account with the previously entered u
 Test Status: Passed. 
 
 
-Test 3: Viewing, adding a product to cart, and purchasing
+Test 3: Viewing stores, adding a product to cart, view cart, and purchasing
 
 Steps:
 
-    (User's already logged in as a customer and the homepage is currently displayed.)
-    User selects "view store" from homepage.
+    (User's already logged in as a customer and the homepage is currently displayed)
+    User selects "1. view store" from homepage.
     User selects the store "Midnights", then the product "Antihero", and chooses the option to add it to their cart.
 
 Expected result: Application adds the product "Antihero" to the user's cart.
 
-    User selects "purchase."
+    User selects "5. view cart"
+    
+Expected result: GUI pop up of customer's shopping cart with "Antihero" {i need to run program and copy the full description}
+
+    User selects "3. purchase"
 
 Expected result: Application purchases the item, removes it from user's cart, and adds the item to their buy history.
 
 Test Status: Passed. 
+
+Test 4: Removing item from shopping cart (with item in cart)
+
+Steps:
+
+    (User is already logged in a customer, and homepage is displayed, and they have "Antihero" and "Betty" in cart)
+    User selects "4. edit cart" from homepage.
+    User selects "AntiHero" from dropdown and clicks ok
+    
+Expected result: If user selects "4. edit cart" again, Antihero will be not show up on the GUI pop up
+
+Test 5: Removing item from shopping cart (with an empty cart)
+
+Steps: 
+
+    (User is already logged in a customer, and homepage is displayed, and they have nothing in their cart)
+    User selects "4. edit cart" from homepage.
+    
+Expected result: GUI pop up with the message "your cart is empty!"
+    
