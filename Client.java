@@ -222,6 +222,10 @@ public class Client {
                                 break;
                             case "4. edit cart":
                                 Product[] displayCart = (Product[]) ois.readObject();
+                                if (displayCart == null) {
+                                    JOptionPane.showMessageDialog(null, "your cart is empty", "Shopping Cart",
+                                            JOptionPane.INFORMATION_MESSAGE);
+                                }
                                 String[] names = new String[displayCart.length];
                                 for (int i = 0; i < displayCart.length; i++) {
                                     names[i] = displayCart[i].getProductName();
@@ -604,9 +608,9 @@ public class Client {
                             ArrayList<String> dashboard = new ArrayList<>();
                             ArrayList<String> stores = new ArrayList<>();
                             String[] options = { "Number of products bought by each customer at a specific store",
-                                "Number of items sold for each product at a specific store", "Nothing" };
-                            String[] sorts = { "Alphabetically(A-Z)", "Alphabetically(Z-A)", 
-                                "Quantity(high-low)", "Quantity(low-high)", "Back" };
+                                    "Number of items sold for each product at a specific store", "Nothing" };
+                            String[] sorts = { "Alphabetically(A-Z)", "Alphabetically(Z-A)",
+                                    "Quantity(high-low)", "Quantity(low-high)", "Back" };
                             while (bool) {
                                 boolean again = true;
                                 boolean storeStatus = false;

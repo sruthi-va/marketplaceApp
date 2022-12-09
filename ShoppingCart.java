@@ -26,8 +26,8 @@ public class ShoppingCart {
         cart.addItem("someoneRandom", testProduct);
         cart.addItem("someoneRandom", new Product("thing,someStore,4.5,description"));
         String addCartOutput = Arrays.toString(cart.getProducts("someoneRandom"));
-        String addCartExpected = "[testProduct from store testStore for 0.50: testDesc," + 
-            "thing from store someStore for 4.50: description]";
+        String addCartExpected = "[testProduct from store testStore for 0.50: testDesc," +
+                "thing from store someStore for 4.50: description]";
         System.out.println(addCartOutput);
         System.out.println(addCartExpected);
         System.out.println(addCartExpected.equals(addCartOutput));

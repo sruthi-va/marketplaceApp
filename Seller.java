@@ -102,8 +102,8 @@ public class Seller {
                         }
                         if (quantity > 0) {
                             output += String.format("%s bought %s %d time(s), you made %f from this sale.\n",
-                                                    customer, item, quantity,
-                                (quantity * price));
+                                    customer, item, quantity,
+                                    (quantity * price));
                             bought++;
                         }
                     }
@@ -154,9 +154,9 @@ public class Seller {
                             }
                         }
                         if (quantity > 0) {
-                            output += String.format("%s bought %s %d time(s), you" + 
-                                                    "made %f from this sale.\n", customer, item, quantity,
-                                (quantity * price));
+                            output += String.format("%s bought %s %d time(s), you" +
+                                            "made %f from this sale.\n", customer, item, quantity,
+                                    (quantity * price));
                             bought++;
                         }
                     }
@@ -250,8 +250,8 @@ public class Seller {
                 ArrayList<Product> products = new ArrayList<>();
                 String[] thisLine = tempList.get(j).split(",");
                 for (int i = 1; i < thisLine.length - 2; i += 3) {
-                    products.add(new Product(thisLine[i], thisLine[i + 2], 1, 
-                                             Double.parseDouble(thisLine[i + 1]), thisLine[0]));
+                    products.add(new Product(thisLine[i], thisLine[i + 2], 1,
+                            Double.parseDouble(thisLine[i + 1]), thisLine[0]));
                 }
                 output.add(new Store(this.sellerName, thisLine[0], products));
             }
@@ -277,8 +277,8 @@ public class Seller {
                 ArrayList<Product> products = this.stores.get(i).getProductList();
                 pw.print(this.stores.get(i).getStoreName() + ",");
                 for (int j = 0; j < products.size(); j++) {
-                    pw.printf("%s,%f,%s,", products.get(i).getProductName(), 
-                              products.get(i).getPrice(), products.get(i).getDescription());
+                    pw.printf("%s,%f,%s,", products.get(i).getProductName(),
+                            products.get(i).getPrice(), products.get(i).getDescription());
                 }
                 pw.println();
             }
