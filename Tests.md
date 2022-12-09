@@ -44,7 +44,7 @@ Expected result: Application adds the product "Antihero" to the user's cart.
 
     User selects "5. view cart"
     
-Expected result: GUI pop up of customer's shopping cart with "Antihero" {i need to run program and copy the full description}
+Expected result: GUI pop up of customer's shopping cart with "Antihero from store Midnights for 10.00: Everybody is a sexy baby" is displayed.
 
     User selects "3. purchase"
 
@@ -56,13 +56,13 @@ Test 4: Removing item from shopping cart (with item in cart)
 
 Steps:
 
-    (User is already logged in a customer, and homepage is displayed, and they have "Antihero" and "Betty" in cart)
+    (User is already logged in as a customer, and homepage is displayed, and they have "Antihero" and "Betty" in cart)
     User selects "4. edit cart" from homepage.
     User selects "AntiHero" from dropdown and clicks ok
     
 Expected result: If user selects "4. edit cart" again, Antihero will be not show up on the GUI pop up
 
-Test 5: Removing item from shopping cart (with an empty cart)
+Test 5: Removing item from shopping cart (with an empty cart) **this is a bug need to fix**
 
 Steps: 
 
@@ -70,4 +70,14 @@ Steps:
     User selects "4. edit cart" from homepage.
     
 Expected result: GUI pop up with the message "your cart is empty!"
+
+Test 6: Export to csv for customer **add condition if customer hasn't purchased anything**
+
+Steps:
+    
+    (User is already logged in as a customer, and homepage is displayed, and they have already bought Antihero
+    User selects "7. export buy history to csv file"
+    User enters file name that they want to export to {ex, buyhistoryfile}
+    
+ Expected result: If the user clicks on their file (ex. buyhistoryfile), they should see Antihero-Midnights
     
