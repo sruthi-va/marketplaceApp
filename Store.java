@@ -13,12 +13,12 @@ import java.io.Serializable;
 public class Store implements Serializable {
     String sellerName;
     String storeName;
-    ArrayList < Product > productList = new ArrayList < > ();
+    ArrayList<Product> productList = new ArrayList<>();
 
     public static void main(String[] args) {
         String sellerName = "seller123";
         String storeName = "store111";
-        ArrayList < Product > productList = new ArrayList < > ();
+        ArrayList<Product> productList = new ArrayList<>();
         Store newS = new Store(sellerName, storeName, productList);
         String productName = "Milk";
         String productDescription = "A carton of milk. Great for your bones!";
@@ -48,7 +48,7 @@ public class Store implements Serializable {
 
     }
     // constructor for store
-    public Store(String sellerName, String storeName, ArrayList < Product > productList) {
+    public Store(String sellerName, String storeName, ArrayList<Product> productList) {
         this.sellerName = sellerName;
         this.storeName = storeName;
         this.productList = productList;
@@ -70,11 +70,11 @@ public class Store implements Serializable {
         this.storeName = storeName;
     }
 
-    public ArrayList < Product > getProductList() {
+    public ArrayList<Product> getProductList() {
         return productList;
     }
 
-    public void setProductList(ArrayList < Product > productList) {
+    public void setProductList(ArrayList<Product> productList) {
         this.productList = productList;
     }
 
@@ -104,7 +104,7 @@ public class Store implements Serializable {
 
     //lists all the product sold by the seller in this specific store
     public String[] listAllProducts() {
-        ArrayList < String > productArrayList = new ArrayList < String > ();
+        ArrayList<String> productArrayList = new ArrayList<String>();
         for (int i = 0; i < productList.size(); i++) {
             if (productList.get(i).getQuantity() > 0) {
                 productArrayList.add(productList.get(i).getProductName());

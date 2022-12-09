@@ -5,3 +5,4 @@ jennifer,lmaoo,Betty-Folklore,Antihero-Midnights,Antihero-Midnights,License-Driv
 test,password,Antihero-Midnights,Betty-Folklore,License-Drivers License
 test,password,Antihero-Midnights,Betty-Folklore,License-Drivers License
 customertest,testpasswords,Antihero-Midnights
+newcustomer,someone

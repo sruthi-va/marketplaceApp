@@ -194,7 +194,7 @@ public class MarketPlace implements Runnable {
                         break;
                     case "4. edit cart":
                         Product[] cart = customer.getCustomerCart().getProducts(userpass[0]);
-                        if (cart == null) {
+                        if (cart.length <= 0) {
                             writeAndFlush(null, oos);
                         } else {
                             try {

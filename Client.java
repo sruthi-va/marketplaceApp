@@ -223,29 +223,32 @@ public class Client {
                             case "4. edit cart":
                                 Product[] displayCart = (Product[]) ois.readObject();
                                 if (displayCart == null) {
-                                    JOptionPane.showMessageDialog(null, "your cart is empty", "Shopping Cart",
+                                    JOptionPane.showMessageDialog(null, "your cart is empty!", "Shopping Cart",
                                             JOptionPane.INFORMATION_MESSAGE);
-                                }
-                                String[] names = new String[displayCart.length];
-                                for (int i = 0; i < displayCart.length; i++) {
-                                    names[i] = displayCart[i].getProductName();
-                                }
-
-                                Product deleteItem = (Product) JOptionPane.showInputDialog(null,
-                                        "Click on the product you want to remove to cart.",
-                                        "Your Shopping Cart", JOptionPane.QUESTION_MESSAGE, icon, displayCart,
-                                        displayCart[0]);
-
-                                System.out.println("worked");
-
-                                if (deleteItem == null) {
-                                    runCustomer = true;
                                     writeAndFlush(null, oos);
                                 } else {
-                                    writeAndFlush(deleteItem, oos);
-                                    JOptionPane.showMessageDialog(null, "Item deleted!", "Shopping Cart",
-                                            JOptionPane.INFORMATION_MESSAGE);
+                                    String[] names = new String[displayCart.length];
+                                    for (int i = 0; i < displayCart.length; i++) {
+                                        names[i] = displayCart[i].getProductName();
+                                    }
+
+                                    Product deleteItem = (Product) JOptionPane.showInputDialog(null,
+                                            "Click on the product you want to remove from cart.",
+                                            "Your Shopping Cart", JOptionPane.QUESTION_MESSAGE, icon, displayCart,
+                                            displayCart[0]);
+
+                                    System.out.println("worked");
+
+                                    if (deleteItem == null) {
+                                        runCustomer = true;
+                                        writeAndFlush(null, oos);
+                                    } else {
+                                        writeAndFlush(deleteItem, oos);
+                                        JOptionPane.showMessageDialog(null, deleteItem.getProductName() + " deleted!", "Shopping Cart",
+                                                JOptionPane.INFORMATION_MESSAGE);
+                                    }
                                 }
+                                
                                 break;
                             case "5. view cart":
                                 String shoppingcart = (String) ois.readObject();
@@ -608,9 +611,9 @@ public class Client {
                             ArrayList<String> dashboard = new ArrayList<>();
                             ArrayList<String> stores = new ArrayList<>();
                             String[] options = { "Number of products bought by each customer at a specific store",
-                                    "Number of items sold for each product at a specific store", "Nothing" };
+                                "Number of items sold for each product at a specific store", "Nothing" };
                             String[] sorts = { "Alphabetically(A-Z)", "Alphabetically(Z-A)",
-                                    "Quantity(high-low)", "Quantity(low-high)", "Back" };
+                                "Quantity(high-low)", "Quantity(low-high)", "Back" };
                             while (bool) {
                                 boolean again = true;
                                 boolean storeStatus = false;
