@@ -4,7 +4,7 @@ import java.util.ArrayList;
  * This class has methods that display or sort statistics for the user.
  * Implemented in MarketPlace.
  *
- * Purdue University -- CS18000 -- Fall 2022 -- Proj 4
+ * Purdue University -- CS18000 -- Fall 2022 -- Project 5
  *
  * @author Catherine Park, Zander Carpenter, Jennifer Wang, Sruthi Vadakuppa, Vanshika Balaji
  * @version Nov 4, 2022
