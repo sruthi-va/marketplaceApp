@@ -194,11 +194,16 @@ public class MarketPlace implements Runnable {
                         break;
                     case "4. edit cart":
                         Product[] cart = customer.getCustomerCart().getProducts(userpass[0]);
-                        try {
-                            writeAndFlush(cart, oos);
-                        } catch (Exception e2) {
-                            // e2.printStackTrace();
+                        if (cart == null) {
+                            writeAndFlush(null, oos);
+                        } else {
+                            try {
+                                writeAndFlush(cart, oos);
+                            } catch (Exception e2) {
+                                // e2.printStackTrace();
+                            }
                         }
+
                         Product item = null;
                         try {
                             item = (Product) ois.readObject();

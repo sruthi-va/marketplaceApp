@@ -197,7 +197,7 @@ public class Customer {
         try {
             File f = new File(fileToWrite);
             f.createNewFile();
-            FileOutputStream fos = new FileOutputStream(f, true);
+            FileOutputStream fos = new FileOutputStream(f, false);
             PrintWriter pw = new PrintWriter(fos);
 
             String userLine = "";

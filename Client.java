@@ -222,6 +222,10 @@ public class Client {
                                 break;
                             case "4. edit cart":
                                 Product[] displayCart = (Product[]) ois.readObject();
+                                if (displayCart == null) {
+                                    JOptionPane.showMessageDialog(null, "your cart is empty", "Shopping Cart",
+                                            JOptionPane.INFORMATION_MESSAGE);
+                                }
                                 String[] names = new String[displayCart.length];
                                 for (int i = 0; i < displayCart.length; i++) {
                                     names[i] = displayCart[i].getProductName();
