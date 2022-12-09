@@ -86,7 +86,7 @@ public class Dashboard {
                     String[] storedetails = splitlist[j].split("-", -1);
                     if (storedetails[0].equalsIgnoreCase(store)) {
                         for (int k = 1; k < storedetails.length; k++) {
-                            String[] productdetails = storedetails[k].split(",",-1);
+                            String[] productdetails = storedetails[k].split(",", -1);
                             int quantity = 0;
                             for (int l = 0; l < purchasehistory.size(); l++) {
                                 String[] splitcart = purchasehistory.get(l).split(",", -1);

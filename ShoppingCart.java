@@ -13,7 +13,7 @@ import java.util.Arrays;
 public class ShoppingCart {
     private ArrayList<ArrayList<Object>> cart = new ArrayList<>();
 
-     // testing
+    // testing
     public static void main(String[] args) {
         ShoppingCart cart = new ShoppingCart();
         String emptyListOutput = Arrays.toString(cart.getProducts("someoneRandom"));
@@ -26,7 +26,8 @@ public class ShoppingCart {
         cart.addItem("someoneRandom", testProduct);
         cart.addItem("someoneRandom", new Product("thing,someStore,4.5,description"));
         String addCartOutput = Arrays.toString(cart.getProducts("someoneRandom"));
-        String addCartExpected = "[testProduct from store testStore for 0.50: testDesc, thing from store someStore for 4.50: description]";
+        String addCartExpected = "[testProduct from store testStore for 0.50: testDesc," + 
+            "thing from store someStore for 4.50: description]";
         System.out.println(addCartOutput);
         System.out.println(addCartExpected);
         System.out.println(addCartExpected.equals(addCartOutput));
@@ -56,8 +57,8 @@ public class ShoppingCart {
         String line;
 
         try {
-            fr = new FileReader(f); 
-            bfr = new BufferedReader(fr); 
+            fr = new FileReader(f);
+            bfr = new BufferedReader(fr);
 
             line = bfr.readLine();
             while (line != null) {
@@ -74,7 +75,12 @@ public class ShoppingCart {
             String[] t = tempList.get(i).split(",");
             temp.add(t[0]);
             for (int j = 1; j < t.length - 3; j += 4) {
-                String[] product = {t[j], t[j + 1], t[j + 2], t[j + 3]};
+                String[] product = {
+                    t[j],
+                    t[j + 1],
+                    t[j + 2],
+                    t[j + 3]
+                };
                 temp.add(new Product(String.join(",", product)));
             }
 
@@ -131,7 +137,7 @@ public class ShoppingCart {
 
     /**
      * @return true if user was successfully found and removed
-     */ 
+     */
     public boolean deleteUser(String username) {
         int index = findUsername(username);
         if (index != -1) {
@@ -153,7 +159,7 @@ public class ShoppingCart {
             ArrayList<Object> user = cart.get(index);
             Product[] product = new Product[user.size() - 1];
             for (int i = 1; i < user.size(); i++) {
-                product[i-1] = (Product) user.get(i);
+                product[i - 1] = (Product) user.get(i);
             }
             return product;
         }
@@ -166,10 +172,10 @@ public class ShoppingCart {
     public void writeFile() {
         try {
             File f = new File("shoppingcart.txt");
-            FileOutputStream fos = new FileOutputStream(f,false); 
+            FileOutputStream fos = new FileOutputStream(f, false);
             PrintWriter pw = new PrintWriter(fos);
-            
-            for (int i = 0; i < this.cart.size(); i++){
+
+            for (int i = 0; i < this.cart.size(); i++) {
                 ArrayList<Object> curr = this.cart.get(i);
                 pw.print((String) curr.get(0) + ",");
                 for (int j = 1; j < curr.size(); j++) {
@@ -177,7 +183,7 @@ public class ShoppingCart {
                 }
                 pw.print("\n");
             }
-            
+
             pw.close();
         } catch (Exception e) {
             e.printStackTrace();
