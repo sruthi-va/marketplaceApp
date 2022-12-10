@@ -1,4 +1,4 @@
-Test 1: User log in
+**Test 1:** User log in
 
 Steps:
 
@@ -13,7 +13,7 @@ Expected result: Application verifies the user's username and password and loads
 Test Status: Passed. 
 
 
-Test 2: Failed log in
+**Test 2:** Failed log in
 
 Steps:
 
@@ -32,13 +32,13 @@ Expected result: Application creates a new account with the previously entered u
 Test Status: Passed. 
 
 
-Test 3: Viewing stores, adding a product to cart, view cart, and purchasing
+**Test 3:** Viewing stores, adding a product to cart, view cart, and purchasing
 
 Steps:
 
     (User's already logged in as a customer and the homepage is currently displayed)
     User selects "1. view store" from homepage.
-    User selects the store "Midnights", then the product "Antihero", and chooses the option to add it to their cart.
+    User selects the store "Midnights" from dropdown menu, then the product "Antihero", and chooses "ok" to add it to their cart.
 
 Expected result: Application adds the product "Antihero" to the user's cart.
 
@@ -52,7 +52,7 @@ Expected result: Application purchases the item, removes it from user's cart, an
 
 Test Status: Passed. 
 
-Test 4: Removing item from shopping cart (with item in cart)
+**Test 4:** Removing item from shopping cart (with item in cart)
 
 Steps:
 
@@ -62,7 +62,7 @@ Steps:
     
 Expected result: If user selects "4. edit cart" again, Antihero will be not show up on the GUI pop up
 
-Test 5: Removing item from shopping cart (with an empty cart) **this is a bug need to fix**
+**Test 5:** Removing item from shopping cart (with an empty cart)
 
 Steps: 
 
@@ -71,27 +71,68 @@ Steps:
     
 Expected result: GUI pop up with the message "your cart is empty!"
 
-Test 6: Export to csv for customer **add condition if customer hasn't purchased anything**
+**Test 6:** Export to csv for customer 
 
 Steps:
     
-    (User is already logged in as a customer, and homepage is displayed, and they have already bought Antihero
+    (User is already logged in as a customer, and homepage is displayed, and they have already bought Antihero)
     User selects "7. export buy history to csv file"
     User enters file name that they want to export to {ex, buyhistoryfile}
     
  Expected result: If the user clicks on their file (ex. buyhistoryfile), they should see Antihero-Midnights
 
-Test 7: User log in
+ **Test 7:** Export to csv for customer with no purchase history
+ 
+ Steps:
+    (User is already logged in as a customer, and homepage is displayed, and they have bought nothing from the website)
+    User selects "7. export buy history to csv file"
+    User eneters file name that they want to export to {ex, buyhistoryfile}
+
+Expected result: GUI pop up with error message "There was a problem!"
+
+
+**Test 8:** Viewing statistics for customer
 
 Steps:
 
-    User launches application.
-    User clicks OK on the welcome page.
-    User chooses either customer or seller.
-    User enters an existing username and password into login page.
-    User selects the "Log in" button. 
+    (User is already logged in as a customer, and is on the homepage)
+    User selects "6. view statistics" from the dropdown menu on the homepage.
+    User chooses either option of what statistics they want to see.
+    
 
-Expected result: Application verifies the user's username and password and loads their homepage automatically. 
+Expected result: GUI pops up with the selected dashboard displayed and a drop down menu of sorting options. If the dashboard is empty, an error message will pop up instead. 
 
 Test Status: Passed.
+
+**Test 9:** Viewing statistics for seller
+
+Steps:
+
+    (User is already logged in as a seller, and is on the homepage)
+    User selects "5. view statistics" from the dropdown menu on the homepage.
+    User selects one of their stores (if the user has no stores an error message will be displayed)
+    User selects either option of what statistics they want to see.
+    
+
+Expected result: GUI pops up with the selected dashboard displayed and a drop down menu of sorting options. If the dashboard is empty, an error message will pop up instead. 
+
+Test Status: Passed.
+
+**Test 10:** Sorting statistics
+
+Steps:
+
+    (User is already logged in as either a customer or a seller, and is viewing a list of statistics).
+    User selects one of the sorting options from the dropdown menu (except for "Done").
+    
+
+Expected result: The exact same GUI will pop up, except the dashboard will be sorted to whatever the user selected. 
+
+Test Status: Passed.
+
+**Test 11:** Search for a product for customer **rin**
+
+**Test 12:** Log out feature for customer
+
+**Test 13:** Delete account for customer
     

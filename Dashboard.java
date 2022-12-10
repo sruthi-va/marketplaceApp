@@ -172,7 +172,7 @@ public class Dashboard {
                                 for (int m = 2; m < l; m++) {
                                     String[] productstore4 = splitlist[m].split("-");
                                     if (productstore4[0].equals(productstore3[0])) {
-                                        bool = false;
+                                        //bool = false;
                                     }
                                 }
                                 if (bool) {
@@ -281,7 +281,7 @@ public class Dashboard {
             for (int i = 1; i < list.size(); i++) {
                 if (list.size() > 2) {
                     boolean bool = true;
-                    String[] test = list.get(i).split(" ", -1);
+                    String[] test = list.get(i).split(": ", -1);
                     String[] test2 = test[1].split(" ", -1);
                     try {
                         Integer.parseInt(test2[0]);
