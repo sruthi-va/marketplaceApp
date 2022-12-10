@@ -11,7 +11,8 @@ import java.util.Arrays;
  * @version Nov 13, 2022
  */
 public class ShoppingCart {
-    private ArrayList<ArrayList<Object>> cart = new ArrayList<>();
+    private static ArrayList<ArrayList<Object>> cart = new ArrayList<>();
+    private static boolean cartInitialized = false;
 
     // testing
     public static void main(String[] args) {
@@ -48,48 +49,51 @@ public class ShoppingCart {
     }
 
     public ShoppingCart() {
-        ArrayList<String> tempList = new ArrayList<>();
+        if (!cartInitialized) {
+            ArrayList<String> tempList = new ArrayList<>();
 
-        FileReader fr;
-        BufferedReader bfr;
-        File f = new File("shoppingcart.txt");
+            FileReader fr;
+            BufferedReader bfr;
+            File f = new File("shoppingcart.txt");
 
-        String line;
+            String line;
 
-        try {
-            fr = new FileReader(f);
-            bfr = new BufferedReader(fr);
+            try {
+                fr = new FileReader(f);
+                bfr = new BufferedReader(fr);
 
-            line = bfr.readLine();
-            while (line != null) {
-                tempList.add(line);
                 line = bfr.readLine();
-            }
-            bfr.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        for (int i = 0; i < tempList.size(); i++) {
-            ArrayList<Object> temp = new ArrayList<>();
-            String[] t = tempList.get(i).split(",");
-            temp.add(t[0]);
-            for (int j = 1; j < t.length - 3; j += 4) {
-                String[] product = {
-                    t[j],
-                    t[j + 1],
-                    t[j + 2],
-                    t[j + 3]
-                };
-                temp.add(new Product(String.join(",", product)));
+                while (line != null) {
+                    tempList.add(line);
+                    line = bfr.readLine();
+                }
+                bfr.close();
+            } catch (IOException e) {
+                e.printStackTrace();
             }
 
-            this.cart.add(temp);
+            for (int i = 0; i < tempList.size(); i++) {
+                ArrayList<Object> temp = new ArrayList<>();
+                String[] t = tempList.get(i).split(",");
+                temp.add(t[0]);
+                for (int j = 1; j < t.length - 3; j += 4) {
+                    String[] product = {
+                        t[j],
+                        t[j + 1],
+                        t[j + 2],
+                        t[j + 3]
+                    };
+                    temp.add(new Product(String.join(",", product)));
+                }
+
+                cart.add(temp);
+            }
+            cartInitialized = true;
         }
     }
 
     public ArrayList<ArrayList<Object>> getAllCarts() {
-        return this.cart;
+        return cart;
     }
 
     /**
@@ -175,8 +179,8 @@ public class ShoppingCart {
             FileOutputStream fos = new FileOutputStream(f, false);
             PrintWriter pw = new PrintWriter(fos);
 
-            for (int i = 0; i < this.cart.size(); i++) {
-                ArrayList<Object> curr = this.cart.get(i);
+            for (int i = 0; i < cart.size(); i++) {
+                ArrayList<Object> curr = cart.get(i);
                 pw.print((String) curr.get(0) + ",");
                 for (int j = 1; j < curr.size(); j++) {
                     pw.print(((Product) curr.get(j)).writeToString());

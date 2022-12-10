@@ -95,8 +95,8 @@ public class MarketPlace implements Runnable {
                                 System.out.println("username doesn't already exist");
                                 synchronized (obj) {
                                     addUserPass("customers.txt", userpass[0], userpass[1]);
+                                    customer = new Customer(userpass[0], userpass[1]);
                                 }
-                                customer = new Customer(userpass[0], userpass[1]);
                                 writeAndFlush("true", oos);
                                 System.out.println("sent true"); // TEST
                                 break;
@@ -185,7 +185,10 @@ public class MarketPlace implements Runnable {
                         // list = this.updateProductQuantities(list);
                         if (list.length > 0) {
                             writeAndFlush("has stuff", oos);
-                            String output = customer.purchaseCart(list);
+                            String output;
+                            synchronized(obj) {
+                                output = customer.purchaseCart(list);
+                            }
                             writeAndFlush(output, oos);
                             this.decrementQuantity(list);
                         } else {
@@ -211,7 +214,9 @@ public class MarketPlace implements Runnable {
                             // e1.printStackTrace();
                         }
                         if (item != null) {
-                            customer.deleteFromCart(customer.getUsername(), item);
+                            synchronized(obj) {
+                                customer.deleteFromCart(customer.getUsername(), item);
+                            }
                         }
                         break;
                     case "5. view cart":
