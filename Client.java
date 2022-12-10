@@ -568,26 +568,7 @@ public class Client {
                             }
                         }
 
-                        if (reply.equals("3. view sales")) {
-                            if (((String) ois.readObject()).equals("no stores")) {
-                                JOptionPane.showMessageDialog(null, "There are no stores", "Stores",
-                                        JOptionPane.ERROR_MESSAGE);
-                            } else {
-                                System.out.println("Type a store name to see it's sales, or 'all' to see all of your " +
-                                        "store sales");
-                                String input = JOptionPane.showInputDialog(null,
-                                        "Type a store name to see its sales, or 'all' to see all of your store sales",
-                                        "View Sales", JOptionPane.QUESTION_MESSAGE);
-                                writeAndFlush(input, oos);
-
-                                String sellerHistory = (String) ois.readObject();
-                                JOptionPane.showMessageDialog(null, sellerHistory, "View Sales",
-                                        JOptionPane.INFORMATION_MESSAGE);
-
-                            }
-                        }
-
-                        if (reply.equals("4. create store")) {
+                        if (reply.equals("3. create store")) {
                             boolean repeat = true;
                             while (repeat) {
                                 System.out.println("What would you like this store to be named?");
@@ -606,7 +587,7 @@ public class Client {
                             }
                         }
 
-                        if (reply.equals("5. view statistics")) {
+                        if (reply.equals("4. view statistics")) {
                             boolean bool = true;
                             ArrayList<String> dashboard = new ArrayList<>();
                             ArrayList<String> stores = new ArrayList<>();
@@ -708,7 +689,7 @@ public class Client {
                             }
                         }
 
-                        if (reply.equals("6. delete a store")) {
+                        if (reply.equals("5. delete a store")) {
                             boolean valid = false;
                             do {
                                 String input = JOptionPane.showInputDialog(null, "Which store?",
@@ -730,14 +711,14 @@ public class Client {
                             } while (!valid);
                         }
 
-                        if (reply.equals("7. view customer shopping carts")) {
+                        if (reply.equals("6. view customer shopping carts")) {
                             String output = ((String) ois.readObject()).replace(";;", "\n");
                             JOptionPane.showMessageDialog(null, output, "Customer Carts",
                                     JOptionPane.INFORMATION_MESSAGE);
 
                         }
 
-                        if (reply.equals("8. import stores from a CSV")) {
+                        if (reply.equals("7. import stores from a CSV")) {
                             boolean valid = false;
                             do {
                                 String input = JOptionPane.showInputDialog(null, "What file do you want to import?",
@@ -761,7 +742,7 @@ public class Client {
                             } while (!valid);
                         }
 
-                        if (reply.equals("9. export stores as a CSV")) {
+                        if (reply.equals("8. export stores as a CSV")) {
                             boolean valid = false;
                             do {
                                 String input = JOptionPane.showInputDialog(null,
@@ -779,13 +760,13 @@ public class Client {
                             } while (!valid);
                         }
 
-                        if (reply.equals("10. delete account")) {
+                        if (reply.equals("9. delete account")) {
                             JOptionPane.showMessageDialog(null, "Your account has been deleted.",
                                     "bEtsy", JOptionPane.INFORMATION_MESSAGE);
                             runSeller = false;
                         }
 
-                        if (reply.equals("11. log out")) {
+                        if (reply.equals("10. log out")) {
                             runSeller = false;
                             run = false;
                             JOptionPane.showMessageDialog(null, "Thanks for visiting bEtsy!", "Goodbye",
