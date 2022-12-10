@@ -391,9 +391,9 @@ public class MarketPlace implements Runnable {
 
             ShoppingCart cart = new ShoppingCart();
 
-            writeAndFlush("1. list your stores,2. edit stores,3. view sales,4. create store,5. " +
-                    "view statistics,6. delete a store,7. view customer shopping carts,8. import stores from a CSV," +
-                    "9. export stores as a CSV,10. delete account,11. log out", oos);
+            writeAndFlush("1. list your stores,2. edit stores,3. create store,4. " +
+                    "view statistics,5. delete a store,6. view customer shopping carts,7. import stores from a CSV," +
+                    "8. export stores as a CSV,9. delete account,10. log out", oos);
 
             do {
                 try {
@@ -493,20 +493,7 @@ public class MarketPlace implements Runnable {
                             }
                         }
                         break;
-                    case "3. view sales":
-                        if (sellers.get(sellerID).getStores().size() == 0) {
-                            writeAndFlush("no stores", oos);
-                        } else {
-                            writeAndFlush("has stores", oos);
-                            try {
-                                String storeName = (String) ois.readObject();
-                                writeAndFlush(seller.viewSales(storeName), oos);
-                            } catch (Exception e) {
-                                // e.printStackTrace();
-                            }
-                        }
-                        break;
-                    case "4. create store":
+                    case "3. create store":
                         String storeName = "";
                         try {
                             storeName = (String) ois.readObject();
@@ -519,7 +506,7 @@ public class MarketPlace implements Runnable {
                         }
                         writeFile();
                         break;
-                    case "5. view statistics":
+                    case "4. view statistics":
                         boolean bool = true;
                         ArrayList<String> dashboard = new ArrayList<>();
                         while (bool) {
@@ -653,7 +640,7 @@ public class MarketPlace implements Runnable {
                             }
                         }
                         break;
-                    case "6. delete a store":
+                    case "5. delete a store":
                         if (sellers.get(sellerID).getStores().size() == 0) {
                             writeAndFlush("no stores", oos);
                         } else {
@@ -685,7 +672,7 @@ public class MarketPlace implements Runnable {
                             }
                         }
                         break;
-                    case "7. view customer shopping carts":
+                    case "6. view customer shopping carts":
                         ArrayList<ArrayList<Object>> cusCart = cart.getAllCarts();
                         String output = "";
                         for (int i = 0; i < cusCart.size(); i++) {
@@ -696,7 +683,7 @@ public class MarketPlace implements Runnable {
                         }
                         writeAndFlush(output, oos);
                         break;
-                    case "8. import stores from a CSV":
+                    case "7. import stores from a CSV":
                         String fileImport = "";
                         try {
                             fileImport = (String) ois.readObject();
@@ -719,7 +706,7 @@ public class MarketPlace implements Runnable {
                             sellers.set(sellerID, seller);
                         }
                         break;
-                    case "9. export stores as a CSV":
+                    case "8. export stores as a CSV":
                         try {
                             if (seller.exportCSV((String) ois.readObject())) {
                             } else {
@@ -728,7 +715,7 @@ public class MarketPlace implements Runnable {
                             // e.printStackTrace();
                         }
                         break;
-                    case "10. delete account":
+                    case "9. delete account":
                         synchronized (obj) {
                             sellers.remove(sellerID);
                         }
