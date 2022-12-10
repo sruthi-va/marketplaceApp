@@ -38,4 +38,3 @@ java Client
   - Has methods to add to, delete from, and modify customer shopping cart. It interacts with Customer.java and has been tested to make sure all its methods return the right outputs using the main method in ShoppingCart.java. It writes to a file shoppingcart.txt to make sure the data gets saved even when the server isn't running.
 - Store.java
   - Store object that holds seller name and array of products in store. Allows seller to create or delete products within a specific store, and lists out all products that the store has.
-- testMain.java

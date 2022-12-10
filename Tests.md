@@ -130,9 +130,33 @@ Expected result: The exact same GUI will pop up, except the dashboard will be so
 
 Test Status: Passed.
 
-**Test 11:** Search for a product for customer **rin**
+**Test 11:** Search for a product for customer
+Steps:
 
-**Test 12:** Log out feature for customer
+    (User is already logged in as either a customer).
+    User selects "2. search" from the dropdown menu on the homepage.
+    User types in a word/phrase (for testing purposes the search is "the")
+    User enters search
+    
 
-**Test 13:** Delete account for customer
+Expected result: A GUI with a drop menu of products that contain "the" 
+
+Test Status: Passed.
+
+**Test 12:** Search with blank input for customer
+Steps:
+
+    (User is already logged in as either a customer).
+    User selects "2. search" from the dropdown menu on the homepage.
+    User types in a word/phrase (for testing purposes the search is "")
+    User enters search
+    
+
+Expected result: A GUI with a drop menu of all products
+
+Test Status: Passed.
+
+**Test 13:** Log out feature for customer
+
+**Test 14:** Delete account for customer
     
