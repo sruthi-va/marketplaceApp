@@ -234,7 +234,7 @@ public class Client {
                                                 JOptionPane.INFORMATION_MESSAGE);
                                     }
                                 }
-                                
+
                                 break;
                             case "5. view cart":
                                 String shoppingcart = (String) ois.readObject();
@@ -249,9 +249,9 @@ public class Client {
                                 boolean bool = true;
                                 ArrayList<String> dashboard = new ArrayList<>();
                                 String[] options = { "Number of products sold by each store",
-                                    "Your purchased items by store", "Nothing" };
+                                        "Your purchased items by store", "Nothing" };
                                 String[] sorts = { "Alphabetically(A-Z)", "Alphabetically(Z-A)", "Quantity(high-low)",
-                                    "Quantity(low-high)", "Back" };
+                                        "Quantity(low-high)", "Back" };
                                 while (bool) {
                                     boolean again = true;
                                     String title = (String) JOptionPane.showInputDialog(null,
@@ -562,9 +562,9 @@ public class Client {
                             ArrayList<String> dashboard = new ArrayList<>();
                             ArrayList<String> stores = new ArrayList<>();
                             String[] options = { "Number of products bought by each customer at a specific store",
-                                "Number of items sold for each product at a specific store", "Nothing" };
+                                    "Number of items sold for each product at a specific store", "Nothing" };
                             String[] sorts = { "Alphabetically(A-Z)", "Alphabetically(Z-A)",
-                                "Quantity(high-low)", "Quantity(low-high)", "Back" };
+                                    "Quantity(high-low)", "Quantity(low-high)", "Back" };
                             while (bool) {
                                 boolean again = true;
                                 boolean storeStatus = false;

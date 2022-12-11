@@ -6,3 +6,4 @@ test,password,Antihero-Midnights,Betty-Folklore,License-Drivers License
 test,password,Antihero-Midnights,Betty-Folklore,License-Drivers License
 customertest,testpasswords,Antihero-Midnights
 newcustomer,someone
+purduepete,boilerup,Antihero-Midnights,Antihero-Midnights

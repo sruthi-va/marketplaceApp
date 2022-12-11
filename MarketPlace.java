@@ -7,7 +7,7 @@ import java.util.*;
  * where sellers and customers can interact with stores and do certain actions
  * according to their respective roles and
  * permissions.
- * 
+ *
  * Purdue University -- CS18000 -- Fall 2022 -- Proj 5
  *
  * @author Catherine Park, Zander Carpenter, Jennifer Wang, Sruthi Vadakuppa,
