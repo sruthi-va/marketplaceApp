@@ -14,9 +14,9 @@ java Client
 
 ## A list of who submitted which parts of the assignment on Brightspace and Vocareum
 - Zander C
-- Catherine P - Submitted Report on Brightspace.
+- Catherine P - Submitted presentation video on Brightspace.
 - Sruthi V
-- Jennifer W
+- Jennifer W - Submitted report on Brightspace.
 - Vanshika B - Submitted Vocareum workspace.
 
 ## A detailed description of each class; includes the functionality included in the class, the testing done to verify it works properly, and its relationship to other classes in the project.
