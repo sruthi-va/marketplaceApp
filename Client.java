@@ -337,7 +337,7 @@ public class Client {
                                         valid = true;
                                         writeAndFlush(input, oos);
                                         String print = (String) ois.readObject();
-                                        if (print.equals("Exported!")) {
+                                        if (print.contains("Exported!")) {
                                             JOptionPane.showMessageDialog(null, print,
                                                     "bEtsy", JOptionPane.INFORMATION_MESSAGE);
                                         } else {
@@ -383,6 +383,7 @@ public class Client {
                                 System.out.println("has stores??");
                                 @SuppressWarnings("unchecked")
                                 ArrayList<Store> stores = (ArrayList<Store>) ois.readObject();
+                                System.out.println(stores.size());
                                 int k = 1;
                                 String output = "";
 
@@ -709,6 +710,23 @@ public class Client {
                         }
 
                         if (reply.equals("6. delete a store")) {
+                            if (((String) ois.readObject()).equals("has stores")) {
+                                //@SuppressWarnings("unchecked")
+                                ArrayList<Store> stores = (ArrayList<Store>) ois.readObject();
+                                System.out.println(Arrays.toString(stores.toArray()));
+                                System.out.println(stores.size());
+                                Store chosenStore = (Store) JOptionPane.showInputDialog(null,
+                                        "What store do you want to delete?",
+                                        "Delete Store", JOptionPane.QUESTION_MESSAGE,
+                                        null, stores.toArray(), stores.toArray()[0]);
+                                oos.writeObject(chosenStore);
+
+                                if (chosenStore != null) {
+                                    JOptionPane.showMessageDialog(null, "Store deleted!", "Stores",
+                                            JOptionPane.INFORMATION_MESSAGE);
+                                }
+                            }
+                            /*
                             boolean valid = false;
                             do {
                                 String input = JOptionPane.showInputDialog(null, "Which store?",
@@ -728,6 +746,7 @@ public class Client {
                                     }
                                 }
                             } while (!valid);
+                            */
                         }
 
                         if (reply.equals("7. view customer shopping carts")) {
@@ -774,7 +793,7 @@ public class Client {
                                     valid = true;
                                     writeAndFlush(input, oos);
                                     JOptionPane.showMessageDialog(null, "Exported!", "Stores",
-                                            JOptionPane.ERROR_MESSAGE);
+                                            JOptionPane.INFORMATION_MESSAGE);
                                 }
                             } while (!valid);
                         }

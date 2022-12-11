@@ -275,10 +275,9 @@ public class Seller {
 
             for (int i = 0; i < stores.size(); i++) {
                 ArrayList<Product> products = this.stores.get(i).getProductList();
-                pw.print(this.stores.get(i).getStoreName() + ",");
+                pw.print(this.stores.get(i).getStoreName() + ":\n");
                 for (int j = 0; j < products.size(); j++) {
-                    pw.printf("%s,%f,%s,", products.get(i).getProductName(),
-                            products.get(i).getPrice(), products.get(i).getDescription());
+                    pw.printf("   %s, %d left in stock.\n", products.get(j).toString(), products.get(j).getQuantity());
                 }
                 pw.println();
             }

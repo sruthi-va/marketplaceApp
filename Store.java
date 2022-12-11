@@ -121,4 +121,15 @@ public class Store implements Serializable {
     public String toString() {
         return String.format("%s by user %s", this.storeName, this.sellerName);
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o instanceof Store) {
+            Store s = (Store) o;
+            if (s.getStoreName().equals(this.getStoreName()) && s.getSellerName().equals(this.getSellerName())) {
+                return true;
+            }
+        }
+        return false;
+    }
 }

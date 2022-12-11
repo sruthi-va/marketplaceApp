@@ -430,8 +430,10 @@ public class MarketPlace implements Runnable {
                             writeAndFlush("has stores", oos);
                             System.out.println("has stores??");
                             try {
+                                System.out.println(seller.getStores().size());
                                 writeAndFlush(seller.getStores(), oos);
                                 System.out.println("sent stores");
+                                System.out.println(Arrays.toString(seller.getStores().toArray()));
                             } catch (Exception e) {
                                 // throw new RuntimeException(e);
                             }
@@ -694,6 +696,30 @@ public class MarketPlace implements Runnable {
                             writeAndFlush("no stores", oos);
                         } else {
                             writeAndFlush("has stores", oos);
+                            writeAndFlush(seller.getStores(), oos);
+                            Store toDelete = null;
+                            try {
+                                toDelete = (Store) ois.readObject();
+                            } catch (ClassNotFoundException e1) {
+                                return;
+                            } catch (IOException e1) {
+                                return;
+                            }
+
+                            if (toDelete == null) {
+                                return;
+                            }
+
+                            ArrayList<Store> stores = seller.getStores();
+                            System.out.println(Arrays.toString(seller.getStores().toArray()));
+                            System.out.println(toDelete);
+                            System.out.println(stores.remove(toDelete));
+                            //stores.remove(toDelete);
+                            seller.setStores(stores);
+                            synchronized (obj) {
+                                sellers.set(sellerID, seller);
+                            }
+                            /*
                             String deleteStore = "";
                             try {
                                 deleteStore = (String) ois.readObject();
@@ -719,6 +745,7 @@ public class MarketPlace implements Runnable {
                             synchronized (obj) {
                                 sellers.set(sellerID, seller);
                             }
+                            */
                             System.out.println("Store deleted from marketplace");
                         }
                         break;
