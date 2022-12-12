@@ -303,7 +303,7 @@ public class MarketPlace implements Runnable {
                         customer.deleteAccount(customer.getUsername());
                         return;
                     case "9. logout":
-                        MarketPlace.writeFile();
+                        customer.getCustomerCart().writeFile();
                         return;
                     default:
                         return;
