@@ -192,5 +192,66 @@ Expected result: The store the seller made shows up on the menu.
 
 Expected result: The new product the seller made shows up in their store.
 
+    Customer chooses to buy a product from the user's store
+    Seller clicks on "4. view statistics"
+
+Expected result: A GUI message with the seller's new sale appears
+
 Test Status: Passed.
     
+**Test 16:** Create store and list store
+Steps:
+
+    (User is logged in as a seller)
+    User selects "3. create store"
+    User names the store the name of their choice.
+    User selects "1. list your stores"
+
+Expected result: A GUI message shows "1: 'STORE NAME' by user 'USERNAME'"
+
+**Test 17:** Edit store and export stores as CSV
+Steps:
+
+    (User is logged in as a seller and has a store)
+    User selects "2. edit stores"
+    User selects their store
+    User selects "create product"
+    User gives a name, description, quantity, and price of their product
+    User selects "8. export stores as a CSV"
+    User types in desired file name
+    
+Expected result: A file name containing Seller, Store, and Product Information can be located in the user's files.
+
+**Test 18:** View customer's shopping carts
+Steps:
+
+    (User is logged in as a seller)
+    User selects "6. view customer's shopping carts"
+    
+Expected result: A GUI message appears with all customer's shopping carts and what stores they have items from
+    
+**Test 19:** Delete store
+Steps:
+
+    (User is logged in as a seller and has a store)
+    User selects "5. delete store"
+    User names the name of their store
+    User selects "1. list your stores"
+
+Expected result: A GUI message shows "There are no stores"
+
+**Test 20:** Log out feature for seller
+Steps:
+
+    (User is logged in as a seller)
+    User selects "10. log out"
+    
+Expected result: A GUI message that shows "Thanks for visiting bEtsy!"
+
+**Test 21:** Delete account for seller
+Steps:
+
+    (User is logged in as a seller)
+    User selects "9. delete account"
+    
+Expected result: A GUI message shows "Your account has been deleted."
