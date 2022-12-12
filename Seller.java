@@ -15,37 +15,37 @@ public class Seller {
     private ArrayList<Store> stores;
     private String sellerName;
 
-    //seller tests
-    public static void main(String[] args) throws IOException {
-        String sellerName = "seller123";
-        ArrayList<Store> myStores = new ArrayList<>();
-        Seller newS = new Seller(myStores, sellerName);
-        String storeName = "Grocery Store";
-        ArrayList<Product> myProducts = new ArrayList<>();
-        myProducts.add(new Product("Apple", "A red, yummy fruit", 50, 1.99, "Grocery Store"));
-        Store testStore = new Store(sellerName, storeName, myProducts);
+    // //seller tests
+    // public static void main(String[] args) throws IOException {
+    //     String sellerName = "seller123";
+    //     ArrayList<Store> myStores = new ArrayList<>();
+    //     Seller newS = new Seller(myStores, sellerName);
+    //     String storeName = "Grocery Store";
+    //     ArrayList<Product> myProducts = new ArrayList<>();
+    //     myProducts.add(new Product("Apple", "A red, yummy fruit", 50, 1.99, "Grocery Store"));
+    //     Store testStore = new Store(sellerName, storeName, myProducts);
 
-        //test for createStore method
-        newS.createStore(sellerName, storeName);
-        String createStoreExpected = "The seller's name is seller123, and the store's name is Grocery Store.";
-        String createStoreOutput = "";
-        createStoreOutput += "The seller's name is ";
-        createStoreOutput += newS.stores.get(0).getSellerName();
-        createStoreOutput += ", and the store's name is ";
-        createStoreOutput += newS.stores.get(0).getStoreName();
-        createStoreOutput += ".";
-        System.out.println(createStoreExpected.equals(createStoreOutput));
+    //     //test for createStore method
+    //     newS.createStore(sellerName, storeName);
+    //     String createStoreExpected = "The seller's name is seller123, and the store's name is Grocery Store.";
+    //     String createStoreOutput = "";
+    //     createStoreOutput += "The seller's name is ";
+    //     createStoreOutput += newS.stores.get(0).getSellerName();
+    //     createStoreOutput += ", and the store's name is ";
+    //     createStoreOutput += newS.stores.get(0).getStoreName();
+    //     createStoreOutput += ".";
+    //     System.out.println(createStoreExpected.equals(createStoreOutput));
 
-        //test for addStore method
-        newS.addStore(testStore);
-        String addStoreExpected = "Apple;A red, yummy fruit;50;1.99;Grocery Store";
-        String addStoreOutput = (testStore.getProductList().get(0).getProductName() + ";");
-        addStoreOutput += (testStore.getProductList().get(0).getDescription() + ";");
-        addStoreOutput += (testStore.getProductList().get(0).getQuantity() + ";");
-        addStoreOutput += (testStore.getProductList().get(0).getPrice() + ";");
-        addStoreOutput += (testStore.getProductList().get(0).getStoreName());
-        System.out.println(addStoreExpected.equals(addStoreOutput));
-    }
+    //     //test for addStore method
+    //     newS.addStore(testStore);
+    //     String addStoreExpected = "Apple;A red, yummy fruit;50;1.99;Grocery Store";
+    //     String addStoreOutput = (testStore.getProductList().get(0).getProductName() + ";");
+    //     addStoreOutput += (testStore.getProductList().get(0).getDescription() + ";");
+    //     addStoreOutput += (testStore.getProductList().get(0).getQuantity() + ";");
+    //     addStoreOutput += (testStore.getProductList().get(0).getPrice() + ";");
+    //     addStoreOutput += (testStore.getProductList().get(0).getStoreName());
+    //     System.out.println(addStoreExpected.equals(addStoreOutput));
+    // }
 
     // constructor for seller
     public Seller(ArrayList<Store> stores, String sellerName) {
@@ -109,7 +109,6 @@ public class Seller {
                     }
                 }
                 if (bought == 0) {
-                    System.out.println("No customers have bought your products yet. :(");
                 }
                 br.close();
             } else {
@@ -162,13 +161,11 @@ public class Seller {
                     }
                 }
                 if (bought == 0) {
-                    System.out.println("No customers have bought your products yet. :(");
                 }
                 br.close();
             }
         } catch (Exception e) {
             e.printStackTrace();
-            System.out.println("Problem reading all customer's purchase history!");
         }
         return output;
     }
@@ -208,12 +205,9 @@ public class Seller {
     // list all the stores owned by the seller
     public void listAllStores() {
         if (stores.size() > 0) {
-            System.out.println(sellerName + "'s Stores:");
             for (int i = 0; i < stores.size(); i++) {
-                System.out.println((i + 1) + ". " + stores.get(i).getStoreName());
             }
         } else {
-            System.out.println("This seller has no stores!");
         }
 
     }
