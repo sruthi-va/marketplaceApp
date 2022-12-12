@@ -333,12 +333,14 @@ public class Client {
                                 } while (!valid);
                                 break;
                             case "8. delete account":
+                                //customer deleting account, delete information
                                 JOptionPane.showMessageDialog(null, "Your account has been deleted.",
                                         "bEtsy", JOptionPane.INFORMATION_MESSAGE);
                                 runCustomer = false;
                                 return;
 
                             case "9. logout":
+                                //customer logging out of betsy
                                 JOptionPane.showMessageDialog(null, "Thanks for visiting bEtsy!",
                                         "bEtsy", JOptionPane.INFORMATION_MESSAGE);
                                 runCustomer = false;
