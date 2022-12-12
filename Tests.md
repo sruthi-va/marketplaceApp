@@ -62,7 +62,7 @@ Steps:
     
 Expected result: If user selects "4. edit cart" again, Antihero will be not show up on the GUI pop up
 
-Test Status: Passed. // right?
+Test Status: Passed. 
 
 **Test 5:** Removing item from shopping cart (with an empty cart)
 
@@ -73,7 +73,7 @@ Steps:
     
 Expected result: GUI pop up with the message "your cart is empty!"
 
-Test Status: Passed. // right?
+Test Status: Passed. 
 
 **Test 6:** Export to csv for customer 
 
@@ -85,18 +85,19 @@ Steps:
     
  Expected result: If the user clicks on their file (ex. buyhistoryfile), they should see Antihero-Midnights
 
-Test Status: Passed. // right
+Test Status: Passed. 
 
  **Test 7:** Export to csv for customer with no purchase history
  
  Steps:
+ 
     (User is already logged in as a customer, and homepage is displayed, and they have bought nothing from the website)
     User selects "7. export buy history to csv file"
     User eneters file name that they want to export to {ex, buyhistoryfile}
 
 Expected result: GUI pop up with error message "There was a problem!"
 
-Test Status: Passed.  // right?
+Test Status: Passed.  
 
 **Test 8:** Viewing statistics for customer
 
@@ -161,9 +162,21 @@ Expected result: A GUI with a drop menu of all products
 
 Test Status: Passed.
 
-**Test 13:** Log out feature for customer
+**Test 13:** Delete account for customer
+Steps:
 
-**Test 14:** Delete account for customer
+    (User is logged in as a customer)
+    User selects "8. delete account"
+    
+Expected result: A GUI message shows "Your account has been deleted."
+
+**Test 14:** Log out feature for customer
+Steps:
+
+    (User is logged in as a customer)
+    User selects "9. log out"
+    
+Expected result: A GUI message that shows "Thanks for visiting bEtsy!"
 
 **Test 15** Concurrency
 Steps:
