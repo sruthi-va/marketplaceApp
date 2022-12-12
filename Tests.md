@@ -62,6 +62,8 @@ Steps:
     
 Expected result: If user selects "4. edit cart" again, Antihero will be not show up on the GUI pop up
 
+Test Status: Passed. // right?
+
 **Test 5:** Removing item from shopping cart (with an empty cart)
 
 Steps: 
@@ -70,6 +72,8 @@ Steps:
     User selects "4. edit cart" from homepage.
     
 Expected result: GUI pop up with the message "your cart is empty!"
+
+Test Status: Passed. // right?
 
 **Test 6:** Export to csv for customer 
 
@@ -81,6 +85,8 @@ Steps:
     
  Expected result: If the user clicks on their file (ex. buyhistoryfile), they should see Antihero-Midnights
 
+Test Status: Passed. // right
+
  **Test 7:** Export to csv for customer with no purchase history
  
  Steps:
@@ -90,6 +96,7 @@ Steps:
 
 Expected result: GUI pop up with error message "There was a problem!"
 
+Test Status: Passed.  // right?
 
 **Test 8:** Viewing statistics for customer
 
@@ -99,7 +106,6 @@ Steps:
     User selects "6. view statistics" from the dropdown menu on the homepage.
     User chooses either option of what statistics they want to see.
     
-
 Expected result: GUI pops up with the selected dashboard displayed and a drop down menu of sorting options. If the dashboard is empty, an error message will pop up instead. 
 
 Test Status: Passed.
@@ -150,7 +156,6 @@ Steps:
     User selects "2. search" from the dropdown menu on the homepage.
     User types in a word/phrase (for testing purposes the search is "")
     User enters search
-    
 
 Expected result: A GUI with a drop menu of all products
 
@@ -159,4 +164,20 @@ Test Status: Passed.
 **Test 13:** Log out feature for customer
 
 **Test 14:** Delete account for customer
+
+**Test 15** Concurrency
+Steps:
+
+    A seller is logged in already and on their homepage.
+    A customer is also logged in already and on their homepage.
+    Seller successfully creates a new store using 'create store' and adds a product to it using 'edit store.'
+    Customer selects 'view stores.'
+
+Expected result: The store the seller made shows up on the menu.
+
+    Customer chooses to view the new store.
+
+Expected result: The new product the seller made shows up in their store.
+
+Test Status: Passed.
     

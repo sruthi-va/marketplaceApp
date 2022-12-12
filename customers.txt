@@ -1,5 +1,5 @@
 customer1@gmail.com,thisismypassword
-yourmom,1212,Daechwita-D2,License-Drivers License,License-Drivers License,License-Drivers License,Hellevator-Hellevator,Hellevator-Hellevator,License-Drivers License
+yourmom,1212,Daechwita-D2,License-Drivers License,License-Drivers License,License-Drivers License,Hellevator-Hellevator,Hellevator-Hellevator,License-Drivers License,flex seal-flex seal store
 jenny,catsarecool
 jennifer,lmaoo,Betty-Folklore,Antihero-Midnights,Antihero-Midnights,License-Drivers License,Give it to me-Agust D,Hellevator-Hellevator
 test,password,Antihero-Midnights,Betty-Folklore,License-Drivers License
