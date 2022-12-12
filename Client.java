@@ -337,6 +337,13 @@ public class Client {
                                         "bEtsy", JOptionPane.INFORMATION_MESSAGE);
                                 runCustomer = false;
                                 return;
+
+                            case "9. logout":
+                                JOptionPane.showMessageDialog(null, "Thanks for visiting bEtsy!",
+                                        "bEtsy", JOptionPane.INFORMATION_MESSAGE);
+                                runCustomer = false;
+                                return;
+
                             default:
                                 JOptionPane.showMessageDialog(null, "Goodbye!",
                                         "bEtsy", JOptionPane.INFORMATION_MESSAGE);
