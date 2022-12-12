@@ -408,10 +408,7 @@ public class MarketPlace implements Runnable {
                         } else {
                             writeAndFlush("has stores", oos);
                             try {
-                                System.out.println(seller.getStores().size());
                                 writeAndFlush(seller.getStores(), oos);
-                                System.out.println("sent stores");
-                                System.out.println(Arrays.toString(seller.getStores().toArray()));
                             } catch (Exception e) {
                                 // throw new RuntimeException(e);
                             }
@@ -440,8 +437,6 @@ public class MarketPlace implements Runnable {
                                 if (seller.getStores().get(i).toString().equals(currentStore.toString())) {
                                     currentStoreID = i;
                                 }
-                                System.out
-                                        .println(seller.getStores().get(i).toString().equals(currentStore.toString()));
                             }
 
 
@@ -663,9 +658,6 @@ public class MarketPlace implements Runnable {
                             }
 
                             ArrayList<Store> stores = seller.getStores();
-                            System.out.println(Arrays.toString(seller.getStores().toArray()));
-                            System.out.println(toDelete);
-                            System.out.println(stores.remove(toDelete));
                             //stores.remove(toDelete);
                             seller.setStores(stores);
                             synchronized (obj) {
@@ -698,7 +690,6 @@ public class MarketPlace implements Runnable {
                                 sellers.set(sellerID, seller);
                             }
                             */
-                            System.out.println("Store deleted from marketplace");
                         }
                         break;
                     case "6. view customer shopping carts":
