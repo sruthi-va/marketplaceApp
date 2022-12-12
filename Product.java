@@ -17,13 +17,13 @@ public class Product implements Serializable {
     private double price;
     private String storeName;
 
-    public static void main(String[] args) {
-        String storeName = "Dollar Store Walmart";
-        Product newP = new Product("Computer", "Device with a keyboard.", 90, 100.99, storeName);
+    // public static void main(String[] args) {
+    //     String storeName = "Dollar Store Walmart";
+    //     Product newP = new Product("Computer", "Device with a keyboard.", 90, 100.99, storeName);
 
-        // tests for equals method
-        System.out.println(newP.equals(new Product("Computer", "Device with a keyboard.", 90, 100.99, storeName)));
-    }
+    //     // tests for equals method
+    //     System.out.println(newP.equals(new Product("Computer", "Device with a keyboard.", 90, 100.99, storeName)));
+    // }
 
     // constructor for product
     public Product(String productName, String description, int quantity, double price, String storeName) {
