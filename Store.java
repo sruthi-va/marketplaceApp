@@ -15,38 +15,38 @@ public class Store implements Serializable {
     String storeName;
     ArrayList<Product> productList = new ArrayList<>();
 
-    public static void main(String[] args) {
-        String sellerName = "seller123";
-        String storeName = "store111";
-        ArrayList<Product> productList = new ArrayList<>();
-        Store newS = new Store(sellerName, storeName, productList);
-        String productName = "Milk";
-        String productDescription = "A carton of milk. Great for your bones!";
-        int quantity = 55;
-        double price = 12.99;
+    // public static void main(String[] args) {
+    //     String sellerName = "seller123";
+    //     String storeName = "store111";
+    //     ArrayList<Product> productList = new ArrayList<>();
+    //     Store newS = new Store(sellerName, storeName, productList);
+    //     String productName = "Milk";
+    //     String productDescription = "A carton of milk. Great for your bones!";
+    //     int quantity = 55;
+    //     double price = 12.99;
 
-        //test for createProduct
-        newS.createProduct(productName, productDescription, quantity, price);
-        String createProductExpected = "Milk;A carton of milk. Great for your bones!;55;12.99;store111";
-        String createProductOutput = newS.getProductList().get(0).getProductName() + ";";
-        createProductOutput += newS.getProductList().get(0).getDescription() + ";";
-        createProductOutput += newS.getProductList().get(0).getQuantity() + ";";
-        createProductOutput += newS.getProductList().get(0).getPrice() + ";";
-        createProductOutput += newS.getProductList().get(0).getStoreName();
-        System.out.println(createProductExpected.equals(createProductOutput));
+    //     //test for createProduct
+    //     newS.createProduct(productName, productDescription, quantity, price);
+    //     String createProductExpected = "Milk;A carton of milk. Great for your bones!;55;12.99;store111";
+    //     String createProductOutput = newS.getProductList().get(0).getProductName() + ";";
+    //     createProductOutput += newS.getProductList().get(0).getDescription() + ";";
+    //     createProductOutput += newS.getProductList().get(0).getQuantity() + ";";
+    //     createProductOutput += newS.getProductList().get(0).getPrice() + ";";
+    //     createProductOutput += newS.getProductList().get(0).getStoreName();
+    //     System.out.println(createProductExpected.equals(createProductOutput));
 
-        //test for deleteProduct
-        newS.createProduct("Butter", "Pasteurized milk!", 43, 7.99);
-        newS.deleteProduct("Milk");
-        String deleteProductExpected = "Butter;Pasteurized milk!43;7.99;store111";
-        String deleteProductOutput = newS.getProductList().get(0).getProductName() + ";";
-        deleteProductOutput += newS.getProductList().get(0).getDescription() + ";";
-        deleteProductOutput += newS.getProductList().get(0).getQuantity() + ";";
-        deleteProductOutput += newS.getProductList().get(0).getPrice() + ";";
-        deleteProductOutput += newS.getProductList().get(0).getStoreName();
-        System.out.println(deleteProductExpected.equals(deleteProductOutput));
+    //     //test for deleteProduct
+    //     newS.createProduct("Butter", "Pasteurized milk!", 43, 7.99);
+    //     newS.deleteProduct("Milk");
+    //     String deleteProductExpected = "Butter;Pasteurized milk!43;7.99;store111";
+    //     String deleteProductOutput = newS.getProductList().get(0).getProductName() + ";";
+    //     deleteProductOutput += newS.getProductList().get(0).getDescription() + ";";
+    //     deleteProductOutput += newS.getProductList().get(0).getQuantity() + ";";
+    //     deleteProductOutput += newS.getProductList().get(0).getPrice() + ";";
+    //     deleteProductOutput += newS.getProductList().get(0).getStoreName();
+    //     System.out.println(deleteProductExpected.equals(deleteProductOutput));
 
-    }
+    // }
     // constructor for store
     public Store(String sellerName, String storeName, ArrayList<Product> productList) {
         this.sellerName = sellerName;
@@ -98,7 +98,6 @@ public class Store implements Serializable {
             }
         }
         if (!found) {
-            System.out.println("Product not found!");
         }
     }
 
