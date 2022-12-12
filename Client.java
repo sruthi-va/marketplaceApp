@@ -375,7 +375,6 @@ public class Client {
                             } else {
                                 @SuppressWarnings("unchecked")
                                 ArrayList<Store> stores = (ArrayList<Store>) ois.readObject();
-                                System.out.println(stores.size());
                                 int k = 1;
                                 String output = "";
 
@@ -673,8 +672,6 @@ public class Client {
                             if (((String) ois.readObject()).equals("has stores")) {
                                 @SuppressWarnings("unchecked")
                                 ArrayList<Store> stores = (ArrayList<Store>) ois.readObject();
-                                System.out.println(Arrays.toString(stores.toArray()));
-                                System.out.println(stores.size());
                                 Store chosenStore = (Store) JOptionPane.showInputDialog(null,
                                         "What store do you want to delete?",
                                         "Delete Store", JOptionPane.QUESTION_MESSAGE,
