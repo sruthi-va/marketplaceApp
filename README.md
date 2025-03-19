@@ -12,13 +12,6 @@ javac Client.java
 java Client
 ```
 
-## A list of who submitted which parts of the assignment on Brightspace and Vocareum
-- Zander C
-- Catherine P - Submitted presentation video on Brightspace.
-- Sruthi V
-- Jennifer W - Submitted report on Brightspace.
-- Vanshika B - Submitted Vocareum workspace.
-
 ## A detailed description of each class; includes the functionality included in the class, the testing done to verify it works properly, and its relationship to other classes in the project.
 - MarketPlace.java
   - Is the server that processes inputs from the client, calling the methods from all other classes to combine their functionality. Extensive testing was performed by our team as each member tested all the actions that can be preformed by customer/seller, checking to see if it resulted in the right output, and making sure the marketplace could handle any mishaps such as a null answer received from the client.
